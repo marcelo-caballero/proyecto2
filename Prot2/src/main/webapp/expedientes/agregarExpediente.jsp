@@ -31,7 +31,7 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <%@include file="//WEB-INF/paginaCabecera.jsp" %>
     </head>
-    <body>
+    <body onload="verificarSelectNoVacios()">
         <%
             
             List<Cliente> listaCliente;
@@ -58,6 +58,7 @@
             TipoExpedienteJpaController tipoExpedienteControl = new TipoExpedienteJpaController();
             listaTipoExpediente = tipoExpedienteControl.findTipoExpedienteEntities();  
 
+            
         %>
         <%@include file="//WEB-INF/menuCabecera.jsp" %>
         <br>
@@ -65,7 +66,7 @@
         <div class ="container form-control">
             <h2 class="text-justify">Agregar Expediente</h2> 
             <br>
-            
+          
             <form id="agregarExpediente" 
                   action="<%=request.getContextPath()%>/ExpedienteServlet?agregar=true" 
                   method="post" 
@@ -172,6 +173,7 @@
                                 </option>
                             <%}%>
                     </select>
+                    <div id="idAbogado-retro"></div>
                 </div>
             </div>
                   
@@ -190,6 +192,7 @@
                                 </option>
                             <%}%>
                     </select>
+                    <div id="idCliente-retro"></div>
                 </div>
             </div> 
                     
@@ -208,6 +211,7 @@
                                     </option>
                                 <%}%>
                     </select>
+                    <div id="idMarca-retro"></div>
                 </div>
             </div>
                     
@@ -273,7 +277,8 @@
                            value="Agregar"
                            onclick="validarFormulario()">
                 </div>    
-            </div>   
+            </div>  
+         
         </div>
         <br>
         <script>
@@ -499,6 +504,46 @@
                 if (charCode > 31 && (charCode < 48 || charCode > 57))
                     return false;
                 return true;
+            }
+            
+            //Verificar que los select no esten vacíos
+            function verificarSelectNoVacios(){
+                var idAbogadoInput = document.getElementById("idAbogado");
+                var retroIdAbogado = document.getElementById("idAbogado-retro");
+                var strIdAbogado = idAbogadoInput.value.trim();
+                
+                if(strIdAbogado.length == 0){ 
+                    idAbogadoInput.setAttribute("class","form-control is-invalid");
+                    retroIdAbogado.setAttribute("class","invalid-feedback");
+                    retroIdAbogado.textContent = 'Debe cargar los datos del abogado';
+                    
+                    document.getElementById("agregar").setAttribute("disabled","");
+                }
+                
+                var idClienteInput = document.getElementById("idCliente");
+                var retroIdCliente = document.getElementById("idCliente-retro");
+                var strIdCliente = idClienteInput.value.trim();
+                
+                if(strIdCliente.length == 0){ 
+                    idClienteInput.setAttribute("class","form-control is-invalid");
+                    retroIdCliente.setAttribute("class","invalid-feedback");
+                    retroIdCliente.textContent = 'Debe cargar los datos del titular';
+                    
+                    document.getElementById("agregar").setAttribute("disabled","");
+                }
+                
+                var idMarcaInput = document.getElementById("idMarca");
+                var retroIdMarca = document.getElementById("idMarca-retro");
+                var strIdMarca = idMarcaInput.value.trim();
+                
+                if(strIdMarca.length == 0){ 
+                    idMarcaInput.setAttribute("class","form-control is-invalid");
+                    retroIdMarca.setAttribute("class","invalid-feedback");
+                    retroIdMarca.textContent = 'Debe cargar los datos de la marca';
+                    
+                    document.getElementById("agregar").setAttribute("disabled","");
+                }
+                
             }
         </script>
     </body>

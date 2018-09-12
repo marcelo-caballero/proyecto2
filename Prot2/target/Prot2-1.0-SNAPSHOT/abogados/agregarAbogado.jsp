@@ -17,7 +17,7 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <%@include file="//WEB-INF/paginaCabecera.jsp" %>
     </head>
-    <body>
+    <body onload="verificarSelectNoVacios()">
         <%
             List<Usuario> listaUsuario = new UsuarioJpaController().getUsuariosNiClientesNiAbogados();
             
@@ -29,9 +29,7 @@
         
             <h2 class="text-justify"> Agregar Abogado</h2>
             <br> 
-        <%if(listaUsuario.size() == 0){%>  
-            <h6 class="text-center">Primero se debe ingresar la cuenta de usuario del nuevo abogado.</h6>
-        <%}else{%>
+        
             <form id="agregarAbogado" 
                   action="<%=request.getContextPath()%>/AbogadoServlet?agregar=true" 
                   method="post" 
@@ -168,7 +166,7 @@
                            onclick="validarFormulario()">
                 </div>    
             </div>
-        <%}%> 
+       
         </div>
         <br>
         <script>
@@ -382,6 +380,22 @@
                 if (charCode > 31 && (charCode < 48 || charCode > 57))
                     return false;
                 return true;
+            }
+            
+            //Verificar que los select no esten vacíos
+            function verificarSelectNoVacios(){
+                var idUsuarioInput = document.getElementById("idUsuario");
+                var retroIdUsuario = document.getElementById("idUsuario-retro");
+                var strIdUsuario = idUsuarioInput.value.trim();
+                
+                if(strIdUsuario.length == 0){ 
+                    idUsuarioInput.setAttribute("class","form-control is-invalid");
+                    retroIdUsuario.setAttribute("class","invalid-feedback");
+                    retroIdUsuario.textContent = 'Debe cargar primero la cuenta de usuario del nuevo abogado';
+                    
+                    document.getElementById("agregar").setAttribute("disabled","");
+                }
+                
             }
         </script>
     </body>

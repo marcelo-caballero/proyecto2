@@ -28,7 +28,7 @@
          
         <div class ="container form-control">
         
-            <h2 class="text-justify"> Agregar Abogado</h2>
+            <h2 class="text-justify"> Editar Abogado</h2>
             <br> 
         
             <form id="editarAbogado" 
