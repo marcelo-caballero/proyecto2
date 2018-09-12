@@ -8,7 +8,7 @@ import javax.persistence.metamodel.StaticMetamodel;
 import modelo.Expediente;
 import modelo.TipoDocumento;
 
-@Generated(value="EclipseLink-2.5.2.v20140319-rNA", date="2018-08-18T11:32:08")
+@Generated(value="EclipseLink-2.5.2.v20140319-rNA", date="2018-09-08T19:25:57")
 @StaticMetamodel(Documento.class)
 public class Documento_ { 
 
@@ -16,6 +16,7 @@ public class Documento_ {
     public static volatile SingularAttribute<Documento, Date> fecha;
     public static volatile SingularAttribute<Documento, Integer> idDocumento;
     public static volatile SingularAttribute<Documento, Expediente> idExpediente;
+    public static volatile SingularAttribute<Documento, String> nombreDocumento;
     public static volatile SingularAttribute<Documento, TipoDocumento> idTipoDocumento;
     public static volatile SingularAttribute<Documento, byte[]> documento;
     public static volatile SingularAttribute<Documento, BigInteger> orden;

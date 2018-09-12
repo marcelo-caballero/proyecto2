@@ -5,8 +5,6 @@
  */
 package modeloMng;
 
-import modeloMng.exceptions.IllegalOrphanException;
-import modeloMng.exceptions.NonexistentEntityException;
 import java.io.Serializable;
 import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
@@ -21,6 +19,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import modelo.Marca;
+import modeloMng.exceptions.IllegalOrphanException;
+import modeloMng.exceptions.NonexistentEntityException;
 
 /**
  *
@@ -259,4 +259,49 @@ public class MarcaJpaController implements Serializable {
         }
     }
     
+    /*Responde si existe una duplicacion de la denominacion de marca  
+    
+      Si idMarca es nulo:(GUARDAR)
+        Considera si la denominacion esta o no duplicada
+    
+      Si idMarca no es nulo:(EDITAR)
+        Considera si la denominacion esta o no duplicada 
+        pero sin considerar la denominacion de la marca identificado por idMarca
+    */
+    public Boolean existeDenominacion(String denominacion, Integer idMarca) {
+       
+       EntityManager em = getEntityManager();
+       
+        try {
+            String consulta =   "select count(m) from Marca m "+
+                                "where trim(upper(m.denominacion)) = trim(upper(:denominacion))";
+                    
+            if(idMarca != null){
+                consulta+= " and m.idMarca != :idMarca"; 
+            }
+            Query q = em.createQuery(consulta);
+            
+            q.setParameter("denominacion", denominacion);
+            
+            if(idMarca != null){
+                q.setParameter("idMarca", idMarca);
+            }
+             
+            Integer cant = ((Long) q.getSingleResult()).intValue();
+            //System.out.println(cant+ " cantidad");
+            
+            if(cant>0){
+                return  true;
+            }else{
+                return false;
+            }
+            
+        } catch(Exception e){
+            System.out.println(e);
+            return null;
+            
+        }finally {
+            em.close();
+        }
+    }
 }

@@ -5,8 +5,6 @@
  */
 package modeloMng;
 
-import modeloMng.exceptions.IllegalOrphanException;
-import modeloMng.exceptions.NonexistentEntityException;
 import java.io.Serializable;
 import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
@@ -21,6 +19,8 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import modelo.Abogado;
 import modelo.Historial;
+import modeloMng.exceptions.IllegalOrphanException;
+import modeloMng.exceptions.NonexistentEntityException;
 
 /**
  *
@@ -282,6 +282,55 @@ public class AbogadoJpaController implements Serializable {
         } finally {
             em.close();
         }
+    }
+
+   
+    /*Responde si existe una duplicacion del numero de cedula  
+    
+      Si idAbogado es nulo:(GUARDAR)
+        Considera si el numero de cedula esta o no duplicado
+    
+      Si idAbogado no es nulo:(EDITAR)
+        Considera si el ci esta o no duplicado 
+        pero sin considerar el ci del abogado identificado por idAbogado
+    */
+    public Boolean existeCiDuplicado(Long nroCi, Integer idAbogado) {
+       
+       EntityManager em = getEntityManager();
+       
+        try {
+            String consulta =   "select count(a) from Abogado a "+
+                                "where a.ci = :nroCi";
+                    
+            if(idAbogado != null){
+                consulta+= " and a.idAbogado != :idAbogado"; 
+            }
+            Query q = em.createQuery(consulta);
+            
+            q.setParameter("nroCi", nroCi);
+           
+            
+            if(idAbogado != null){
+                 q.setParameter("idAbogado", idAbogado);
+            }
+             
+            Integer cant = ((Long) q.getSingleResult()).intValue();
+            System.out.println(cant+ " cantidad");
+            
+            if(cant>0){
+                return  true;
+            }else{
+                return false;
+            }
+            
+        } catch(Exception e){
+            System.out.println(e);
+            return null;
+            
+        }finally {
+            em.close();
+        }
+    
     }
     
 }

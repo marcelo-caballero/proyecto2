@@ -232,4 +232,11 @@ public class Cliente implements Serializable {
         return "modelo.Cliente[ idCliente=" + idCliente + " ]";
     }
     
+    public String getNombreCliente() {
+        if (this.tipoCliente.equals("F")) {
+            return this.nombre + " " + this.apellido;
+        } else {
+            return this.razonSocial;
+        }
+    }
 }

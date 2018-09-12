@@ -5,7 +5,6 @@
  */
 package modeloMng;
 
-import modeloMng.exceptions.NonexistentEntityException;
 import java.io.Serializable;
 import java.util.List;
 import javax.persistence.EntityManager;
@@ -17,6 +16,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import modelo.Evento;
 import modelo.Expediente;
+import modeloMng.exceptions.NonexistentEntityException;
 
 /**
  *
@@ -25,7 +25,7 @@ import modelo.Expediente;
 public class EventoJpaController implements Serializable {
 
     public EventoJpaController() {
-        this.emf = Persistence.createEntityManagerFactory("com.mycompany_Prot2_war_1.0-SNAPSHOTPU");
+       this.emf = Persistence.createEntityManagerFactory("com.mycompany_Prot2_war_1.0-SNAPSHOTPU");
     }
     private EntityManagerFactory emf = null;
 

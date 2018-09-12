@@ -11,7 +11,9 @@ modelo\Usuario_.class
 modeloMng\exceptions\PreexistingEntityException.class
 modelo\Historial_.class
 modeloMng\exceptions\NonexistentEntityException.class
+controlador\obtenerDocumento.class
 modelo\Marca.class
+controlador\MarcaServlet.class
 modelo\Clase_.class
 modelo\TipoMarca_.class
 modelo\Clase.class
@@ -24,6 +26,7 @@ modelo\Expediente.class
 modelo\Usuario.class
 modelo\Evento_.class
 modeloMng\EventoJpaController.class
+controlador\DocumentoServlet.class
 modeloMng\ExpedienteJpaController.class
 modeloMng\TipoDocumentoJpaController.class
 modelo\Documento.class
@@ -33,6 +36,7 @@ modelo\Cliente_.class
 modelo\Documento_.class
 modelo\Rol_.class
 modelo\TipoDocumento_.class
+controlador\EventoServlet.class
 modelo\Rol.class
 modelo\Marca_.class
 modelo\Pais.class
@@ -43,6 +47,8 @@ modeloMng\TipoMarcaJpaController.class
 modeloMng\RolJpaController.class
 modelo\Pais_.class
 modeloMng\UsuarioJpaController.class
+controlador\ExpedienteServlet.class
 modeloMng\ClienteJpaController.class
 modeloMng\DocumentoJpaController.class
 modeloMng\PaisJpaController.class
+controlador\LoginServlet.class

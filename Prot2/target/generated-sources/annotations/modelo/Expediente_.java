@@ -14,15 +14,16 @@ import modelo.EstadoMarca;
 import modelo.Evento;
 import modelo.Historial;
 import modelo.Marca;
+import modelo.TipoExpediente;
 
-@Generated(value="EclipseLink-2.5.2.v20140319-rNA", date="2018-08-18T11:32:08")
+@Generated(value="EclipseLink-2.5.2.v20140319-rNA", date="2018-09-08T19:25:57")
 @StaticMetamodel(Expediente.class)
 public class Expediente_ { 
 
     public static volatile ListAttribute<Expediente, Documento> documentoList;
     public static volatile SingularAttribute<Expediente, Date> fechaSolicitud;
     public static volatile SingularAttribute<Expediente, Integer> idExpediente;
-    public static volatile SingularAttribute<Expediente, BigInteger> tipoExpediente;
+    public static volatile SingularAttribute<Expediente, TipoExpediente> tipoExpediente;
     public static volatile ListAttribute<Expediente, Evento> eventoList;
     public static volatile SingularAttribute<Expediente, String> producto;
     public static volatile SingularAttribute<Expediente, Clase> nroClase;

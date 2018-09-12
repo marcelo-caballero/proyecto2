@@ -5,7 +5,6 @@
  */
 package modeloMng;
 
-import modeloMng.exceptions.NonexistentEntityException;
 import java.io.Serializable;
 import java.util.List;
 import javax.persistence.EntityManager;
@@ -18,6 +17,7 @@ import javax.persistence.criteria.Root;
 import modelo.Documento;
 import modelo.Expediente;
 import modelo.TipoDocumento;
+import modeloMng.exceptions.NonexistentEntityException;
 
 /**
  *
@@ -191,6 +191,54 @@ public class DocumentoJpaController implements Serializable {
             Query q = em.createQuery(cq);
             return ((Long) q.getSingleResult()).intValue();
         } finally {
+            em.close();
+        }
+    }
+
+    /*Responde si existe una duplicacion de nombres de documento por expediente  
+    
+      Si idDocumento es nulo:(GUARDAR)
+        Considera si el nombre esta o no duplicado por expediente
+    
+      Si idDocumento no es nulo:(EDITAR)
+        Considera si el nombre esta o no duplicado por expediente
+        pero sin considerar el nombre del documento identificado por idDocumento
+    */
+    public Boolean existeNombreDocumentoExpediente(Integer idExpediente, String nombre, Integer idDocumento) {
+       
+       EntityManager em = getEntityManager();
+       
+        try {
+            String consulta =   "select count(d) from Documento d "+
+                                "where d.idExpediente.idExpediente = :idExp"+
+                                " and trim(upper(d.nombreDocumento)) = trim(upper(:nombre))";
+                    
+            if(idDocumento != null){
+                consulta+= " and d.idDocumento != :idDoc"; 
+            }
+            Query q = em.createQuery(consulta);
+            
+            q.setParameter("idExp", idExpediente);
+            q.setParameter("nombre", nombre);
+            
+            if(idDocumento != null){
+                q.setParameter("idDoc", idDocumento);
+            }
+             
+            Integer cant = ((Long) q.getSingleResult()).intValue();
+            System.out.println(cant+ " cantidad");
+            
+            if(cant>0){
+                return  true;
+            }else{
+                return false;
+            }
+            
+        } catch(Exception e){
+            System.out.println(e);
+            return null;
+            
+        }finally {
             em.close();
         }
     }

@@ -21,7 +21,6 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
@@ -45,9 +44,7 @@ public class Marca implements Serializable {
     @Basic(optional = false)
     @Column(name = "id_marca")
     private Integer idMarca;
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 2147483647)
+    @Size(max = 2147483647)
     @Column(name = "denominacion")
     private String denominacion;
     @Lob
@@ -67,11 +64,6 @@ public class Marca implements Serializable {
 
     public Marca(Integer idMarca) {
         this.idMarca = idMarca;
-    }
-
-    public Marca(Integer idMarca, String denominacion) {
-        this.idMarca = idMarca;
-        this.denominacion = denominacion;
     }
 
     public Integer getIdMarca() {

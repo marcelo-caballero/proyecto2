@@ -5,9 +5,6 @@
  */
 package modeloMng;
 
-import modeloMng.exceptions.IllegalOrphanException;
-import modeloMng.exceptions.NonexistentEntityException;
-import modeloMng.exceptions.PreexistingEntityException;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import javax.persistence.Query;
@@ -21,6 +18,9 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import modelo.Pais;
+import modeloMng.exceptions.IllegalOrphanException;
+import modeloMng.exceptions.NonexistentEntityException;
+import modeloMng.exceptions.PreexistingEntityException;
 
 /**
  *

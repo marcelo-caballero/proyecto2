@@ -69,10 +69,10 @@ public class Abogado implements Serializable {
     @Size(min = 1, max = 2147483647)
     @Column(name = "telefono")
     private String telefono;
+    @NotNull
     @Column(name = "ci")
     private Long ci;
     @Basic(optional = false)
-    @NotNull
     @Size(min = 1, max = 2147483647)
     @Column(name = "registro_profesional")
     private String registroProfesional;
@@ -149,6 +149,9 @@ public class Abogado implements Serializable {
     }
 
     public String getRegistroProfesional() {
+        if(this.registroProfesional == null){
+            return "";
+        }
         return registroProfesional;
     }
 
@@ -207,4 +210,7 @@ public class Abogado implements Serializable {
         return "modelo.Abogado[ idAbogado=" + idAbogado + " ]";
     }
     
+    public String getNombreApellido(){
+        return this.nombre + " "+ this.apellido;
+    }
 }

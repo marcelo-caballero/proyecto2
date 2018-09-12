@@ -5,7 +5,6 @@
  */
 package modeloMng;
 
-import modeloMng.exceptions.NonexistentEntityException;
 import java.io.Serializable;
 import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
@@ -18,6 +17,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import modelo.EstadoMarca;
+import modeloMng.exceptions.NonexistentEntityException;
 
 /**
  *

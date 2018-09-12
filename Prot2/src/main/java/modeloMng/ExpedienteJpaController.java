@@ -5,9 +5,8 @@
  */
 package modeloMng;
 
-import modeloMng.exceptions.IllegalOrphanException;
-import modeloMng.exceptions.NonexistentEntityException;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
@@ -17,6 +16,7 @@ import modelo.Clase;
 import modelo.Cliente;
 import modelo.EstadoMarca;
 import modelo.Marca;
+import modelo.TipoExpediente;
 import modelo.Documento;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +26,8 @@ import javax.persistence.Persistence;
 import modelo.Evento;
 import modelo.Expediente;
 import modelo.Historial;
+import modeloMng.exceptions.IllegalOrphanException;
+import modeloMng.exceptions.NonexistentEntityException;
 
 /**
  *
@@ -81,6 +83,11 @@ public class ExpedienteJpaController implements Serializable {
                 idMarca = em.getReference(idMarca.getClass(), idMarca.getIdMarca());
                 expediente.setIdMarca(idMarca);
             }
+            TipoExpediente tipoExpediente = expediente.getTipoExpediente();
+            if (tipoExpediente != null) {
+                tipoExpediente = em.getReference(tipoExpediente.getClass(), tipoExpediente.getIdTipoExpediente());
+                expediente.setTipoExpediente(tipoExpediente);
+            }
             List<Documento> attachedDocumentoList = new ArrayList<Documento>();
             for (Documento documentoListDocumentoToAttach : expediente.getDocumentoList()) {
                 documentoListDocumentoToAttach = em.getReference(documentoListDocumentoToAttach.getClass(), documentoListDocumentoToAttach.getIdDocumento());
@@ -119,6 +126,10 @@ public class ExpedienteJpaController implements Serializable {
             if (idMarca != null) {
                 idMarca.getExpedienteList().add(expediente);
                 idMarca = em.merge(idMarca);
+            }
+            if (tipoExpediente != null) {
+                tipoExpediente.getExpedienteList().add(expediente);
+                tipoExpediente = em.merge(tipoExpediente);
             }
             for (Documento documentoListDocumento : expediente.getDocumentoList()) {
                 Expediente oldIdExpedienteOfDocumentoListDocumento = documentoListDocumento.getIdExpediente();
@@ -171,6 +182,8 @@ public class ExpedienteJpaController implements Serializable {
             EstadoMarca idEstadoNew = expediente.getIdEstado();
             Marca idMarcaOld = persistentExpediente.getIdMarca();
             Marca idMarcaNew = expediente.getIdMarca();
+            TipoExpediente tipoExpedienteOld = persistentExpediente.getTipoExpediente();
+            TipoExpediente tipoExpedienteNew = expediente.getTipoExpediente();
             List<Documento> documentoListOld = persistentExpediente.getDocumentoList();
             List<Documento> documentoListNew = expediente.getDocumentoList();
             List<Evento> eventoListOld = persistentExpediente.getEventoList();
@@ -224,6 +237,10 @@ public class ExpedienteJpaController implements Serializable {
             if (idMarcaNew != null) {
                 idMarcaNew = em.getReference(idMarcaNew.getClass(), idMarcaNew.getIdMarca());
                 expediente.setIdMarca(idMarcaNew);
+            }
+            if (tipoExpedienteNew != null) {
+                tipoExpedienteNew = em.getReference(tipoExpedienteNew.getClass(), tipoExpedienteNew.getIdTipoExpediente());
+                expediente.setTipoExpediente(tipoExpedienteNew);
             }
             List<Documento> attachedDocumentoListNew = new ArrayList<Documento>();
             for (Documento documentoListNewDocumentoToAttach : documentoListNew) {
@@ -286,6 +303,14 @@ public class ExpedienteJpaController implements Serializable {
             if (idMarcaNew != null && !idMarcaNew.equals(idMarcaOld)) {
                 idMarcaNew.getExpedienteList().add(expediente);
                 idMarcaNew = em.merge(idMarcaNew);
+            }
+            if (tipoExpedienteOld != null && !tipoExpedienteOld.equals(tipoExpedienteNew)) {
+                tipoExpedienteOld.getExpedienteList().remove(expediente);
+                tipoExpedienteOld = em.merge(tipoExpedienteOld);
+            }
+            if (tipoExpedienteNew != null && !tipoExpedienteNew.equals(tipoExpedienteOld)) {
+                tipoExpedienteNew.getExpedienteList().add(expediente);
+                tipoExpedienteNew = em.merge(tipoExpedienteNew);
             }
             for (Documento documentoListNewDocumento : documentoListNew) {
                 if (!documentoListOld.contains(documentoListNewDocumento)) {
@@ -399,6 +424,11 @@ public class ExpedienteJpaController implements Serializable {
                 idMarca.getExpedienteList().remove(expediente);
                 idMarca = em.merge(idMarca);
             }
+            TipoExpediente tipoExpediente = expediente.getTipoExpediente();
+            if (tipoExpediente != null) {
+                tipoExpediente.getExpedienteList().remove(expediente);
+                tipoExpediente = em.merge(tipoExpediente);
+            }
             em.remove(expediente);
             em.getTransaction().commit();
         } finally {
@@ -454,4 +484,51 @@ public class ExpedienteJpaController implements Serializable {
         }
     }
     
+    
+    /*Responde si existe una duplicacion del numero de expediente  
+    
+      Si idExpediente es nulo:(GUARDAR)
+        Considera si el numero del expediente esta o no duplicado
+    
+      Si idExpediente no es nulo:(EDITAR)
+        Considera si el número esta o no duplicado 
+        pero sin considerar el numero del expediente identificado por idExpediente
+    */
+    public Boolean existeNumeroExpDuplicado(BigDecimal nroExpediente, Integer idExpediente) {
+       
+       EntityManager em = getEntityManager();
+       
+        try {
+            String consulta =   "select count(e) from Expediente e "+
+                                "where e.nroExpediente = :nroExpediente";
+                    
+            if(idExpediente != null){
+                consulta+= " and e.idExpediente != :idExpediente"; 
+            }
+            Query q = em.createQuery(consulta);
+            
+            q.setParameter("nroExpediente", nroExpediente);
+           
+            
+            if(idExpediente != null){
+                 q.setParameter("idExpediente", idExpediente);
+            }
+             
+            Integer cant = ((Long) q.getSingleResult()).intValue();
+            System.out.println(cant+ " cantidad");
+            
+            if(cant>0){
+                return  true;
+            }else{
+                return false;
+            }
+            
+        } catch(Exception e){
+            System.out.println(e);
+            return null;
+            
+        }finally {
+            em.close();
+        }
+    }
 }

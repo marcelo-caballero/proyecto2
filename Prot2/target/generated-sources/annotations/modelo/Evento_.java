@@ -6,7 +6,7 @@ import javax.persistence.metamodel.SingularAttribute;
 import javax.persistence.metamodel.StaticMetamodel;
 import modelo.Expediente;
 
-@Generated(value="EclipseLink-2.5.2.v20140319-rNA", date="2018-08-18T11:32:08")
+@Generated(value="EclipseLink-2.5.2.v20140319-rNA", date="2018-09-08T19:25:57")
 @StaticMetamodel(Evento.class)
 public class Evento_ { 
 
@@ -14,5 +14,6 @@ public class Evento_ {
     public static volatile SingularAttribute<Evento, Date> fecha;
     public static volatile SingularAttribute<Evento, Expediente> idExpediente;
     public static volatile SingularAttribute<Evento, Integer> idEvento;
+    public static volatile SingularAttribute<Evento, String> nombre;
 
 }

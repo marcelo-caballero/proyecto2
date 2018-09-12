@@ -7,6 +7,7 @@ package modelo;
 
 import java.io.Serializable;
 import java.math.BigInteger;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import javax.persistence.Basic;
@@ -43,7 +44,6 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Expediente.findByFechaSolicitud", query = "SELECT e FROM Expediente e WHERE e.fechaSolicitud = :fechaSolicitud"),
     @NamedQuery(name = "Expediente.findByFechaEstado", query = "SELECT e FROM Expediente e WHERE e.fechaEstado = :fechaEstado"),
     @NamedQuery(name = "Expediente.findByProducto", query = "SELECT e FROM Expediente e WHERE e.producto = :producto"),
-    @NamedQuery(name = "Expediente.findByTipoExpediente", query = "SELECT e FROM Expediente e WHERE e.tipoExpediente = :tipoExpediente"),
     @NamedQuery(name = "Expediente.findByObservacion", query = "SELECT e FROM Expediente e WHERE e.observacion = :observacion")})
 public class Expediente implements Serializable {
 
@@ -68,8 +68,6 @@ public class Expediente implements Serializable {
     @Size(max = 2147483647)
     @Column(name = "producto")
     private String producto;
-    @Column(name = "tipo_expediente")
-    private BigInteger tipoExpediente;
     @Size(max = 2147483647)
     @Column(name = "observacion")
     private String observacion;
@@ -88,6 +86,9 @@ public class Expediente implements Serializable {
     @JoinColumn(name = "id_marca", referencedColumnName = "id_marca")
     @ManyToOne(optional = false)
     private Marca idMarca;
+    @JoinColumn(name = "tipo_expediente", referencedColumnName = "id_tipo_expediente")
+    @ManyToOne(optional = false)
+    private TipoExpediente tipoExpediente;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idExpediente")
     private List<Documento> documentoList;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idExpediente")
@@ -148,14 +149,6 @@ public class Expediente implements Serializable {
         this.producto = producto;
     }
 
-    public BigInteger getTipoExpediente() {
-        return tipoExpediente;
-    }
-
-    public void setTipoExpediente(BigInteger tipoExpediente) {
-        this.tipoExpediente = tipoExpediente;
-    }
-
     public String getObservacion() {
         return observacion;
     }
@@ -202,6 +195,14 @@ public class Expediente implements Serializable {
 
     public void setIdMarca(Marca idMarca) {
         this.idMarca = idMarca;
+    }
+
+    public TipoExpediente getTipoExpediente() {
+        return tipoExpediente;
+    }
+
+    public void setTipoExpediente(TipoExpediente tipoExpediente) {
+        this.tipoExpediente = tipoExpediente;
     }
 
     @XmlTransient
@@ -253,7 +254,28 @@ public class Expediente implements Serializable {
 
     @Override
     public String toString() {
-        return "modelo.Expediente[ idExpediente=" + idExpediente + " ]";
+        return "" + nroExpediente + "\n"+
+                   idCliente + "\n"+
+                   idAbogado + "\n"+
+                   idEstado + "\n"+
+                fechaEstado + "\n"+
+                idMarca + "\n"+
+                nroClase + "\n"+
+                fechaSolicitud + "\n"+
+                tipoExpediente + "\n"+
+                producto + "\n"+
+                observacion + "\n";
+                
+    }
+    
+    public String getStringFechaEstado(){
+        String fecha = new SimpleDateFormat("dd-MM-yyyy").format(this.fechaEstado);
+        return fecha;  
+    }
+    
+    public String getStringFechaSolicitud(){
+        String fecha = new SimpleDateFormat("dd-MM-yyyy").format(this.fechaSolicitud);
+        return fecha;  
     }
     
 }

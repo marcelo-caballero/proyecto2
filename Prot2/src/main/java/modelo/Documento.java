@@ -7,6 +7,7 @@ package modelo;
 
 import java.io.Serializable;
 import java.math.BigInteger;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -41,6 +42,17 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "Documento.findByOrden", query = "SELECT d FROM Documento d WHERE d.orden = :orden")})
 public class Documento implements Serializable {
 
+    @Basic(optional = false)
+    @NotNull
+    @Lob
+    @Column(name = "documento")
+    private byte[] documento;
+    @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 2147483647)
+    @Column(name = "nombre_documento")
+    private String nombreDocumento;
+
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -57,11 +69,6 @@ public class Documento implements Serializable {
     @Column(name = "fecha")
     @Temporal(TemporalType.DATE)
     private Date fecha;
-    @Basic(optional = false)
-    @NotNull
-    @Lob
-    @Column(name = "documento")
-    private byte[] documento;
     @Basic(optional = false)
     @NotNull
     @Column(name = "orden")
@@ -112,13 +119,6 @@ public class Documento implements Serializable {
         this.fecha = fecha;
     }
 
-    public byte[] getDocumento() {
-        return documento;
-    }
-
-    public void setDocumento(byte[] documento) {
-        this.documento = documento;
-    }
 
     public BigInteger getOrden() {
         return orden;
@@ -168,5 +168,25 @@ public class Documento implements Serializable {
     public String toString() {
         return "modelo.Documento[ idDocumento=" + idDocumento + " ]";
     }
+
+    public byte[] getDocumento() {
+        return documento;
+    }
+
+    public void setDocumento(byte[] documento) {
+        this.documento = documento;
+    }
+
+    public String getNombreDocumento() {
+        return nombreDocumento;
+    }
+
+    public void setNombreDocumento(String nombreDocumento) {
+        this.nombreDocumento = nombreDocumento;
+    }
     
+    public String getStringFecha(){
+        String fecha = new SimpleDateFormat("dd-MM-yyyy").format(this.fecha);
+        return fecha;  
+    }
 }

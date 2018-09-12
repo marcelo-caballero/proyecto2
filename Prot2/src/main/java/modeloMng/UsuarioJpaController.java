@@ -5,8 +5,6 @@
  */
 package modeloMng;
 
-import modeloMng.exceptions.IllegalOrphanException;
-import modeloMng.exceptions.NonexistentEntityException;
 import java.io.Serializable;
 import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
@@ -21,6 +19,8 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import modelo.Cliente;
 import modelo.Usuario;
+import modeloMng.exceptions.IllegalOrphanException;
+import modeloMng.exceptions.NonexistentEntityException;
 
 /**
  *
@@ -280,6 +280,46 @@ public class UsuarioJpaController implements Serializable {
             Query q = em.createQuery(cq);
             return ((Long) q.getSingleResult()).intValue();
         } finally {
+            em.close();
+        }
+    }
+    
+    public Usuario getUsuario(String cuenta, String contraseña) {
+        EntityManager em = getEntityManager();
+        try {
+            String consulta = "select u from Usuario u where u.cuenta = :cuenta"
+                                + " and u.password = :password";
+            Query q = em.createQuery(consulta);
+            
+            q.setParameter("cuenta", cuenta);
+            q.setParameter("password", contraseña);
+            
+            Usuario usuario = (Usuario) q.getSingleResult();
+            
+            return usuario;
+            
+        } catch(Exception e){
+            
+            return null;
+        
+        }finally {
+            em.close();
+        }
+    }
+    
+    public List<Usuario> getUsuariosNiClientesNiAbogados() {
+        EntityManager em = getEntityManager();
+        
+        try {
+           
+            String consulta = "select u from Usuario u where u "+
+                              "not in (select a.idUsuario from Abogado a) "+
+                              "and u not in (select c.idUsuario from Cliente c)";
+            Query q = em.createQuery(consulta);
+            
+            return q.getResultList();
+            
+        }finally {
             em.close();
         }
     }

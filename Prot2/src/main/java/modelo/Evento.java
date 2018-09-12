@@ -6,6 +6,7 @@
 package modelo;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -37,6 +38,12 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "Evento.findByDescripcion", query = "SELECT e FROM Evento e WHERE e.descripcion = :descripcion"),
     @NamedQuery(name = "Evento.findByFecha", query = "SELECT e FROM Evento e WHERE e.fecha = :fecha")})
 public class Evento implements Serializable {
+
+    @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 2147483647)
+    @Column(name = "nombre")
+    private String nombre;
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -126,6 +133,19 @@ public class Evento implements Serializable {
     @Override
     public String toString() {
         return "modelo.Evento[ idEvento=" + idEvento + " ]";
+    }
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+    
+    public String getStringFecha(){
+        String fecha = new SimpleDateFormat("dd-MM-yyyy").format(this.fecha);
+        return fecha;  
     }
     
 }
