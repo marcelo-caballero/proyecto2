@@ -13,7 +13,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Abogado - Ta'angapp</title>
+        <title>Agente - Ta'angapp</title>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <%@include file="//WEB-INF/paginaCabecera.jsp" %>
     </head>
@@ -28,7 +28,7 @@
          
         <div class ="container form-control">
         
-            <h2 class="text-justify"> Editar Abogado</h2>
+            <h2 class="text-justify"> Editar Agente</h2>
             <br> 
         
             <form id="editarAbogado" 
@@ -60,7 +60,7 @@
                            id="ci"
                            class="form-control"
                            type="number" 
-                           placeholder="Escriba el número de cédula del abogado"
+                           placeholder="Escriba el número de cédula del agente"
                            required 
                            value="<%=abogado.getCi()%>"
                            onkeypress="return isNumberKey(event)">
@@ -78,7 +78,7 @@
                            id="nombre"
                            class="form-control"
                            type="text" 
-                           placeholder="Escriba el nombre del abogado"
+                           placeholder="Escriba el nombre del agente"
                            maxlength=""
                            value="<%=abogado.getNombre()%>" 
                            required >
@@ -96,7 +96,7 @@
                            id="apellido"
                            class="form-control"
                            type="text" 
-                           placeholder="Escriba el apellido del abogado"
+                           placeholder="Escriba el apellido del agente"
                            maxlength=""
                            value="<%=abogado.getApellido()%>" 
                            required >
@@ -114,7 +114,7 @@
                            id="direccion"
                            class="form-control"
                            type="text" 
-                           placeholder="Escriba la dirección del abogado"
+                           placeholder="Escriba la dirección del agente"
                            maxlength=""
                            value="<%=abogado.getDireccion()%>" 
                            required >
@@ -132,7 +132,7 @@
                            id="telefono"
                            class="form-control"
                            type="text" 
-                           placeholder="Escriba el teléfono del abogado"
+                           placeholder="Escriba el teléfono del agente"
                            maxlength=""
                            value="<%=abogado.getTelefono()%>"
                            required >
@@ -150,7 +150,7 @@
                            id="regProf"
                            class="form-control"
                            type="text" 
-                           placeholder="Escriba el registro profesional abogado"
+                           placeholder="Escriba el registro profesional agente"
                            maxlength=""
                            value="<%=abogado.getRegistroProfesional()%>" 
                            required >
@@ -220,7 +220,7 @@
 
                             ciInput.setAttribute("class","form-control is-invalid");
                             retroCi.setAttribute("class","invalid-feedback");
-                            retroCi.textContent = 'Ya existe un abogado con la misma cédula';
+                            retroCi.textContent = 'Ya existe un agente con la misma cédula';
 
                             //se desbloquea boton editar
                             document.getElementById("editar").removeAttribute("disabled");

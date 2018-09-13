@@ -239,4 +239,12 @@ public class Cliente implements Serializable {
             return this.razonSocial;
         }
     }
+    
+    public String getCiRUC() {
+        if (this.tipoCliente.equals("F")) {
+            return Integer.toString(this.ci);
+        } else {
+            return this.ruc;
+        }
+    }
 }

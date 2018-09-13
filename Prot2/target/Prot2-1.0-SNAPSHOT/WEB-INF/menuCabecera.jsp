@@ -28,7 +28,7 @@
 
     <div class="row">
         <div class="col" id="linea1" ></div>
-        <div class="col-7" id="linea2">
+        <div class="col-8" id="linea2">
             <ul class="nav nav-tabs" >
                 <li class="nav-item">
                     <a class="nav-link" href="<%=request.getContextPath()%>/marcas.jsp">Marcas</a>
@@ -37,13 +37,16 @@
                     <a class="nav-link" href="<%=request.getContextPath()%>/expedientes.jsp">Expedientes</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="<%=request.getContextPath()%>/abogados.jsp">Abogados</a>
+                    <a class="nav-link" href="<%=request.getContextPath()%>/abogados.jsp">Agentes</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Reportes</a>
+                    <a class="nav-link" href="<%=request.getContextPath()%>/clientes.jsp">Titulares</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Configuración</a>
+                    <a class="nav-link" href="<%=request.getContextPath()%>/usuarios.jsp">Usuarios</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Permisos</a>
                 </li>
             </ul>
         </div>

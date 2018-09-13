@@ -230,4 +230,97 @@ public class ClienteJpaController implements Serializable {
         }
     }
     
+    /*Responde si existe una duplicacion de la cedula del cliente 
+    
+      Si idCliente es nulo:(GUARDAR)
+        Considera si la cedula esta o no duplicado
+    
+      Si idCliente no es nulo:(EDITAR)
+        Considera si la cedula esta o no duplicado
+        pero sin considerar la cedula del clente  identificado por idCliente
+    */
+    public Boolean existeCiDuplicado(Integer ci, Integer idCliente) {
+       
+       EntityManager em = getEntityManager();
+       
+        try {
+            String consulta =   "select count(c) from Cliente c "+
+                                "where c.ci= :ci";
+                    
+            if(idCliente != null){
+                consulta+= " and c.idCliente != :idCliente"; 
+            }
+            Query q = em.createQuery(consulta);
+            
+            q.setParameter("ci", ci);
+           
+            
+            if(idCliente != null){
+                 q.setParameter("idCliente", idCliente);
+            }
+             
+            Integer cant = ((Long) q.getSingleResult()).intValue();
+            System.out.println(cant+ " cantidad");
+            
+            if(cant>0){
+                return  true;
+            }else{
+                return false;
+            }
+            
+        } catch(Exception e){
+            System.out.println(e);
+            return null;
+            
+        }finally {
+            em.close();
+        }
+    }
+    
+    /*Responde si existe una duplicacion de la ruc del cliente 
+    
+      Si idCliente es nulo:(GUARDAR)
+        Considera si el ruc  esta o no duplicado
+    
+      Si idCliente no es nulo:(EDITAR)
+        Considera si el ruc esta o no duplicado
+        pero sin considerar el ruc del cliente  identificado por idCliente
+    */
+    public Boolean existeRucDuplicado(String ruc, Integer idCliente) {
+       
+       EntityManager em = getEntityManager();
+       
+        try {
+            String consulta =   "select count(c) from Cliente c "+
+                                "where c.ruc= :ruc";
+                    
+            if(idCliente != null){
+                consulta+= " and c.idCliente != :idCliente"; 
+            }
+            Query q = em.createQuery(consulta);
+            
+            q.setParameter("ruc", ruc);
+           
+            
+            if(idCliente != null){
+                 q.setParameter("idCliente", idCliente);
+            }
+             
+            Integer cant = ((Long) q.getSingleResult()).intValue();
+            System.out.println(cant+ " cantidad");
+            
+            if(cant>0){
+                return  true;
+            }else{
+                return false;
+            }
+            
+        } catch(Exception e){
+            System.out.println(e);
+            return null;
+            
+        }finally {
+            em.close();
+        }
+    }
 }

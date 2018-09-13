@@ -36,6 +36,13 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "TipoMarca.findByDescripcion", query = "SELECT t FROM TipoMarca t WHERE t.descripcion = :descripcion")})
 public class TipoMarca implements Serializable {
 
+    /*Numero de idDenminativo usado por el sistema*/
+    private static int nroIdDenominativo = 1;
+    public int getNroIdDenominativo(){
+        return nroIdDenominativo;
+    }
+    
+    
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

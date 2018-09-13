@@ -27,7 +27,9 @@ import modeloMng.exceptions.NonexistentEntityException;
  * @author Acer
  */
 public class UsuarioJpaController implements Serializable {
-
+    
+    
+    
     public UsuarioJpaController() {
         this.emf = Persistence.createEntityManagerFactory("com.mycompany_Prot2_war_1.0-SNAPSHOTPU");
     }
@@ -324,4 +326,90 @@ public class UsuarioJpaController implements Serializable {
         }
     }
     
+    /** Obtiene una lista de usuarios cuyo rol es de abogado
+    * y que no esten en la tabla abogado
+    */
+    public List<Usuario> getNuevosUsuariosRolAbogado() {
+        EntityManager em = getEntityManager();
+        
+        try {
+           
+            String consulta = "select u from Usuario u where u "+
+                              "not in (select a.idUsuario from Abogado a) "+
+                              "and u.idRol = (select r from Rol r where r.idRol = :rol)";
+            Query q = em.createQuery(consulta);
+            q.setParameter("rol", new modelo.Rol().getNroRolAbogado());
+            return q.getResultList();
+            
+        }finally {
+            em.close();
+        }
+    }
+    
+    /** Obtiene una lista de usuarios cuyo rol es de cliente
+    * y que no esten en la tabla cliente
+    */
+    public List<Usuario> getNuevosUsuariosRolCliente() {
+        EntityManager em = getEntityManager();
+        
+        try {
+           
+            String consulta = "select u from Usuario u where u "+
+                              "not in (select c.idUsuario from Cliente c) "+
+                              "and u.idRol = (select r from Rol r where r.idRol = :rol)";
+            Query q = em.createQuery(consulta);
+            q.setParameter("rol", new modelo.Rol().getNroRolCliente()); 
+            return q.getResultList();
+            
+        }finally {
+            em.close();
+        }
+    }
+
+    /*Responde si existe una duplicacion de la cuenta de usuario 
+    
+      Si idUsuario es nulo:(GUARDAR)
+        Considera si el nombre de cuenta esta o no duplicado
+    
+      Si idUsuario no es nulo:(EDITAR)
+        Considera si la cuenta esta o no duplicado 
+        pero sin considerar la cuenta del usuario identificado por idUsuario
+    */
+    public Boolean existeCuentaDuplicado(String cuenta, Integer idUsuario) {
+        EntityManager em = getEntityManager();
+       
+        try {
+            String consulta =   "select count(u) from Usuario u "+
+                                "where u.cuenta = :cuenta";
+                    
+            if(idUsuario != null){
+                consulta+= " and u.idUsuario != :idUsuario"; 
+            }
+            Query q = em.createQuery(consulta);
+            
+            q.setParameter("cuenta", cuenta);
+           
+            
+            if(idUsuario != null){
+                 q.setParameter("idUsuario", idUsuario);
+            }
+             
+            Integer cant = ((Long) q.getSingleResult()).intValue();
+            System.out.println(cant+ " cantidad");
+            
+            if(cant>0){
+                return  true;
+            }else{
+                return false;
+            }
+            
+        } catch(Exception e){
+            System.out.println(e);
+            return null;
+            
+        }finally {
+            em.close();
+        }
+    
+    }
 }

@@ -160,8 +160,8 @@
                         
                 codigoSigno.value = document.getElementById("idTipoMarca").value;  
                 
-                //Si el signo de marca es denominativo (1) entonces no se acepta imagen
-                if(codigoSigno.value == 1 ){
+                //Si el signo de marca es denominativo entonces no se acepta imagen
+                if(codigoSigno.value == <%= new TipoMarca().getNroIdDenominativo()%> ){
                     
                     document.getElementById("imagenMarca").disabled = true;
                     document.getElementById("imagenMarca").value = "";

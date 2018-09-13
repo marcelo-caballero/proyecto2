@@ -87,7 +87,7 @@ public class AbogadoServlet extends HttpServlet {
                 abogadoControl.create(abogado);
                 
             }catch(Exception e){
-                request.getSession().setAttribute("mensajeErrorABM", "No se pudo agregar el abogado");
+                request.getSession().setAttribute("mensajeErrorABM", "No se pudo agregar el agente");
             }finally{
                 response.sendRedirect("abogados.jsp");
             }
@@ -115,7 +115,7 @@ public class AbogadoServlet extends HttpServlet {
                 abogadoControl.edit(abogado);
                 
             }catch(Exception e){
-                request.getSession().setAttribute("mensajeErrorABM", "No se pudo editar el abogado");
+                request.getSession().setAttribute("mensajeErrorABM", "No se pudo editar el agente");
             }finally{
                 response.sendRedirect("abogados.jsp");
             }
@@ -128,7 +128,7 @@ public class AbogadoServlet extends HttpServlet {
                 
             } catch (Exception e) {
                 
-                request.getSession().setAttribute("mensajeErrorABM", "No se pudo eliminar el abogado");
+                request.getSession().setAttribute("mensajeErrorABM", "No se pudo eliminar el agente");
             }finally{
            
                 response.sendRedirect("abogados.jsp");

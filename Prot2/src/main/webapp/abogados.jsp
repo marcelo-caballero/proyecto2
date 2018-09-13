@@ -14,7 +14,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Abogados - Ta'angapp</title>
+        <title>Agente - Ta'angapp</title>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <%@include file="//WEB-INF/paginaCabecera.jsp" %>
         <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.16/css/jquery.dataTables.css">
@@ -32,14 +32,14 @@
         
         <div class="container form-control">
             <%@include file="//WEB-INF/mensajeErrorABM.jsp" %>
-            <h2 class="text-justify">Abogados</h2>
+            <h2 class="text-justify">Agentes</h2>
             <br>
             
             <table id="mytable" class="table table-striped table-bordered dt-responsive nowrap">
                 <thead style="background-color:whitesmoke">
                     <tr>
                         <th>C.I.Nº</th>
-                        <th>Abogado</th>
+                        <th>Agente</th>
                         <th>Dirección</th>
                         <th>Teléfono</th>
                         <th>Registro Profesional</th>
@@ -120,7 +120,7 @@
                     
                     document.getElementById("eliminar-abogado").value = idAbogado; 
                     document.getElementById("eliminar-mensaje").textContent =
-                            "¿Desea eliminar al abogado " + abogado + "?";
+                            "¿Desea eliminar al agente " + abogado + "?";
                     
                     
                 });

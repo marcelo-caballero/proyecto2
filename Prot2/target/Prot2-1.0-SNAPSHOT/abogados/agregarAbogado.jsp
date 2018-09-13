@@ -13,13 +13,13 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Abogado - Ta'angapp</title>
+        <title>Agente - Ta'angapp</title>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <%@include file="//WEB-INF/paginaCabecera.jsp" %>
     </head>
     <body onload="verificarSelectNoVacios()">
         <%
-            List<Usuario> listaUsuario = new UsuarioJpaController().getUsuariosNiClientesNiAbogados();
+            List<Usuario> listaUsuario = new UsuarioJpaController().getNuevosUsuariosRolAbogado();
             
         %>
         <%@include file="//WEB-INF/menuCabecera.jsp" %>
@@ -27,7 +27,7 @@
          
         <div class ="container form-control">
         
-            <h2 class="text-justify"> Agregar Abogado</h2>
+            <h2 class="text-justify"> Agregar Agente</h2>
             <br> 
         
             <form id="agregarAbogado" 
@@ -65,7 +65,7 @@
                            id="ci"
                            class="form-control"
                            type="number" 
-                           placeholder="Escriba el número de cédula del abogado"
+                           placeholder="Escriba el número de cédula del agente"
                            required 
                            onkeypress="return isNumberKey(event)">
                     <div id="ci-retro"></div>
@@ -82,7 +82,7 @@
                            id="nombre"
                            class="form-control"
                            type="text" 
-                           placeholder="Escriba el nombre del abogado"
+                           placeholder="Escriba el nombre del agente"
                            maxlength=""
                            required >
                     <div id="nombre-retro"></div>
@@ -99,7 +99,7 @@
                            id="apellido"
                            class="form-control"
                            type="text" 
-                           placeholder="Escriba el apellido del abogado"
+                           placeholder="Escriba el apellido del agente"
                            maxlength=""
                            required >
                     <div id="apellido-retro"></div>
@@ -116,7 +116,7 @@
                            id="direccion"
                            class="form-control"
                            type="text" 
-                           placeholder="Escriba la dirección del abogado"
+                           placeholder="Escriba la dirección del agente"
                            maxlength=""
                            required >
                     <div id="direccion-retro"></div>
@@ -133,7 +133,7 @@
                            id="telefono"
                            class="form-control"
                            type="text" 
-                           placeholder="Escriba el teléfono del abogado"
+                           placeholder="Escriba el teléfono del agente"
                            maxlength=""
                            required >
                     <div id="telefono-retro"></div>
@@ -150,7 +150,7 @@
                            id="regProf"
                            class="form-control"
                            type="text" 
-                           placeholder="Escriba el registro profesional abogado"
+                           placeholder="Escriba el registro profesional agente"
                            maxlength=""
                            required >
                     <div id="regProf-retro"></div>
@@ -220,7 +220,7 @@
 
                             ciInput.setAttribute("class","form-control is-invalid");
                             retroCi.setAttribute("class","invalid-feedback");
-                            retroCi.textContent = 'Ya existe un abogado con la misma cédula';
+                            retroCi.textContent = 'Ya existe un agente con la misma cédula';
 
                             //se desbloquea boton agregar
                             document.getElementById("agregar").removeAttribute("disabled");

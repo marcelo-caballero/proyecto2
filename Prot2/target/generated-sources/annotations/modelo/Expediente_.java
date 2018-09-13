@@ -16,7 +16,7 @@ import modelo.Historial;
 import modelo.Marca;
 import modelo.TipoExpediente;
 
-@Generated(value="EclipseLink-2.5.2.v20140319-rNA", date="2018-09-08T19:25:57")
+@Generated(value="EclipseLink-2.5.2.v20140319-rNA", date="2018-09-12T12:02:55")
 @StaticMetamodel(Expediente.class)
 public class Expediente_ { 
 

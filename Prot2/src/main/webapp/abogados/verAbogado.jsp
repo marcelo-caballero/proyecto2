@@ -13,7 +13,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Abogado - Ta'angapp</title>
+        <title>Agente - Ta'angapp</title>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <%@include file="//WEB-INF/paginaCabecera.jsp" %>
     </head>
@@ -30,7 +30,7 @@
         
         <div class ="container form-control">
             
-            <h2 class="text-justify">Abogado</h2>
+            <h2 class="text-justify">Agente</h2>
             <br>
            
             <div class="row form-group">

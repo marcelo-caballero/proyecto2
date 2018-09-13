@@ -37,6 +37,8 @@ public class ExpedienteServlet extends HttpServlet {
           Si el número de expediente esta duplicado, retorna true
           caso contrario, false
         */
+        request.setCharacterEncoding("UTF-8");
+        
         ExpedienteJpaController expControl = new ExpedienteJpaController();
         Boolean numeroExpedienteDuplicado = null;
         Integer idExpediente= null;
