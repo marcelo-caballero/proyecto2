@@ -7,6 +7,8 @@ package controlador;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.math.BigInteger;
+import java.security.MessageDigest;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -68,20 +70,33 @@ public class LoginServlet extends HttpServlet {
             //Parametros cuenta y contraseña
             String cuenta = request.getParameter("usuario");
             String contraseña = request.getParameter("contrasena");
+            try{
+                MessageDigest md = MessageDigest.getInstance("MD5");
+                byte[] messageDigest = md.digest(contraseña.getBytes()); //EN VEZ DE INPUT PASARLE CONTRASEÑA
+                BigInteger number = new BigInteger(1, messageDigest);
+                String hashtext = number.toString(16);
 
-            // Valida Parametros no vacios
-            //if (cuenta != null && contraseña != null) {
-            UsuarioJpaController usuMng = new UsuarioJpaController();
-            usuario = usuMng.getUsuario(cuenta, contraseña);
-            if (usuario == null) {
+                while (hashtext.length() < 32) {
+                    hashtext = "0" + hashtext;
+                }
+                
+                // Valida Parametros no vacios
+                //if (cuenta != null && contraseña != null) {
+                UsuarioJpaController usuMng = new UsuarioJpaController();
+                usuario = usuMng.getUsuario(cuenta, hashtext);
+                if (usuario == null) {
 
-                response.sendRedirect("errorLogin.jsp");
-            } else {
-                sesion.setAttribute("usuario", usuario);
-                //request.getRequestDispatcher("clienteVista.jsp").forward(request, response);
-                response.sendRedirect("menu.jsp");
+                    response.sendRedirect("errorLogin.jsp");
+                } else {
+                    sesion.setAttribute("usuario", usuario);
+                    //request.getRequestDispatcher("clienteVista.jsp").forward(request, response);
+                    response.sendRedirect("menu.jsp");
+                }
+            }catch(Exception e ){
+            
             }
-
+                
+            
             //}else {
             //response.sendRedirect("errorLogin.jsp");
             //}

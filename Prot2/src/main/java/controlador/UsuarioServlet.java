@@ -7,6 +7,8 @@ package controlador;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.math.BigInteger;
+import java.security.MessageDigest;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -96,13 +98,22 @@ public class UsuarioServlet extends HttpServlet {
                 String cuenta = request.getParameter("cuenta");
                 String contraseña = request.getParameter("contrasena");
                 
+                MessageDigest md = MessageDigest.getInstance("MD5");
+                byte[] messageDigest = md.digest(contraseña.getBytes()); //EN VEZ DE INPUT PASARLE CONTRASEÑA
+                BigInteger number = new BigInteger(1, messageDigest);
+                String hashtext = number.toString(16);
+
+                while (hashtext.length() < 32) {
+                    hashtext = "0" + hashtext;
+                }
+                
                 Rol rol = rolControl.findRol(idRol);
                 
                 
                 Usuario usuario = new Usuario();
                 usuario.setIdRol(rol);
                 usuario.setCuenta(cuenta);
-                usuario.setPassword(contraseña);
+                usuario.setPassword(hashtext);
                 
                 usuarioControl.create(usuario);
                 
@@ -127,11 +138,20 @@ public class UsuarioServlet extends HttpServlet {
                 String cuenta = request.getParameter("cuenta");
                 String contraseña = request.getParameter("contrasena");
                 
+                MessageDigest md = MessageDigest.getInstance("MD5");
+                byte[] messageDigest = md.digest(contraseña.getBytes()); //EN VEZ DE INPUT PASARLE CONTRASEÑA
+                BigInteger number = new BigInteger(1, messageDigest);
+                String hashtext = number.toString(16);
+
+                while (hashtext.length() < 32) {
+                    hashtext = "0" + hashtext;
+                }
+                
                 Rol rol = rolControl.findRol(idRol);
                 
                 usuario.setIdRol(rol);
                 usuario.setCuenta(cuenta);
-                usuario.setPassword(contraseña);
+                usuario.setPassword(hashtext);
                 
                 usuarioControl.edit(usuario);
                 

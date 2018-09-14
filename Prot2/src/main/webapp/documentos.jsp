@@ -50,11 +50,13 @@
                         <th>Tipo de Documento</th>
                         <th>Fecha</th>
                         <th>
-                            <i class="fa fa-plus-circle" 
-                                style="font-size:24px"  
-                                onmouseover="this.style.cursor = 'pointer'" 
-                                onclick='window.location.href = "<%=request.getContextPath()%>/documentos/agregarDocumento.jsp"'> 
-                            </i>
+                            <%if(permisoControlAcceso.permisoRolVentana(rolUsuarioConectado,10)){%> 
+                                <i class="fa fa-plus-circle" 
+                                    style="font-size:24px"  
+                                    onmouseover="this.style.cursor = 'pointer'" 
+                                    onclick='window.location.href = "<%=request.getContextPath()%>/documentos/agregarDocumento.jsp"'> 
+                                </i>
+                            <%}%>
                         </th>
                     </tr>
                 </thead>
@@ -68,21 +70,28 @@
                         <td id=""><%=listaDocumentos.get(i).getIdTipoDocumento().getDescripcion()%></td>  
                         <td id=""><%=listaDocumentos.get(i).getStringFecha()%></td> 
                         <td>
-                            <i class="fa fa-search" 
-                               style="font-size:24px"  
-                               onmouseover="this.style.cursor = 'pointer'" 
-                               onclick='window.location.href = "<%=request.getContextPath()%>/documentos/verDocumento.jsp?idDocumento=<%=listaDocumentos.get(i).getIdDocumento()%>"'>  
-                            </i>
-                            <i class="fa fa-edit" 
-                               style="font-size:24px"  
-                               onmouseover="this.style.cursor = 'pointer'" 
-                               onclick='window.location.href = "<%=request.getContextPath()%>/documentos/editarDocumento.jsp?idDocumento=<%=listaDocumentos.get(i).getIdDocumento()%>"'> 
-                            </i>
-                            <i class="fa fa-remove" 
-                               style="font-size:24px"  
-                               onmouseover="this.style.cursor = 'pointer'" 
-                               onclick="modalEliminar('<%=i%>')"> 
-                            </i>
+                            <%if(permisoControlAcceso.permisoRolVentana(rolUsuarioConectado,11 )){%>
+                                <i class="fa fa-search" 
+                                   style="font-size:24px"  
+                                   onmouseover="this.style.cursor = 'pointer'" 
+                                   onclick='window.location.href = "<%=request.getContextPath()%>/documentos/verDocumento.jsp?idDocumento=<%=listaDocumentos.get(i).getIdDocumento()%>"'>  
+                                </i>
+                            <%}%>
+                            <%if(permisoControlAcceso.permisoRolVentana(rolUsuarioConectado,12)){%>
+                                <i class="fa fa-edit" 
+                                   style="font-size:24px"  
+                                   onmouseover="this.style.cursor = 'pointer'" 
+                                   onclick='window.location.href = "<%=request.getContextPath()%>/documentos/editarDocumento.jsp?idDocumento=<%=listaDocumentos.get(i).getIdDocumento()%>"'> 
+                                </i>
+                            <%}%>
+                            
+                            <%if(permisoControlAcceso.permisoRolVentana(rolUsuarioConectado,13)){%>
+                                <i class="fa fa-remove" 
+                                   style="font-size:24px"  
+                                   onmouseover="this.style.cursor = 'pointer'" 
+                                   onclick="modalEliminar('<%=i%>')"> 
+                                </i>
+                            <%}%>
                         </td>
                     </tr>
                     <%}%>

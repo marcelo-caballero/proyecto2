@@ -41,7 +41,7 @@
         <br>
         
         <div class="container">
-           <%@include file="//WEB-INF/menuExpediente.jsp" %>     
+            <%@include file="//WEB-INF/menuExpediente.jsp" %>       
         </div>
         
         <div class="container form-control">

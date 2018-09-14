@@ -44,11 +44,13 @@
                         <th>Teléfono</th>
                         <th>Registro Profesional</th>
                         <th>
-                            <i class="fa fa-plus-circle" 
-                                style="font-size:24px"  
-                                onmouseover="this.style.cursor = 'pointer'" 
-                                onclick='window.location.href = "<%=request.getContextPath()%>/abogados/agregarAbogado.jsp"'> 
-                            </i>
+                            <%if(permisoControlAcceso.permisoRolVentana(rolUsuarioConectado, 22)){%>
+                                <i class="fa fa-plus-circle" 
+                                    style="font-size:24px"  
+                                    onmouseover="this.style.cursor = 'pointer'" 
+                                    onclick='window.location.href = "<%=request.getContextPath()%>/abogados/agregarAbogado.jsp"'> 
+                                </i>
+                            <%}%>
                         </th>
                     </tr>
                 </thead>
@@ -64,21 +66,27 @@
                         <td><%=lista.get(i).getTelefono()%></td> 
                         <td><%=lista.get(i).getRegistroProfesional()%></td> 
                         <td>
-                            <i class="fa fa-search" 
-                               style="font-size:24px"  
-                               onmouseover="this.style.cursor = 'pointer'" 
-                               onclick='window.location.href = "<%=request.getContextPath()%>/abogados/verAbogado.jsp?idAbogado=<%=lista.get(i).getIdAbogado()%>"'>  
-                            </i>
-                            <i class="fa fa-edit" 
-                               style="font-size:24px"  
-                               onmouseover="this.style.cursor = 'pointer'" 
-                               onclick='window.location.href = "<%=request.getContextPath()%>/abogados/editarAbogado.jsp?idAbogado=<%=lista.get(i).getIdAbogado()%>"'> 
-                            </i>
-                            <i class="fa fa-remove" 
-                               style="font-size:24px"  
-                               onmouseover="this.style.cursor = 'pointer'" 
-                               onclick="modalEliminar('<%=i%>')"> 
-                            </i>
+                            <%if(permisoControlAcceso.permisoRolVentana(rolUsuarioConectado,23 )){%>
+                                <i class="fa fa-search" 
+                                   style="font-size:24px"  
+                                   onmouseover="this.style.cursor = 'pointer'" 
+                                   onclick='window.location.href = "<%=request.getContextPath()%>/abogados/verAbogado.jsp?idAbogado=<%=lista.get(i).getIdAbogado()%>"'>  
+                                </i>
+                            <%}%>
+                            <%if(permisoControlAcceso.permisoRolVentana(rolUsuarioConectado,24 )){%>
+                                <i class="fa fa-edit" 
+                                   style="font-size:24px"  
+                                   onmouseover="this.style.cursor = 'pointer'" 
+                                   onclick='window.location.href = "<%=request.getContextPath()%>/abogados/editarAbogado.jsp?idAbogado=<%=lista.get(i).getIdAbogado()%>"'> 
+                                </i>
+                            <%}%>
+                            <%if(permisoControlAcceso.permisoRolVentana(rolUsuarioConectado,25)){%>
+                                <i class="fa fa-remove" 
+                                   style="font-size:24px"  
+                                   onmouseover="this.style.cursor = 'pointer'" 
+                                   onclick="modalEliminar('<%=i%>')"> 
+                                </i>
+                            <%}%>
                         </td>
                     </tr>
                     <%}%>

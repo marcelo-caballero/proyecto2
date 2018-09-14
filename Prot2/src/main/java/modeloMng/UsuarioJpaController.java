@@ -336,9 +336,9 @@ public class UsuarioJpaController implements Serializable {
            
             String consulta = "select u from Usuario u where u "+
                               "not in (select a.idUsuario from Abogado a) "+
-                              "and u.idRol = (select r from Rol r where r.idRol = :rol)";
+                              "and u.idRol = (select r from Rol r where upper(r.descripcion) = :rol)";
             Query q = em.createQuery(consulta);
-            q.setParameter("rol", new modelo.Rol().getNroRolAbogado());
+            q.setParameter("rol", "ABOGADO");
             return q.getResultList();
             
         }finally {
@@ -356,9 +356,9 @@ public class UsuarioJpaController implements Serializable {
            
             String consulta = "select u from Usuario u where u "+
                               "not in (select c.idUsuario from Cliente c) "+
-                              "and u.idRol = (select r from Rol r where r.idRol = :rol)";
+                              "and u.idRol = (select r from Rol r where upper(r.descripcion) = :rol)";
             Query q = em.createQuery(consulta);
-            q.setParameter("rol", new modelo.Rol().getNroRolCliente()); 
+            q.setParameter("rol","CLIENTE"); 
             return q.getResultList();
             
         }finally {

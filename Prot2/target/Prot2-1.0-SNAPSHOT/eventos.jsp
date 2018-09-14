@@ -36,7 +36,7 @@
         
         <div class="container">
            <%@include file="//WEB-INF/mensajeErrorABM.jsp" %>
-           <%@include file="//WEB-INF/menuExpediente.jsp" %>     
+           <%@include file="//WEB-INF/menuExpediente.jsp" %>      
         </div>
 
         <div class="container  form-control"> 
@@ -50,11 +50,13 @@
                         <th>Nombre</th>
                         <th>Fecha a notificar</th>
                         <th>
-                            <i class="fa fa-plus-circle" 
-                                style="font-size:24px"  
-                                onmouseover="this.style.cursor = 'pointer'" 
-                                onclick='window.location.href = "<%=request.getContextPath()%>/eventos/agregarEvento.jsp"'> 
-                            </i>
+                            <%if(permisoControlAcceso.permisoRolVentana(rolUsuarioConectado,15)){%>
+                                <i class="fa fa-plus-circle" 
+                                    style="font-size:24px"  
+                                    onmouseover="this.style.cursor = 'pointer'" 
+                                    onclick='window.location.href = "<%=request.getContextPath()%>/eventos/agregarEvento.jsp"'> 
+                                </i>
+                            <%}%>
                         </th>
                     </tr>
                 </thead>
@@ -68,21 +70,27 @@
                         <td id=""><%=listaEventos.get(i).getStringFecha()%></td>   
                         
                         <td>
-                            <i class="fa fa-search" 
-                               style="font-size:24px"  
-                               onmouseover="this.style.cursor = 'pointer'" 
-                               onclick='window.location.href = "<%=request.getContextPath()%>/eventos/verEvento.jsp?idEvento=<%=listaEventos.get(i).getIdEvento()%>"'>
-                            </i>
-                            <i class="fa fa-edit" 
-                               style="font-size:24px"  
-                               onmouseover="this.style.cursor = 'pointer'" 
-                               onclick='window.location.href = "<%=request.getContextPath()%>/eventos/editarEvento.jsp?idEvento=<%=listaEventos.get(i).getIdEvento()%>"'> 
-                            </i>
-                            <i class="fa fa-remove" 
-                               style="font-size:24px"  
-                               onmouseover="this.style.cursor = 'pointer'" 
-                               onclick="modalEliminar('<%=i%>')"> 
-                            </i>
+                            <%if(permisoControlAcceso.permisoRolVentana(rolUsuarioConectado,16 )){%>
+                                <i class="fa fa-search" 
+                                   style="font-size:24px"  
+                                   onmouseover="this.style.cursor = 'pointer'" 
+                                   onclick='window.location.href = "<%=request.getContextPath()%>/eventos/verEvento.jsp?idEvento=<%=listaEventos.get(i).getIdEvento()%>"'>
+                                </i>
+                            <%}%>
+                            <%if(permisoControlAcceso.permisoRolVentana(rolUsuarioConectado, 17)){%>
+                                <i class="fa fa-edit" 
+                                   style="font-size:24px"  
+                                   onmouseover="this.style.cursor = 'pointer'" 
+                                   onclick='window.location.href = "<%=request.getContextPath()%>/eventos/editarEvento.jsp?idEvento=<%=listaEventos.get(i).getIdEvento()%>"'> 
+                                </i>
+                            <%}%>
+                            <%if(permisoControlAcceso.permisoRolVentana(rolUsuarioConectado, 18)){%>
+                                <i class="fa fa-remove" 
+                                   style="font-size:24px"  
+                                   onmouseover="this.style.cursor = 'pointer'" 
+                                   onclick="modalEliminar('<%=i%>')"> 
+                                </i>
+                            <%}%>
                         </td>
                     </tr>
                     <%}%>

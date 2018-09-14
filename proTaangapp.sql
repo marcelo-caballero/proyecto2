@@ -4,7 +4,7 @@
 
 -- Dumped from database version 9.4.8
 -- Dumped by pg_dump version 9.4.8
--- Started on 2018-09-11 21:11:26
+-- Started on 2018-09-14 16:43:00
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -22,7 +22,7 @@ CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
 
 
 --
--- TOC entry 2189 (class 0 OID 0)
+-- TOC entry 2217 (class 0 OID 0)
 -- Dependencies: 1
 -- Name: EXTENSION plpgsql; Type: COMMENT; Schema: -; Owner: 
 --
@@ -71,7 +71,7 @@ CREATE SEQUENCE abogado_id_abogado_seq
 ALTER TABLE abogado_id_abogado_seq OWNER TO postgres;
 
 --
--- TOC entry 2190 (class 0 OID 0)
+-- TOC entry 2218 (class 0 OID 0)
 -- Dependencies: 177
 -- Name: abogado_id_abogado_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -107,12 +107,11 @@ CREATE TABLE cliente (
     direccion character varying NOT NULL,
     telefono character varying NOT NULL,
     ci numeric(8,0),
-    ruc character varying NOT NULL,
+    ruc character varying,
     razon_social character varying,
     tipo_cliente character varying(1) NOT NULL,
     CONSTRAINT ck_estado_cliente CHECK ((((estado)::text ~~ 'ACTIVO'::text) OR ((estado)::text ~~ 'INACTIVO'::text))),
-    CONSTRAINT ck_tipo_cliente CHECK ((((tipo_cliente)::text ~~ 'F'::text) OR ((tipo_cliente)::text ~~ 'J'::text))),
-    CONSTRAINT cliente_check CHECK (((((((tipo_cliente)::text ~~ 'F'::text) AND (nombre IS NOT NULL)) AND (apellido IS NOT NULL)) AND (ci IS NOT NULL)) OR (((tipo_cliente)::text ~~ 'J'::text) AND (razon_social IS NOT NULL))))
+    CONSTRAINT ck_tipo_cliente CHECK ((((tipo_cliente)::text ~~ 'F'::text) OR ((tipo_cliente)::text ~~ 'J'::text)))
 );
 
 
@@ -134,7 +133,7 @@ CREATE SEQUENCE cliente_id_cliente_seq
 ALTER TABLE cliente_id_cliente_seq OWNER TO postgres;
 
 --
--- TOC entry 2191 (class 0 OID 0)
+-- TOC entry 2219 (class 0 OID 0)
 -- Dependencies: 179
 -- Name: cliente_id_cliente_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -177,7 +176,7 @@ CREATE SEQUENCE documento_id_documento_seq
 ALTER TABLE documento_id_documento_seq OWNER TO postgres;
 
 --
--- TOC entry 2192 (class 0 OID 0)
+-- TOC entry 2220 (class 0 OID 0)
 -- Dependencies: 195
 -- Name: documento_id_documento_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -214,7 +213,7 @@ CREATE SEQUENCE estado_marca_id_estado_seq
 ALTER TABLE estado_marca_id_estado_seq OWNER TO postgres;
 
 --
--- TOC entry 2193 (class 0 OID 0)
+-- TOC entry 2221 (class 0 OID 0)
 -- Dependencies: 183
 -- Name: estado_marca_id_estado_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -254,7 +253,7 @@ CREATE SEQUENCE evento_id_evento_seq
 ALTER TABLE evento_id_evento_seq OWNER TO postgres;
 
 --
--- TOC entry 2194 (class 0 OID 0)
+-- TOC entry 2222 (class 0 OID 0)
 -- Dependencies: 197
 -- Name: evento_id_evento_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -301,7 +300,7 @@ CREATE SEQUENCE expediente_id_expediente_seq
 ALTER TABLE expediente_id_expediente_seq OWNER TO postgres;
 
 --
--- TOC entry 2195 (class 0 OID 0)
+-- TOC entry 2223 (class 0 OID 0)
 -- Dependencies: 193
 -- Name: expediente_id_expediente_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -342,7 +341,7 @@ CREATE SEQUENCE historial_id_historial_seq
 ALTER TABLE historial_id_historial_seq OWNER TO postgres;
 
 --
--- TOC entry 2196 (class 0 OID 0)
+-- TOC entry 2224 (class 0 OID 0)
 -- Dependencies: 199
 -- Name: historial_id_historial_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -382,7 +381,7 @@ CREATE SEQUENCE marca_id_marca_seq
 ALTER TABLE marca_id_marca_seq OWNER TO postgres;
 
 --
--- TOC entry 2197 (class 0 OID 0)
+-- TOC entry 2225 (class 0 OID 0)
 -- Dependencies: 189
 -- Name: marca_id_marca_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -403,6 +402,44 @@ CREATE TABLE pais (
 
 
 ALTER TABLE pais OWNER TO postgres;
+
+--
+-- TOC entry 204 (class 1259 OID 44507)
+-- Name: permiso; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+--
+
+CREATE TABLE permiso (
+    id_permiso integer NOT NULL,
+    id_rol integer NOT NULL,
+    id_ventana integer NOT NULL
+);
+
+
+ALTER TABLE permiso OWNER TO postgres;
+
+--
+-- TOC entry 203 (class 1259 OID 44505)
+-- Name: permiso_id_permiso_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE permiso_id_permiso_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE permiso_id_permiso_seq OWNER TO postgres;
+
+--
+-- TOC entry 2226 (class 0 OID 0)
+-- Dependencies: 203
+-- Name: permiso_id_permiso_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE permiso_id_permiso_seq OWNED BY permiso.id_permiso;
+
 
 --
 -- TOC entry 174 (class 1259 OID 44175)
@@ -433,7 +470,7 @@ CREATE SEQUENCE rol_id_rol_seq
 ALTER TABLE rol_id_rol_seq OWNER TO postgres;
 
 --
--- TOC entry 2198 (class 0 OID 0)
+-- TOC entry 2227 (class 0 OID 0)
 -- Dependencies: 173
 -- Name: rol_id_rol_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -470,7 +507,7 @@ CREATE SEQUENCE tipo_documento_id_tipo_documento_seq
 ALTER TABLE tipo_documento_id_tipo_documento_seq OWNER TO postgres;
 
 --
--- TOC entry 2199 (class 0 OID 0)
+-- TOC entry 2228 (class 0 OID 0)
 -- Dependencies: 185
 -- Name: tipo_documento_id_tipo_documento_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -507,7 +544,7 @@ CREATE SEQUENCE tipo_expediente_id_tipo_expediente_seq
 ALTER TABLE tipo_expediente_id_tipo_expediente_seq OWNER TO postgres;
 
 --
--- TOC entry 2200 (class 0 OID 0)
+-- TOC entry 2229 (class 0 OID 0)
 -- Dependencies: 191
 -- Name: tipo_expediente_id_tipo_expediente_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -544,7 +581,7 @@ CREATE SEQUENCE tipo_marca_id_tipo_marca_seq
 ALTER TABLE tipo_marca_id_tipo_marca_seq OWNER TO postgres;
 
 --
--- TOC entry 2201 (class 0 OID 0)
+-- TOC entry 2230 (class 0 OID 0)
 -- Dependencies: 187
 -- Name: tipo_marca_id_tipo_marca_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -583,7 +620,7 @@ CREATE SEQUENCE usuario_id_usuario_seq
 ALTER TABLE usuario_id_usuario_seq OWNER TO postgres;
 
 --
--- TOC entry 2202 (class 0 OID 0)
+-- TOC entry 2231 (class 0 OID 0)
 -- Dependencies: 175
 -- Name: usuario_id_usuario_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -592,7 +629,46 @@ ALTER SEQUENCE usuario_id_usuario_seq OWNED BY usuario.id_usuario;
 
 
 --
--- TOC entry 1978 (class 2604 OID 44205)
+-- TOC entry 202 (class 1259 OID 44490)
+-- Name: ventana; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+--
+
+CREATE TABLE ventana (
+    id_ventana integer NOT NULL,
+    nivel integer NOT NULL,
+    id_ventana_superior integer,
+    nombre character varying NOT NULL
+);
+
+
+ALTER TABLE ventana OWNER TO postgres;
+
+--
+-- TOC entry 201 (class 1259 OID 44488)
+-- Name: ventana_id_ventana_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE ventana_id_ventana_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE ventana_id_ventana_seq OWNER TO postgres;
+
+--
+-- TOC entry 2232 (class 0 OID 0)
+-- Dependencies: 201
+-- Name: ventana_id_ventana_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE ventana_id_ventana_seq OWNED BY ventana.id_ventana;
+
+
+--
+-- TOC entry 1991 (class 2604 OID 44205)
 -- Name: id_abogado; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -600,7 +676,7 @@ ALTER TABLE ONLY abogado ALTER COLUMN id_abogado SET DEFAULT nextval('abogado_id
 
 
 --
--- TOC entry 1979 (class 2604 OID 44221)
+-- TOC entry 1992 (class 2604 OID 44221)
 -- Name: id_cliente; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -608,7 +684,7 @@ ALTER TABLE ONLY cliente ALTER COLUMN id_cliente SET DEFAULT nextval('cliente_id
 
 
 --
--- TOC entry 1990 (class 2604 OID 44360)
+-- TOC entry 2002 (class 2604 OID 44360)
 -- Name: id_documento; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -616,7 +692,7 @@ ALTER TABLE ONLY documento ALTER COLUMN id_documento SET DEFAULT nextval('docume
 
 
 --
--- TOC entry 1984 (class 2604 OID 44257)
+-- TOC entry 1996 (class 2604 OID 44257)
 -- Name: id_estado; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -624,7 +700,7 @@ ALTER TABLE ONLY estado_marca ALTER COLUMN id_estado SET DEFAULT nextval('estado
 
 
 --
--- TOC entry 1991 (class 2604 OID 44381)
+-- TOC entry 2003 (class 2604 OID 44381)
 -- Name: id_evento; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -632,7 +708,7 @@ ALTER TABLE ONLY evento ALTER COLUMN id_evento SET DEFAULT nextval('evento_id_ev
 
 
 --
--- TOC entry 1989 (class 2604 OID 44322)
+-- TOC entry 2001 (class 2604 OID 44322)
 -- Name: id_expediente; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -640,7 +716,7 @@ ALTER TABLE ONLY expediente ALTER COLUMN id_expediente SET DEFAULT nextval('expe
 
 
 --
--- TOC entry 1992 (class 2604 OID 44397)
+-- TOC entry 2004 (class 2604 OID 44397)
 -- Name: id_historial; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -648,7 +724,7 @@ ALTER TABLE ONLY historial ALTER COLUMN id_historial SET DEFAULT nextval('histor
 
 
 --
--- TOC entry 1987 (class 2604 OID 44290)
+-- TOC entry 1999 (class 2604 OID 44290)
 -- Name: id_marca; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -656,7 +732,15 @@ ALTER TABLE ONLY marca ALTER COLUMN id_marca SET DEFAULT nextval('marca_id_marca
 
 
 --
--- TOC entry 1976 (class 2604 OID 44178)
+-- TOC entry 2006 (class 2604 OID 44510)
+-- Name: id_permiso; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY permiso ALTER COLUMN id_permiso SET DEFAULT nextval('permiso_id_permiso_seq'::regclass);
+
+
+--
+-- TOC entry 1989 (class 2604 OID 44178)
 -- Name: id_rol; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -664,7 +748,7 @@ ALTER TABLE ONLY rol ALTER COLUMN id_rol SET DEFAULT nextval('rol_id_rol_seq'::r
 
 
 --
--- TOC entry 1985 (class 2604 OID 44268)
+-- TOC entry 1997 (class 2604 OID 44268)
 -- Name: id_tipo_documento; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -672,7 +756,7 @@ ALTER TABLE ONLY tipo_documento ALTER COLUMN id_tipo_documento SET DEFAULT nextv
 
 
 --
--- TOC entry 1988 (class 2604 OID 44311)
+-- TOC entry 2000 (class 2604 OID 44311)
 -- Name: id_tipo_expediente; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -680,7 +764,7 @@ ALTER TABLE ONLY tipo_expediente ALTER COLUMN id_tipo_expediente SET DEFAULT nex
 
 
 --
--- TOC entry 1986 (class 2604 OID 44279)
+-- TOC entry 1998 (class 2604 OID 44279)
 -- Name: id_tipo_marca; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -688,7 +772,7 @@ ALTER TABLE ONLY tipo_marca ALTER COLUMN id_tipo_marca SET DEFAULT nextval('tipo
 
 
 --
--- TOC entry 1977 (class 2604 OID 44189)
+-- TOC entry 1990 (class 2604 OID 44189)
 -- Name: id_usuario; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -696,7 +780,15 @@ ALTER TABLE ONLY usuario ALTER COLUMN id_usuario SET DEFAULT nextval('usuario_id
 
 
 --
--- TOC entry 2159 (class 0 OID 44202)
+-- TOC entry 2005 (class 2604 OID 44493)
+-- Name: id_ventana; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY ventana ALTER COLUMN id_ventana SET DEFAULT nextval('ventana_id_ventana_seq'::regclass);
+
+
+--
+-- TOC entry 2183 (class 0 OID 44202)
 -- Dependencies: 178
 -- Data for Name: abogado; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -704,16 +796,16 @@ ALTER TABLE ONLY usuario ALTER COLUMN id_usuario SET DEFAULT nextval('usuario_id
 
 
 --
--- TOC entry 2203 (class 0 OID 0)
+-- TOC entry 2233 (class 0 OID 0)
 -- Dependencies: 177
 -- Name: abogado_id_abogado_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('abogado_id_abogado_seq', 3, true);
+SELECT pg_catalog.setval('abogado_id_abogado_seq', 6, true);
 
 
 --
--- TOC entry 2162 (class 0 OID 44235)
+-- TOC entry 2186 (class 0 OID 44235)
 -- Dependencies: 181
 -- Data for Name: clase; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -766,7 +858,7 @@ INSERT INTO clase VALUES (45, 'Servicios jurídicos; servicios de seguridad para
 
 
 --
--- TOC entry 2161 (class 0 OID 44218)
+-- TOC entry 2185 (class 0 OID 44218)
 -- Dependencies: 180
 -- Data for Name: cliente; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -774,16 +866,16 @@ INSERT INTO clase VALUES (45, 'Servicios jurídicos; servicios de seguridad para
 
 
 --
--- TOC entry 2204 (class 0 OID 0)
+-- TOC entry 2234 (class 0 OID 0)
 -- Dependencies: 179
 -- Name: cliente_id_cliente_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('cliente_id_cliente_seq', 1, true);
+SELECT pg_catalog.setval('cliente_id_cliente_seq', 26, true);
 
 
 --
--- TOC entry 2177 (class 0 OID 44357)
+-- TOC entry 2201 (class 0 OID 44357)
 -- Dependencies: 196
 -- Data for Name: documento; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -791,34 +883,51 @@ SELECT pg_catalog.setval('cliente_id_cliente_seq', 1, true);
 
 
 --
--- TOC entry 2205 (class 0 OID 0)
+-- TOC entry 2235 (class 0 OID 0)
 -- Dependencies: 195
 -- Name: documento_id_documento_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('documento_id_documento_seq', 16, true);
+SELECT pg_catalog.setval('documento_id_documento_seq', 17, true);
 
 
 --
--- TOC entry 2165 (class 0 OID 44254)
+-- TOC entry 2189 (class 0 OID 44254)
 -- Dependencies: 184
 -- Data for Name: estado_marca; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-INSERT INTO estado_marca VALUES (1, 'Solicitado');
+INSERT INTO estado_marca VALUES (1, 'Concedida');
+INSERT INTO estado_marca VALUES (2, 'Esperando recurso rechazo');
+INSERT INTO estado_marca VALUES (3, 'Con rechazo a notificar');
+INSERT INTO estado_marca VALUES (4, 'Con resol. apel. a notificar');
+INSERT INTO estado_marca VALUES (5, 'A imprimir acta de registro');
+INSERT INTO estado_marca VALUES (6, 'Abandonada');
+INSERT INTO estado_marca VALUES (7, 'Archivada');
+INSERT INTO estado_marca VALUES (8, 'Con observaciones de Forma');
+INSERT INTO estado_marca VALUES (9, 'Con vista a notificar');
+INSERT INTO estado_marca VALUES (10, 'Para dictamenes de marcas');
+INSERT INTO estado_marca VALUES (11, 'Informe de fondo inicial');
+INSERT INTO estado_marca VALUES (12, 'En resolucion de concesión');
+INSERT INTO estado_marca VALUES (13, 'En espera plazo oposición');
+INSERT INTO estado_marca VALUES (14, 'En espera de publicaciones');
+INSERT INTO estado_marca VALUES (15, 'Desistida');
+INSERT INTO estado_marca VALUES (16, 'En Apelación en Dirección General');
+INSERT INTO estado_marca VALUES (17, 'En Asuntos litigiosos');
+INSERT INTO estado_marca VALUES (18, 'En Despacho para Firma');
 
 
 --
--- TOC entry 2206 (class 0 OID 0)
+-- TOC entry 2236 (class 0 OID 0)
 -- Dependencies: 183
 -- Name: estado_marca_id_estado_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('estado_marca_id_estado_seq', 1, false);
+SELECT pg_catalog.setval('estado_marca_id_estado_seq', 18, true);
 
 
 --
--- TOC entry 2179 (class 0 OID 44378)
+-- TOC entry 2203 (class 0 OID 44378)
 -- Dependencies: 198
 -- Data for Name: evento; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -826,16 +935,16 @@ SELECT pg_catalog.setval('estado_marca_id_estado_seq', 1, false);
 
 
 --
--- TOC entry 2207 (class 0 OID 0)
+-- TOC entry 2237 (class 0 OID 0)
 -- Dependencies: 197
 -- Name: evento_id_evento_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('evento_id_evento_seq', 4, true);
+SELECT pg_catalog.setval('evento_id_evento_seq', 5, true);
 
 
 --
--- TOC entry 2175 (class 0 OID 44319)
+-- TOC entry 2199 (class 0 OID 44319)
 -- Dependencies: 194
 -- Data for Name: expediente; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -843,16 +952,16 @@ SELECT pg_catalog.setval('evento_id_evento_seq', 4, true);
 
 
 --
--- TOC entry 2208 (class 0 OID 0)
+-- TOC entry 2238 (class 0 OID 0)
 -- Dependencies: 193
 -- Name: expediente_id_expediente_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('expediente_id_expediente_seq', 4, true);
+SELECT pg_catalog.setval('expediente_id_expediente_seq', 7, true);
 
 
 --
--- TOC entry 2181 (class 0 OID 44394)
+-- TOC entry 2205 (class 0 OID 44394)
 -- Dependencies: 200
 -- Data for Name: historial; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -860,7 +969,7 @@ SELECT pg_catalog.setval('expediente_id_expediente_seq', 4, true);
 
 
 --
--- TOC entry 2209 (class 0 OID 0)
+-- TOC entry 2239 (class 0 OID 0)
 -- Dependencies: 199
 -- Name: historial_id_historial_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -869,7 +978,7 @@ SELECT pg_catalog.setval('historial_id_historial_seq', 1, false);
 
 
 --
--- TOC entry 2171 (class 0 OID 44287)
+-- TOC entry 2195 (class 0 OID 44287)
 -- Dependencies: 190
 -- Data for Name: marca; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -877,16 +986,16 @@ SELECT pg_catalog.setval('historial_id_historial_seq', 1, false);
 
 
 --
--- TOC entry 2210 (class 0 OID 0)
+-- TOC entry 2240 (class 0 OID 0)
 -- Dependencies: 189
 -- Name: marca_id_marca_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('marca_id_marca_seq', 28, true);
+SELECT pg_catalog.setval('marca_id_marca_seq', 32, true);
 
 
 --
--- TOC entry 2163 (class 0 OID 44243)
+-- TOC entry 2187 (class 0 OID 44243)
 -- Dependencies: 182
 -- Data for Name: pais; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -1133,46 +1242,109 @@ INSERT INTO pais VALUES (240, 'Zimbabue', 'ZW');
 
 
 --
--- TOC entry 2155 (class 0 OID 44175)
+-- TOC entry 2209 (class 0 OID 44507)
+-- Dependencies: 204
+-- Data for Name: permiso; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+INSERT INTO permiso VALUES (38, 1, 1);
+INSERT INTO permiso VALUES (39, 1, 2);
+INSERT INTO permiso VALUES (40, 1, 3);
+INSERT INTO permiso VALUES (41, 1, 4);
+INSERT INTO permiso VALUES (42, 1, 5);
+INSERT INTO permiso VALUES (43, 1, 6);
+INSERT INTO permiso VALUES (44, 1, 7);
+INSERT INTO permiso VALUES (45, 1, 8);
+INSERT INTO permiso VALUES (46, 1, 19);
+INSERT INTO permiso VALUES (47, 1, 20);
+INSERT INTO permiso VALUES (48, 1, 9);
+INSERT INTO permiso VALUES (49, 1, 10);
+INSERT INTO permiso VALUES (50, 1, 11);
+INSERT INTO permiso VALUES (51, 1, 12);
+INSERT INTO permiso VALUES (52, 1, 13);
+INSERT INTO permiso VALUES (53, 1, 14);
+INSERT INTO permiso VALUES (54, 1, 15);
+INSERT INTO permiso VALUES (55, 1, 16);
+INSERT INTO permiso VALUES (56, 1, 17);
+INSERT INTO permiso VALUES (57, 1, 18);
+INSERT INTO permiso VALUES (58, 1, 21);
+INSERT INTO permiso VALUES (59, 1, 22);
+INSERT INTO permiso VALUES (60, 1, 23);
+INSERT INTO permiso VALUES (61, 1, 24);
+INSERT INTO permiso VALUES (62, 1, 25);
+INSERT INTO permiso VALUES (63, 1, 26);
+INSERT INTO permiso VALUES (64, 1, 27);
+INSERT INTO permiso VALUES (65, 1, 28);
+INSERT INTO permiso VALUES (66, 1, 29);
+INSERT INTO permiso VALUES (67, 1, 30);
+INSERT INTO permiso VALUES (68, 1, 31);
+INSERT INTO permiso VALUES (69, 1, 32);
+INSERT INTO permiso VALUES (70, 1, 33);
+INSERT INTO permiso VALUES (71, 1, 34);
+INSERT INTO permiso VALUES (72, 1, 35);
+INSERT INTO permiso VALUES (73, 1, 36);
+INSERT INTO permiso VALUES (74, 1, 37);
+INSERT INTO permiso VALUES (75, 1, 38);
+INSERT INTO permiso VALUES (76, 1, 39);
+INSERT INTO permiso VALUES (77, 1, 40);
+INSERT INTO permiso VALUES (78, 1, 41);
+INSERT INTO permiso VALUES (79, 1, 42);
+
+
+--
+-- TOC entry 2241 (class 0 OID 0)
+-- Dependencies: 203
+-- Name: permiso_id_permiso_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('permiso_id_permiso_seq', 166, true);
+
+
+--
+-- TOC entry 2179 (class 0 OID 44175)
 -- Dependencies: 174
 -- Data for Name: rol; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-INSERT INTO rol VALUES (3, 'Cliente');
-INSERT INTO rol VALUES (1, 'Administrador del Sistema');
+INSERT INTO rol VALUES (1, 'Administrador');
 INSERT INTO rol VALUES (2, 'Abogado');
+INSERT INTO rol VALUES (3, 'Cliente');
 
 
 --
--- TOC entry 2211 (class 0 OID 0)
+-- TOC entry 2242 (class 0 OID 0)
 -- Dependencies: 173
 -- Name: rol_id_rol_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('rol_id_rol_seq', 1, true);
+SELECT pg_catalog.setval('rol_id_rol_seq', 8, true);
 
 
 --
--- TOC entry 2167 (class 0 OID 44265)
+-- TOC entry 2191 (class 0 OID 44265)
 -- Dependencies: 186
 -- Data for Name: tipo_documento; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-INSERT INTO tipo_documento VALUES (1, 'Solicitud');
-INSERT INTO tipo_documento VALUES (2, 'Examen de Forma');
+INSERT INTO tipo_documento VALUES (1, 'Informe de Fondo');
+INSERT INTO tipo_documento VALUES (2, 'Informe de Forma');
+INSERT INTO tipo_documento VALUES (3, 'Acta de registro');
+INSERT INTO tipo_documento VALUES (6, 'Dictamen Marca');
+INSERT INTO tipo_documento VALUES (5, 'Publicación');
+INSERT INTO tipo_documento VALUES (4, 'Orden publicación');
 
 
 --
--- TOC entry 2212 (class 0 OID 0)
+-- TOC entry 2243 (class 0 OID 0)
 -- Dependencies: 185
 -- Name: tipo_documento_id_tipo_documento_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('tipo_documento_id_tipo_documento_seq', 2, true);
+SELECT pg_catalog.setval('tipo_documento_id_tipo_documento_seq', 6, true);
 
 
 --
--- TOC entry 2173 (class 0 OID 44308)
+-- TOC entry 2197 (class 0 OID 44308)
 -- Dependencies: 192
 -- Data for Name: tipo_expediente; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -1182,7 +1354,7 @@ INSERT INTO tipo_expediente VALUES (2, 'Renovación de marcas');
 
 
 --
--- TOC entry 2213 (class 0 OID 0)
+-- TOC entry 2244 (class 0 OID 0)
 -- Dependencies: 191
 -- Name: tipo_expediente_id_tipo_expediente_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -1191,7 +1363,7 @@ SELECT pg_catalog.setval('tipo_expediente_id_tipo_expediente_seq', 2, true);
 
 
 --
--- TOC entry 2169 (class 0 OID 44276)
+-- TOC entry 2193 (class 0 OID 44276)
 -- Dependencies: 188
 -- Data for Name: tipo_marca; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -1202,7 +1374,7 @@ INSERT INTO tipo_marca VALUES (2, 'Figurativo');
 
 
 --
--- TOC entry 2214 (class 0 OID 0)
+-- TOC entry 2245 (class 0 OID 0)
 -- Dependencies: 187
 -- Name: tipo_marca_id_tipo_marca_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -1211,25 +1383,84 @@ SELECT pg_catalog.setval('tipo_marca_id_tipo_marca_seq', 3, true);
 
 
 --
--- TOC entry 2157 (class 0 OID 44186)
+-- TOC entry 2181 (class 0 OID 44186)
 -- Dependencies: 176
 -- Data for Name: usuario; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-INSERT INTO usuario VALUES (1, 1, 'marcecv', 'marcecv');
+INSERT INTO usuario VALUES (20, 1, 'Administrador', '0a7a07b6ac126ff9f241dcd9435de655');
 
 
 --
--- TOC entry 2215 (class 0 OID 0)
+-- TOC entry 2246 (class 0 OID 0)
 -- Dependencies: 175
 -- Name: usuario_id_usuario_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('usuario_id_usuario_seq', 3, true);
+SELECT pg_catalog.setval('usuario_id_usuario_seq', 20, true);
 
 
 --
--- TOC entry 2000 (class 2606 OID 44468)
+-- TOC entry 2207 (class 0 OID 44490)
+-- Dependencies: 202
+-- Data for Name: ventana; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+INSERT INTO ventana VALUES (36, 1, NULL, 'Menú Rol');
+INSERT INTO ventana VALUES (37, 2, 36, 'Agregar Rol');
+INSERT INTO ventana VALUES (2, 2, 1, 'Agregar Marca');
+INSERT INTO ventana VALUES (3, 2, 1, 'Ver Marca');
+INSERT INTO ventana VALUES (4, 2, 1, 'Editar Marca');
+INSERT INTO ventana VALUES (5, 2, 1, 'Eliminar Marca');
+INSERT INTO ventana VALUES (7, 2, 6, 'Agregar Expediente');
+INSERT INTO ventana VALUES (8, 2, 6, 'Ver Expediente');
+INSERT INTO ventana VALUES (38, 2, 36, 'Editar Rol');
+INSERT INTO ventana VALUES (10, 4, 9, 'Agregar Documento');
+INSERT INTO ventana VALUES (11, 4, 9, 'Ver Documento');
+INSERT INTO ventana VALUES (12, 4, 9, 'Editar Documento');
+INSERT INTO ventana VALUES (13, 4, 9, 'Eliminar Documento');
+INSERT INTO ventana VALUES (15, 4, 14, 'Agregar Evento');
+INSERT INTO ventana VALUES (16, 4, 14, 'Ver Evento');
+INSERT INTO ventana VALUES (17, 4, 14, 'Editar Evento');
+INSERT INTO ventana VALUES (18, 4, 14, 'Eliminar Evento');
+INSERT INTO ventana VALUES (19, 2, 6, 'Editar Expediente');
+INSERT INTO ventana VALUES (20, 2, 6, 'Eliminar Expediente');
+INSERT INTO ventana VALUES (21, 1, NULL, 'Menú Agente');
+INSERT INTO ventana VALUES (22, 2, 21, 'Agregar Agente');
+INSERT INTO ventana VALUES (23, 2, 21, 'Ver Agente');
+INSERT INTO ventana VALUES (24, 2, 21, 'Editar Agente');
+INSERT INTO ventana VALUES (25, 2, 21, 'Eliminar Agente');
+INSERT INTO ventana VALUES (26, 1, NULL, 'Menú Titular');
+INSERT INTO ventana VALUES (27, 2, 26, 'Agregar Titular');
+INSERT INTO ventana VALUES (28, 2, 26, 'Ver Titular');
+INSERT INTO ventana VALUES (29, 2, 26, 'Editar Titular');
+INSERT INTO ventana VALUES (30, 2, 26, 'Eliminar Titular');
+INSERT INTO ventana VALUES (31, 1, NULL, 'Menú Usuario');
+INSERT INTO ventana VALUES (32, 2, 31, 'Agregar Usuario');
+INSERT INTO ventana VALUES (33, 2, 31, 'Ver Usuario');
+INSERT INTO ventana VALUES (34, 2, 31, 'Editar Usuario');
+INSERT INTO ventana VALUES (35, 2, 31, 'Eliminar Usuario');
+INSERT INTO ventana VALUES (1, 1, NULL, 'Menú Marca');
+INSERT INTO ventana VALUES (6, 1, NULL, 'Menú Expediente');
+INSERT INTO ventana VALUES (9, 3, 8, 'Menú Documento');
+INSERT INTO ventana VALUES (14, 3, 8, 'Menú Evento');
+INSERT INTO ventana VALUES (39, 2, 36, 'Eliminar Rol');
+INSERT INTO ventana VALUES (40, 1, NULL, 'Menú Permiso');
+INSERT INTO ventana VALUES (42, 2, 40, 'Ver Permiso');
+INSERT INTO ventana VALUES (41, 2, 40, 'Editar Permiso');
+
+
+--
+-- TOC entry 2247 (class 0 OID 0)
+-- Dependencies: 201
+-- Name: ventana_id_ventana_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('ventana_id_ventana_seq', 2, true);
+
+
+--
+-- TOC entry 2014 (class 2606 OID 44468)
 -- Name: abogado_ci_key; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -1238,7 +1469,7 @@ ALTER TABLE ONLY abogado
 
 
 --
--- TOC entry 2002 (class 2606 OID 44210)
+-- TOC entry 2016 (class 2606 OID 44210)
 -- Name: abogado_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -1247,7 +1478,7 @@ ALTER TABLE ONLY abogado
 
 
 --
--- TOC entry 2006 (class 2606 OID 44242)
+-- TOC entry 2024 (class 2606 OID 44242)
 -- Name: clase_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -1256,7 +1487,7 @@ ALTER TABLE ONLY clase
 
 
 --
--- TOC entry 2004 (class 2606 OID 44229)
+-- TOC entry 2018 (class 2606 OID 44229)
 -- Name: cliente_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -1265,7 +1496,7 @@ ALTER TABLE ONLY cliente
 
 
 --
--- TOC entry 2024 (class 2606 OID 44365)
+-- TOC entry 2042 (class 2606 OID 44365)
 -- Name: documento_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -1274,7 +1505,7 @@ ALTER TABLE ONLY documento
 
 
 --
--- TOC entry 2010 (class 2606 OID 44262)
+-- TOC entry 2028 (class 2606 OID 44262)
 -- Name: estado_marca_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -1283,7 +1514,7 @@ ALTER TABLE ONLY estado_marca
 
 
 --
--- TOC entry 2026 (class 2606 OID 44386)
+-- TOC entry 2044 (class 2606 OID 44386)
 -- Name: evento_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -1292,7 +1523,7 @@ ALTER TABLE ONLY evento
 
 
 --
--- TOC entry 2020 (class 2606 OID 44466)
+-- TOC entry 2038 (class 2606 OID 44466)
 -- Name: expediente_nro_expediente_key; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -1301,7 +1532,7 @@ ALTER TABLE ONLY expediente
 
 
 --
--- TOC entry 2022 (class 2606 OID 44327)
+-- TOC entry 2040 (class 2606 OID 44327)
 -- Name: expediente_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -1310,7 +1541,7 @@ ALTER TABLE ONLY expediente
 
 
 --
--- TOC entry 2028 (class 2606 OID 44402)
+-- TOC entry 2046 (class 2606 OID 44402)
 -- Name: historial_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -1319,7 +1550,7 @@ ALTER TABLE ONLY historial
 
 
 --
--- TOC entry 2016 (class 2606 OID 44295)
+-- TOC entry 2034 (class 2606 OID 44295)
 -- Name: marca_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -1328,7 +1559,7 @@ ALTER TABLE ONLY marca
 
 
 --
--- TOC entry 2008 (class 2606 OID 44251)
+-- TOC entry 2026 (class 2606 OID 44251)
 -- Name: pais_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -1337,7 +1568,34 @@ ALTER TABLE ONLY pais
 
 
 --
--- TOC entry 1994 (class 2606 OID 44183)
+-- TOC entry 2050 (class 2606 OID 44512)
+-- Name: permiso_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY permiso
+    ADD CONSTRAINT permiso_pkey PRIMARY KEY (id_permiso);
+
+
+--
+-- TOC entry 2020 (class 2606 OID 44474)
+-- Name: restriccion_ci_unico; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY cliente
+    ADD CONSTRAINT restriccion_ci_unico UNIQUE (ci);
+
+
+--
+-- TOC entry 2022 (class 2606 OID 44476)
+-- Name: restriccion_ruc_unico; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY cliente
+    ADD CONSTRAINT restriccion_ruc_unico UNIQUE (ruc);
+
+
+--
+-- TOC entry 2008 (class 2606 OID 44183)
 -- Name: rol_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -1346,7 +1604,7 @@ ALTER TABLE ONLY rol
 
 
 --
--- TOC entry 2012 (class 2606 OID 44273)
+-- TOC entry 2030 (class 2606 OID 44273)
 -- Name: tipo_documento_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -1355,7 +1613,7 @@ ALTER TABLE ONLY tipo_documento
 
 
 --
--- TOC entry 2018 (class 2606 OID 44316)
+-- TOC entry 2036 (class 2606 OID 44316)
 -- Name: tipo_expediente_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -1364,7 +1622,7 @@ ALTER TABLE ONLY tipo_expediente
 
 
 --
--- TOC entry 2014 (class 2606 OID 44284)
+-- TOC entry 2032 (class 2606 OID 44284)
 -- Name: tipo_marca_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -1373,7 +1631,7 @@ ALTER TABLE ONLY tipo_marca
 
 
 --
--- TOC entry 1996 (class 2606 OID 44470)
+-- TOC entry 2010 (class 2606 OID 44470)
 -- Name: usuario_cuenta_key; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -1382,7 +1640,7 @@ ALTER TABLE ONLY usuario
 
 
 --
--- TOC entry 1998 (class 2606 OID 44194)
+-- TOC entry 2012 (class 2606 OID 44194)
 -- Name: usuario_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -1391,7 +1649,16 @@ ALTER TABLE ONLY usuario
 
 
 --
--- TOC entry 2030 (class 2606 OID 44211)
+-- TOC entry 2048 (class 2606 OID 44495)
+-- Name: ventana_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY ventana
+    ADD CONSTRAINT ventana_pkey PRIMARY KEY (id_ventana);
+
+
+--
+-- TOC entry 2052 (class 2606 OID 44211)
 -- Name: abogado_id_usuario_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1400,7 +1667,7 @@ ALTER TABLE ONLY abogado
 
 
 --
--- TOC entry 2031 (class 2606 OID 44230)
+-- TOC entry 2053 (class 2606 OID 44230)
 -- Name: cliente_id_usuario_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1409,7 +1676,7 @@ ALTER TABLE ONLY cliente
 
 
 --
--- TOC entry 2040 (class 2606 OID 44366)
+-- TOC entry 2063 (class 2606 OID 44366)
 -- Name: documento_id_expediente_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1418,7 +1685,7 @@ ALTER TABLE ONLY documento
 
 
 --
--- TOC entry 2041 (class 2606 OID 44371)
+-- TOC entry 2062 (class 2606 OID 44371)
 -- Name: documento_id_tipo_documento_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1427,7 +1694,7 @@ ALTER TABLE ONLY documento
 
 
 --
--- TOC entry 2042 (class 2606 OID 44387)
+-- TOC entry 2064 (class 2606 OID 44387)
 -- Name: evento_id_expediente_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1436,7 +1703,7 @@ ALTER TABLE ONLY evento
 
 
 --
--- TOC entry 2035 (class 2606 OID 44335)
+-- TOC entry 2060 (class 2606 OID 44335)
 -- Name: expediente_id_abogado_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1445,7 +1712,7 @@ ALTER TABLE ONLY expediente
 
 
 --
--- TOC entry 2034 (class 2606 OID 44330)
+-- TOC entry 2061 (class 2606 OID 44330)
 -- Name: expediente_id_cliente_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1454,7 +1721,7 @@ ALTER TABLE ONLY expediente
 
 
 --
--- TOC entry 2036 (class 2606 OID 44340)
+-- TOC entry 2059 (class 2606 OID 44340)
 -- Name: expediente_id_estado_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1463,7 +1730,7 @@ ALTER TABLE ONLY expediente
 
 
 --
--- TOC entry 2038 (class 2606 OID 44350)
+-- TOC entry 2057 (class 2606 OID 44350)
 -- Name: expediente_id_marca_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1472,7 +1739,7 @@ ALTER TABLE ONLY expediente
 
 
 --
--- TOC entry 2039 (class 2606 OID 44435)
+-- TOC entry 2056 (class 2606 OID 44435)
 -- Name: expediente_id_tipo_expediente_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1481,7 +1748,7 @@ ALTER TABLE ONLY expediente
 
 
 --
--- TOC entry 2037 (class 2606 OID 44345)
+-- TOC entry 2058 (class 2606 OID 44345)
 -- Name: expediente_nro_clase_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1490,7 +1757,7 @@ ALTER TABLE ONLY expediente
 
 
 --
--- TOC entry 2043 (class 2606 OID 44403)
+-- TOC entry 2066 (class 2606 OID 44403)
 -- Name: historial_id_abogado_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1499,7 +1766,7 @@ ALTER TABLE ONLY historial
 
 
 --
--- TOC entry 2044 (class 2606 OID 44408)
+-- TOC entry 2065 (class 2606 OID 44408)
 -- Name: historial_id_expediente_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1508,7 +1775,7 @@ ALTER TABLE ONLY historial
 
 
 --
--- TOC entry 2033 (class 2606 OID 44301)
+-- TOC entry 2054 (class 2606 OID 44301)
 -- Name: marca_id_pais_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1517,7 +1784,7 @@ ALTER TABLE ONLY marca
 
 
 --
--- TOC entry 2032 (class 2606 OID 44296)
+-- TOC entry 2055 (class 2606 OID 44296)
 -- Name: marca_id_tipo_marca_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1526,7 +1793,25 @@ ALTER TABLE ONLY marca
 
 
 --
--- TOC entry 2029 (class 2606 OID 44195)
+-- TOC entry 2068 (class 2606 OID 44513)
+-- Name: permiso_id_rol_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY permiso
+    ADD CONSTRAINT permiso_id_rol_fkey FOREIGN KEY (id_rol) REFERENCES rol(id_rol);
+
+
+--
+-- TOC entry 2067 (class 2606 OID 44518)
+-- Name: permiso_id_ventana_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY permiso
+    ADD CONSTRAINT permiso_id_ventana_fkey FOREIGN KEY (id_ventana) REFERENCES ventana(id_ventana);
+
+
+--
+-- TOC entry 2051 (class 2606 OID 44195)
 -- Name: usuario_id_rol_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1535,7 +1820,7 @@ ALTER TABLE ONLY usuario
 
 
 --
--- TOC entry 2188 (class 0 OID 0)
+-- TOC entry 2216 (class 0 OID 0)
 -- Dependencies: 6
 -- Name: public; Type: ACL; Schema: -; Owner: postgres
 --
@@ -1546,7 +1831,7 @@ GRANT ALL ON SCHEMA public TO postgres;
 GRANT ALL ON SCHEMA public TO PUBLIC;
 
 
--- Completed on 2018-09-11 21:11:29
+-- Completed on 2018-09-14 16:43:02
 
 --
 -- PostgreSQL database dump complete

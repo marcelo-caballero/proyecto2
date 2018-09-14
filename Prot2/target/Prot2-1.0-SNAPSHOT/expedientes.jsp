@@ -47,11 +47,13 @@
                         <th>Clase</th>
                         <th>Status</th>
                         <th>
-                            <i class="fa fa-plus-circle" 
-                               style="font-size:24px"  
-                               onmouseover="this.style.cursor = 'pointer'" 
-                               onclick='window.location.href = "<%=request.getContextPath()%>/expedientes/agregarExpediente.jsp"'> 
-                            </i>
+                            <%if(permisoControlAcceso.permisoRolVentana(rolUsuarioConectado,7)){%> 
+                                <i class="fa fa-plus-circle" 
+                                   style="font-size:24px"  
+                                   onmouseover="this.style.cursor = 'pointer'" 
+                                   onclick='window.location.href = "<%=request.getContextPath()%>/expedientes/agregarExpediente.jsp"'> 
+                                </i>
+                            <%}%>
                             
                         </th>
                     </tr>
@@ -68,21 +70,27 @@
                         <td id=""><%=lista.get(i).getNroClase().getNroClase()%></td>     
                         <td id=""><%=lista.get(i).getIdEstado().getDescripcion()%></td>  
                         <td>
-                            <i class="fa fa-search" 
-                               style="font-size:24px"  
-                               onmouseover="this.style.cursor = 'pointer'" 
-                               onclick='window.location.href = "<%=request.getContextPath()%>/expedientes/verExpediente.jsp?idExpediente=<%=lista.get(i).getIdExpediente()%>"'>  
-                            </i>
-                            <i class="fa fa-edit" 
-                               style="font-size:24px"  
-                               onmouseover="this.style.cursor = 'pointer'" 
-                               onclick='window.location.href = "<%=request.getContextPath()%>/expedientes/editarExpediente.jsp?idExpediente=<%=lista.get(i).getIdExpediente()%>"'> 
-                            </i>
-                            <i class="fa fa-remove" 
-                               style="font-size:24px"  
-                               onmouseover="this.style.cursor = 'pointer'" 
-                               onclick="modalEliminar('<%=i%>')"> 
-                            </i>
+                            <%if(permisoControlAcceso.permisoRolVentana(rolUsuarioConectado,8)){%>
+                                <i class="fa fa-search" 
+                                   style="font-size:24px"  
+                                   onmouseover="this.style.cursor = 'pointer'" 
+                                   onclick='window.location.href = "<%=request.getContextPath()%>/expedientes/verExpediente.jsp?idExpediente=<%=lista.get(i).getIdExpediente()%>"'>  
+                                </i>
+                            <%}%>
+                            <%if(permisoControlAcceso.permisoRolVentana(rolUsuarioConectado, 19)){%>
+                                <i class="fa fa-edit" 
+                                   style="font-size:24px"  
+                                   onmouseover="this.style.cursor = 'pointer'" 
+                                   onclick='window.location.href = "<%=request.getContextPath()%>/expedientes/editarExpediente.jsp?idExpediente=<%=lista.get(i).getIdExpediente()%>"'> 
+                                </i>
+                            <%}%>
+                            <%if(permisoControlAcceso.permisoRolVentana(rolUsuarioConectado,20)){%> 
+                                <i class="fa fa-remove" 
+                                   style="font-size:24px"  
+                                   onmouseover="this.style.cursor = 'pointer'" 
+                                   onclick="modalEliminar('<%=i%>')"> 
+                                </i>
+                            <%}%>
                         </td>
                     </tr>
                     <%}%>

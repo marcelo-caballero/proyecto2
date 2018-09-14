@@ -30,7 +30,7 @@
          
         <div class ="container form-control">
         
-            <h2 class="text-justify"> Agregar Usuario</h2>
+            <h2 class="text-justify"> Editar Usuario</h2>
             <br> 
         
             <form id="editarUsuario" 
@@ -96,7 +96,7 @@
                            type="text" 
                            placeholder="Escriba la contraseña"
                            minlength="8"
-                           value="<%=usu.getPassword()%>" 
+                           value="<%=usu.getPassword()%>"  
                            onkeypress="return isNotSpaceKey(event)"
                            required >
                     <div id="contrasena-retro"></div>

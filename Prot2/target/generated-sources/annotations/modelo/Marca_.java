@@ -8,7 +8,7 @@ import modelo.Expediente;
 import modelo.Pais;
 import modelo.TipoMarca;
 
-@Generated(value="EclipseLink-2.5.2.v20140319-rNA", date="2018-09-12T12:02:55")
+@Generated(value="EclipseLink-2.5.2.v20140319-rNA", date="2018-09-14T15:38:18")
 @StaticMetamodel(Marca.class)
 public class Marca_ { 
 

@@ -36,21 +36,6 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Rol.findByDescripcion", query = "SELECT r FROM Rol r WHERE r.descripcion = :descripcion")})
 public class Rol implements Serializable {
     
-    /*El sistema define el nroRolAbogado en 2*/
-    private static int nroRolAbogado = 2; 
-    
-    /*El sistema define el nroRolCliente en 3*/
-    private static int nroRolCliente = 3; 
-    
-    public int getNroRolAbogado(){
-        return nroRolAbogado;
-    }
-    
-    public int getNroRolCliente(){
-        return nroRolCliente;
-    }
-    
-
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

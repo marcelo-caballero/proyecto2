@@ -81,7 +81,7 @@
                            name="contrasena"
                            id="contrasena"
                            class="form-control"
-                           type="text" 
+                           type="password" 
                            placeholder="Escriba la contraseña"
                            minlength="8"
                            onkeypress="return isNotSpaceKey(event)"
