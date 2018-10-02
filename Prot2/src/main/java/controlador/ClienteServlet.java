@@ -68,9 +68,10 @@ public class ClienteServlet extends HttpServlet {
         
         ClienteJpaController clienteControl = new ClienteJpaController();
         UsuarioJpaController usuarioControl = new UsuarioJpaController();
+        
         if(request.getParameter("agregar") != null){
             try{
-                String idUsuario = request.getParameter("idUsuario");
+                
                 String idTipoCliente = request.getParameter("tipoCliente");
                 String ci = request.getParameter("ci");
                 String nombre = request.getParameter("nombre");
@@ -81,11 +82,11 @@ public class ClienteServlet extends HttpServlet {
                 String telefono = request.getParameter("telefono");
 
                  
-                Usuario usuario = usuarioControl.findUsuario(Integer.parseInt(idUsuario));
+               
 
                 Cliente cliente = new Cliente();
                 
-                cliente.setIdUsuario(usuario);
+                
                 cliente.setTipoCliente(idTipoCliente); 
                 cliente.setNombre(nombre);
                 cliente.setApellido(apellido);
@@ -117,7 +118,29 @@ public class ClienteServlet extends HttpServlet {
         if(request.getParameter("eliminar") != null){
             try {
                 Integer idCliente = Integer.parseInt(request.getParameter("idCliente"));
-                clienteControl.destroy(idCliente);
+                
+                
+                Cliente cliente = clienteControl.findCliente(idCliente);
+                boolean borrar = true;
+                
+                if(cliente.getExpedienteList().size()> 0){
+                    
+                    borrar = false;
+                }
+                
+                if(cliente.getIdUsuario() != null){
+                    
+                    borrar = false;
+                }
+                
+                if(borrar){
+                    clienteControl.destroy(idCliente);
+                    
+                }else{
+                    
+                    cliente.setEstado("INACTIVO");
+                    clienteControl.edit(cliente); 
+                }
                 
             } catch (Exception e) {
                 
@@ -145,22 +168,25 @@ public class ClienteServlet extends HttpServlet {
                 String telefono = request.getParameter("telefono");
 
                  
-                
-                cliente.setTipoCliente(idTipoCliente); 
-                cliente.setNombre(nombre);
-                cliente.setApellido(apellido);
-                cliente.setRazonSocial(razonSocial);
-                cliente.setDireccion(direccion);
-                cliente.setTelefono(telefono);
-                cliente.setEstado("ACTIVO");
-                if(ci != null){
-                    cliente.setCi(Integer.parseInt(ci));
-                    
+                if(cliente.getEstado().equals("ACTIVO")){
+                    cliente.setTipoCliente(idTipoCliente); 
+                    cliente.setNombre(nombre);
+                    cliente.setApellido(apellido);
+                    cliente.setRazonSocial(razonSocial);
+                    cliente.setDireccion(direccion);
+                    cliente.setTelefono(telefono);
+                    cliente.setEstado("ACTIVO");
+                    if(ci != null){
+                        cliente.setCi(Integer.parseInt(ci));
+
+                    }
+                    if(ruc.length() > 0){
+                        cliente.setRuc(ruc);
+                    }
+                    clienteControl.edit(cliente);
+                }else{
+                    request.getSession().setAttribute("mensajeErrorABM", "El Titular posee estado Inactivo, no se puede editar");
                 }
-                if(ruc.length() > 0){
-                    cliente.setRuc(ruc);
-                }
-                clienteControl.edit(cliente);
            
             
             }catch(Exception e){ 

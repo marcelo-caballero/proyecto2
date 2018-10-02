@@ -38,6 +38,10 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Marca.findByDenominacion", query = "SELECT m FROM Marca m WHERE m.denominacion = :denominacion")})
 public class Marca implements Serializable {
 
+    @Lob
+    @Column(name = "imagen_marca")
+    private byte[] imagenMarca;
+
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -47,9 +51,6 @@ public class Marca implements Serializable {
     @Size(max = 2147483647)
     @Column(name = "denominacion")
     private String denominacion;
-    @Lob
-    @Column(name = "imagen_marca")
-    private byte[] imagenMarca;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idMarca")
     private List<Expediente> expedienteList;
     @JoinColumn(name = "id_pais", referencedColumnName = "id_pais")
@@ -139,5 +140,7 @@ public class Marca implements Serializable {
     public String toString() {
         return "modelo.Marca[ idMarca=" + idMarca + " ]";
     }
+
+    
     
 }

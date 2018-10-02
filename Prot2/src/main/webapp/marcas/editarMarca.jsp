@@ -301,12 +301,14 @@
                 
                 var denominacionInput = document.getElementById("denominacion");
                 var retroDenominacion = document.getElementById("denominacion-retro");
-                var strDenominacion = denominacionInput.value;
+                var strDenominacion = denominacionInput.value.trim();
+                
+                denominacionInput.value = strDenominacion;
                
                 
                 //Si contiene caracteres invalidos, lo informa
                 
-                if(strDenominacion.trim().length == 0){ 
+                if(strDenominacion.length == 0){ 
                     denominacionInput.setAttribute("class","form-control is-invalid");
                     retroDenominacion.setAttribute("class","invalid-feedback");
                     retroDenominacion.textContent = 'El campo esta vacío';

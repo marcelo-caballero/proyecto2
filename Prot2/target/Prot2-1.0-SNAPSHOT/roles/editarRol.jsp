@@ -31,7 +31,7 @@
             <h2 class="text-justify">Editar Rol</h2>
             <br> 
         
-            <form id="agregarRol" 
+            <form id="editarRol" 
                   action="<%=request.getContextPath()%>/RolServlet?editar=true" 
                   method="post"
                   novalidate
@@ -40,32 +40,54 @@
                 <input type="hidden" name="idRol" value="<%=idRol%>">
             </form>
           
+
             <div class="row form-group">
                 <div class="col-3">
                     <label for="rol">Rol:</label> 
                 </div>
                 <div class="col-6">
-                    <input form="agregarRol"
+                    <input form="editarRol"
                            name="rol"
                            id="rol"
                            class="form-control"
                            type="text" 
-                           placeholder="Rol"
+                           placeholder="Escriba el nombre del rol"
                            required 
-                           minlength="8"
-                           value="<%=rol.getDescripcion()%>" 
-                           onkeypress="return isNotSpaceKey(event)"
+                           value="<%=rol.getRol()%>" 
+                           onkeypress="return isNotSpaceKey(event)" 
+                           <%if(rol.getEstado().equals("ASIGNADO")){%>
+                                readonly
+                           <%}%>
                            >
                     <div id="rol-retro"></div>
                 </div> 
             </div>
+                           
+            <div class="row form-group">
+                <div class="col-3">
+                    <label for="rol">Descripción:</label> 
+                </div>
+                <div class="col-6">
+                    <textarea form="editarRol"
+                              name="descripcion"
+                              id="descripcion"
+                              class="form-control" 
+                              placeholder="Escriba una descripción para el rol"
+                              required 
+                              rows="6"
+                              maxlength="250"
+                              ><%=rol.getDescripcion()%></textarea>
+                    <div id="descripcion-retro"></div>
+                </div> 
+            </div>
+            
   
             
             <div class="row form-group">
                 <div class="col-5">
                 </div>
                 <div class="col-2">
-                    <input id="agregar"
+                    <input id="editar"
                            type="button"
                            value="Editar"
                            onclick="validarFormulario()"
@@ -78,10 +100,11 @@
         <script>
             function validarFormulario(){
                 var validoRol = validarRol();
+                var validoDescripcion = validarDescripcion();
                 
-                if(validoRol){
+                if(validoRol && validoDescripcion){
                     
-                    document.getElementById("agregarRol").submit();
+                    document.getElementById("editarRol").submit();
                 }   
             }
             
@@ -101,6 +124,28 @@
                 rolInput.setAttribute("class","form-control is-valid");
                 retroRol.setAttribute("class","valid-feedback");
                 retroRol.textContent = '';
+                    
+                return true;
+            }
+            
+            function validarDescripcion(){
+                var descripcionInput = document.getElementById("descripcion");
+                var retroDescripcion = document.getElementById("descripcion-retro");
+                var strDescripcion = descripcionInput.value.trim();
+                
+                descripcionInput.value = strDescripcion; 
+                
+                if(strDescripcion.length == 0){ 
+                    descripcionInput.setAttribute("class","form-control is-invalid");
+                    retroDescripcion.setAttribute("class","invalid-feedback");
+                    retroDescripcion.textContent = 'El campo esta vacío';
+                    
+                    return false;
+                }
+                
+                descripcionInput.setAttribute("class","form-control is-valid");
+                retroDescripcion.setAttribute("class","valid-feedback");
+                retroDescripcion.textContent = '';
                     
                 return true;
             }

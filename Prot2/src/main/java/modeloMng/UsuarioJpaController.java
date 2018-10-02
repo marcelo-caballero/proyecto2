@@ -286,15 +286,17 @@ public class UsuarioJpaController implements Serializable {
         }
     }
     
-    public Usuario getUsuario(String cuenta, String contraseña) {
+    public Usuario getUsuarioLogin(String cuenta, String contraseña) {
         EntityManager em = getEntityManager();
         try {
             String consulta = "select u from Usuario u where u.cuenta = :cuenta"
-                                + " and u.password = :password";
+                                + " and u.password = :password"
+                                + " and u.estado =:estado";
             Query q = em.createQuery(consulta);
             
             q.setParameter("cuenta", cuenta);
             q.setParameter("password", contraseña);
+            q.setParameter("estado", "ACTIVO");
             
             Usuario usuario = (Usuario) q.getSingleResult();
             

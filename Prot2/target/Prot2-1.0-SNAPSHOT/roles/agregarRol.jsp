@@ -47,12 +47,29 @@
                            id="rol"
                            class="form-control"
                            type="text" 
-                           placeholder="Rol"
-                           required 
-                           minlength="8"
+                           placeholder="Escriba el nombre del rol"
+                           required
                            onkeypress="return isNotSpaceKey(event)"
                            >
                     <div id="rol-retro"></div>
+                </div> 
+            </div>
+                  
+            <div class="row form-group">
+                <div class="col-3">
+                    <label for="rol">Descripción:</label> 
+                </div>
+                <div class="col-6">
+                    <textarea form="agregarRol"
+                              name="descripcion"
+                              id="descripcion"
+                              class="form-control" 
+                              placeholder="Escriba una descripción para el rol"
+                              required 
+                              rows="6"
+                              maxlength="250"
+                              ></textarea>
+                    <div id="descripcion-retro"></div>
                 </div> 
             </div>
   
@@ -74,8 +91,9 @@
         <script>
             function validarFormulario(){
                 var validoRol = validarRol();
+                var validoDescripcion = validarDescripcion();
                 
-                if(validoRol){
+                if(validoRol && validoDescripcion){
                     
                     document.getElementById("agregarRol").submit();
                 }   
@@ -97,6 +115,28 @@
                 rolInput.setAttribute("class","form-control is-valid");
                 retroRol.setAttribute("class","valid-feedback");
                 retroRol.textContent = '';
+                    
+                return true;
+            }
+            
+            function validarDescripcion(){
+                var descripcionInput = document.getElementById("descripcion");
+                var retroDescripcion = document.getElementById("descripcion-retro");
+                var strDescripcion = descripcionInput.value.trim();
+                
+                descripcionInput.value = strDescripcion; 
+                
+                if(strDescripcion.length == 0){ 
+                    descripcionInput.setAttribute("class","form-control is-invalid");
+                    retroDescripcion.setAttribute("class","invalid-feedback");
+                    retroDescripcion.textContent = 'El campo esta vacío';
+                    
+                    return false;
+                }
+                
+                descripcionInput.setAttribute("class","form-control is-valid");
+                retroDescripcion.setAttribute("class","valid-feedback");
+                retroDescripcion.textContent = '';
                     
                 return true;
             }

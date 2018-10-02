@@ -38,6 +38,12 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Ventana.findByNombre", query = "SELECT v FROM Ventana v WHERE v.nombre = :nombre")})
 public class Ventana implements Serializable {
 
+    @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 2147483647)
+    @Column(name = "descripcion")
+    private String descripcion;
+
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -135,6 +141,14 @@ public class Ventana implements Serializable {
     @Override
     public String toString() {
         return "modelo.Ventana[ idVentana=" + idVentana + " ]";
+    }
+
+    public String getDescripcion() {
+        return descripcion;
+    }
+
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
     }
     
 }

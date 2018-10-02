@@ -50,7 +50,7 @@
                         <th>Tipo de Documento</th>
                         <th>Fecha</th>
                         <th>
-                            <%if(permisoControlAcceso.permisoRolVentana(rolUsuarioConectado,10)){%> 
+                            <%if(permisoControlAcceso.permisoRolVentana(rolUsuarioConectado,"agregarDocumento.jsp")){%> 
                                 <i class="fa fa-plus-circle" 
                                     style="font-size:24px"  
                                     onmouseover="this.style.cursor = 'pointer'" 
@@ -70,14 +70,14 @@
                         <td id=""><%=listaDocumentos.get(i).getIdTipoDocumento().getDescripcion()%></td>  
                         <td id=""><%=listaDocumentos.get(i).getStringFecha()%></td> 
                         <td>
-                            <%if(permisoControlAcceso.permisoRolVentana(rolUsuarioConectado,11 )){%>
+                            <%if(permisoControlAcceso.permisoRolVentana(rolUsuarioConectado,"verDocumento.jsp")){%>
                                 <i class="fa fa-search" 
                                    style="font-size:24px"  
                                    onmouseover="this.style.cursor = 'pointer'" 
                                    onclick='window.location.href = "<%=request.getContextPath()%>/documentos/verDocumento.jsp?idDocumento=<%=listaDocumentos.get(i).getIdDocumento()%>"'>  
                                 </i>
                             <%}%>
-                            <%if(permisoControlAcceso.permisoRolVentana(rolUsuarioConectado,12)){%>
+                            <%if(permisoControlAcceso.permisoRolVentana(rolUsuarioConectado,"editarDocumento.jsp")){%>
                                 <i class="fa fa-edit" 
                                    style="font-size:24px"  
                                    onmouseover="this.style.cursor = 'pointer'" 
@@ -85,7 +85,7 @@
                                 </i>
                             <%}%>
                             
-                            <%if(permisoControlAcceso.permisoRolVentana(rolUsuarioConectado,13)){%>
+                            <%if(permisoControlAcceso.permisoRolVentana(rolUsuarioConectado,"eliminarDocumento")){%>
                                 <i class="fa fa-remove" 
                                    style="font-size:24px"  
                                    onmouseover="this.style.cursor = 'pointer'" 

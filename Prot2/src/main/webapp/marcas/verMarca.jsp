@@ -36,7 +36,7 @@
             
             <h2 class="text-justify">Marca</h2>
             <br>
-           
+            <%--
             <div class="row form-group">
                 <div class="col-3">
                     <label>Código de marca:</label>
@@ -45,7 +45,7 @@
                     <%=marca.getIdMarca()%>
                 </div> 
             </div>
-                
+            --%> 
             <div class="row form-group">
                 <div class="col-3">
                     <label>Denominación:</label>

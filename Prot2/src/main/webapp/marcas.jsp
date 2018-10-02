@@ -50,7 +50,7 @@
                         <th>Signo</th>
                         <th>País</th>
                         <th>
-                            <%if(permisoControlAcceso.permisoRolVentana(rolUsuarioConectado, 2)){%>
+                            <%if(permisoControlAcceso.permisoRolVentana(rolUsuarioConectado,"agregarMarca.jsp")){%>
                                 <i class="fa fa-plus-circle" 
                                    style="font-size:24px"  
                                    onmouseover="this.style.cursor = 'pointer'" 
@@ -70,21 +70,21 @@
                         <td id="signo-<%=i%>"><%=listaMarca.get(i).getIdTipoMarca().getDescripcion()%></td> 
                         <td id="pais-<%=i%>" ><%=listaMarca.get(i).getIdPais().getPais()%></td>
                         <td>
-                            <%if(permisoControlAcceso.permisoRolVentana(rolUsuarioConectado, 3)){%>
+                            <%if(permisoControlAcceso.permisoRolVentana(rolUsuarioConectado,"verMarca.jsp")){%> 
                                 <i class="fa fa-search" 
                                    style="font-size:24px"  
                                    onmouseover="this.style.cursor = 'pointer'" 
                                    onclick='window.location.href = "<%=request.getContextPath()%>/marcas/verMarca.jsp?idMarca=<%=listaMarca.get(i).getIdMarca()%>"'> 
                                 </i>
                             <%}%>
-                            <%if(permisoControlAcceso.permisoRolVentana(rolUsuarioConectado,4 )){%> 
+                            <%if(permisoControlAcceso.permisoRolVentana(rolUsuarioConectado,"editarMarca.jsp" )){%> 
                                 <i class="fa fa-edit" 
                                    style="font-size:24px"  
                                    onmouseover="this.style.cursor = 'pointer'" 
                                    onclick='window.location.href = "<%=request.getContextPath()%>/marcas/editarMarca.jsp?idMarca=<%=listaMarca.get(i).getIdMarca()%>"'> 
                                 </i>
                             <%}%>
-                            <%if(permisoControlAcceso.permisoRolVentana(rolUsuarioConectado,5)){%>
+                            <%if(permisoControlAcceso.permisoRolVentana(rolUsuarioConectado,"eliminarMarca")){%>
                                 <i class="fa fa-remove" 
                                    style="font-size:24px"  
                                    onmouseover="this.style.cursor = 'pointer'" 

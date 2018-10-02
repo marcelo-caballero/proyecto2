@@ -6,10 +6,11 @@ import javax.persistence.metamodel.SingularAttribute;
 import javax.persistence.metamodel.StaticMetamodel;
 import modelo.Permiso;
 
-@Generated(value="EclipseLink-2.5.2.v20140319-rNA", date="2018-09-14T15:38:18")
+@Generated(value="EclipseLink-2.5.2.v20140319-rNA", date="2018-09-19T10:33:45")
 @StaticMetamodel(Ventana.class)
 public class Ventana_ { 
 
+    public static volatile SingularAttribute<Ventana, String> descripcion;
     public static volatile SingularAttribute<Ventana, Integer> idVentana;
     public static volatile SingularAttribute<Ventana, Integer> nivel;
     public static volatile SingularAttribute<Ventana, String> nombre;

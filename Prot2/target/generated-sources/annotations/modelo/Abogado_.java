@@ -8,11 +8,12 @@ import modelo.Expediente;
 import modelo.Historial;
 import modelo.Usuario;
 
-@Generated(value="EclipseLink-2.5.2.v20140319-rNA", date="2018-09-14T15:38:18")
+@Generated(value="EclipseLink-2.5.2.v20140319-rNA", date="2018-09-19T10:33:45")
 @StaticMetamodel(Abogado.class)
 public class Abogado_ { 
 
     public static volatile SingularAttribute<Abogado, String> registroProfesional;
+    public static volatile SingularAttribute<Abogado, String> estado;
     public static volatile SingularAttribute<Abogado, Long> ci;
     public static volatile SingularAttribute<Abogado, String> apellido;
     public static volatile SingularAttribute<Abogado, Usuario> idUsuario;

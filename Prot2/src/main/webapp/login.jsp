@@ -27,11 +27,22 @@
             <img class=" img-fluid" src="imagenes/estudioJuridico.jpg" alt="Sanchez y asociados"  />
             <div>
                 <label for="" class="sr-only">Usuario: </label>
-                <input name="usuario" type="text" id="inputUser" class="form-control" placeholder="Usuario" pattern="[A-Za-z0-9_]{1,15}"  title="Se aceptan letras, números y guión bajo" required autofocus>
+                <input name="usuario" 
+                       type="text" 
+                       id="inputUser" 
+                       class="form-control" 
+                       placeholder="Ingrese su cuenta de usuario" 
+                       required 
+                       autofocus>
             </div>
             <div>
                 <label for="" class="sr-only">Contraseña: </label>
-                <input name="contrasena" type="password" id="inputPassword" class="form-control" placeholder="Contraseña" title = "Escriba su contraseña" required>
+                <input name="contrasena" 
+                       type="password" 
+                       id="inputPassword" 
+                       class="form-control" 
+                       placeholder="Ingrese su contraseña"
+                       required>
 
             </div>
             <button class="btn btn-lg btn-primary btn-block" type="submit" name="conectar">Ingresar</button>

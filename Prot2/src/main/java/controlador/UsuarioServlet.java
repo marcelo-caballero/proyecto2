@@ -14,8 +14,12 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import modelo.Abogado;
+import modelo.Cliente;
 import modelo.Rol;
 import modelo.Usuario;
+import modeloMng.AbogadoJpaController;
+import modeloMng.ClienteJpaController;
 import modeloMng.RolJpaController;
 import modeloMng.UsuarioJpaController;
 
@@ -71,14 +75,19 @@ public class UsuarioServlet extends HttpServlet {
         
         UsuarioJpaController usuarioControl = new UsuarioJpaController();
         RolJpaController rolControl = new RolJpaController();
+        AbogadoJpaController abogadoControl = new AbogadoJpaController();
+        ClienteJpaController clienteControl = new ClienteJpaController(); 
         
         //Eliminar
         if(request.getParameter("eliminar")!= null){
             
             Integer idUsuario = Integer.parseInt(request.getParameter("idUsuario")); 
+            Usuario usuario = usuarioControl.findUsuario(idUsuario);
             
             try {
-                usuarioControl.destroy(idUsuario);
+                usuario.setEstado("INACTIVO");
+                usuarioControl.edit(usuario);
+               
                 
             } catch (Exception e) {
                 
@@ -114,11 +123,19 @@ public class UsuarioServlet extends HttpServlet {
                 usuario.setIdRol(rol);
                 usuario.setCuenta(cuenta);
                 usuario.setPassword(hashtext);
+                usuario.setEstado("ACTIVO");
+                
+                if(rol.getEstado().equals("NO ASIGNADO")){
+                    rol.setEstado("ASIGNADO");
+                    rolControl.edit(rol);
+                }
                 
                 usuarioControl.create(usuario);
                 
-            }catch (Exception e) {
+               
                 
+            }catch (Exception e) {
+                System.out.println(e);
                 request.getSession().setAttribute("mensajeErrorABM", "No se pudo agregar el usuario");
             
             }finally{
@@ -130,33 +147,69 @@ public class UsuarioServlet extends HttpServlet {
         //Editar
         if(request.getParameter("editar")!= null){
             try{
+                
                 Integer idUsuario = Integer.parseInt(request.getParameter("idUsuario"));
                 
                 Usuario usuario = usuarioControl.findUsuario(idUsuario);
                 
-                Integer idRol = Integer.parseInt(request.getParameter("idRol"));
-                String cuenta = request.getParameter("cuenta");
-                String contraseña = request.getParameter("contrasena");
-                
-                MessageDigest md = MessageDigest.getInstance("MD5");
-                byte[] messageDigest = md.digest(contraseña.getBytes()); //EN VEZ DE INPUT PASARLE CONTRASEÑA
-                BigInteger number = new BigInteger(1, messageDigest);
-                String hashtext = number.toString(16);
+                if(usuario.getEstado().equals("ACTIVO")){
+                    Integer idRol = Integer.parseInt(request.getParameter("idRol"));
+                    String cuenta = request.getParameter("cuenta");
+                    String contraseña = request.getParameter("contrasena");
+                    String asociado = request.getParameter("asociar");
+                    String abogado = request.getParameter("idAbogado");
+                    String cliente = request.getParameter("idCliente");
 
-                while (hashtext.length() < 32) {
-                    hashtext = "0" + hashtext;
+                    MessageDigest md = MessageDigest.getInstance("MD5");
+                    byte[] messageDigest = md.digest(contraseña.getBytes()); //EN VEZ DE INPUT PASARLE CONTRASEÑA
+                    BigInteger number = new BigInteger(1, messageDigest);
+                    String hashtext = number.toString(16);
+
+                    while (hashtext.length() < 32) {
+                        hashtext = "0" + hashtext;
+                    }
+
+                    Rol rol = rolControl.findRol(idRol);
+                    
+                    
+                    usuario.setIdRol(rol);
+                    usuario.setPassword(hashtext);
+                    usuario.setCuenta(cuenta);
+                    if(asociado != null){
+                        if(asociado.length() > 0){
+                            usuario.setAsociado(asociado);
+                        }
+                    }
+                    usuarioControl.edit(usuario);
+                    
+
+                    if(asociado != null){
+                        if(asociado.equals("ABOGADO")){
+                            Integer idAbogado = Integer.parseInt(abogado);
+                            Abogado abo = abogadoControl.findAbogado(idAbogado);
+
+                            abo.setIdUsuario(usuario);
+                            abogadoControl.edit(abo);
+
+
+                        }
+
+                        if(asociado.equals("CLIENTE")){
+                            Integer idCliente = Integer.parseInt(cliente);
+                            Cliente cli = clienteControl.findCliente(idCliente);
+
+                            cli.setIdUsuario(usuario);
+                            clienteControl.edit(cli);
+                        }
+                    }
+                }else{
+                    
+                    request.getSession().setAttribute("mensajeErrorABM", "Un usuario con estado Inactivo no se puede editar");
                 }
                 
-                Rol rol = rolControl.findRol(idRol);
-                
-                usuario.setIdRol(rol);
-                usuario.setCuenta(cuenta);
-                usuario.setPassword(hashtext);
-                
-                usuarioControl.edit(usuario);
                 
             }catch (Exception e) {
-                
+                System.out.println(e);
                 request.getSession().setAttribute("mensajeErrorABM", "No se pudo editar el usuario");
             
             }finally{

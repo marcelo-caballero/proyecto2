@@ -55,10 +55,30 @@
                     <label>Rol:</label>
                 </div>
                 <div class="col-6 form-control">
-                    <%=usu.getIdRol().getDescripcion()%> 
+                    <%=usu.getIdRol().getRol()%>  
                 </div> 
             </div>
-
+                
+            
+            <div class="row form-group">
+                <div class="col-3">
+                    <label>Estado:</label>
+                </div>
+                <div class="col-6 form-control">
+                    <%=usu.getEstado()%>  
+                </div> 
+            </div>
+                
+            <%if(usu.getAsociado() != null){%>
+                <div class="row form-group">
+                    <div class="col-3">
+                        <label>Asociado: </label>
+                    </div>
+                    <div class="col-6 form-control">
+                        <%=usu.getAsociado()%>  
+                    </div> 
+                </div>
+            <%}%>
         </div>
         <br>
     </body>

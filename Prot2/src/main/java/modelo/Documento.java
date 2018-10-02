@@ -169,13 +169,6 @@ public class Documento implements Serializable {
         return "modelo.Documento[ idDocumento=" + idDocumento + " ]";
     }
 
-    public byte[] getDocumento() {
-        return documento;
-    }
-
-    public void setDocumento(byte[] documento) {
-        this.documento = documento;
-    }
 
     public String getNombreDocumento() {
         return nombreDocumento;
@@ -188,5 +181,13 @@ public class Documento implements Serializable {
     public String getStringFecha(){
         String fecha = new SimpleDateFormat("dd-MM-yyyy").format(this.fecha);
         return fecha;  
+    }
+
+    public byte[] getDocumento() {
+        return documento;
+    }
+
+    public void setDocumento(byte[] documento) {
+        this.documento = documento;
     }
 }

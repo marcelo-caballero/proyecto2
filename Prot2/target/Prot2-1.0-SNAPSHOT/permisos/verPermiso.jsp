@@ -33,7 +33,7 @@
          
         <div class ="container form-control">
         
-            <h2 class="text-justify"> Permiso para <%=rol.getDescripcion()%></h2> 
+            <h2 class="text-justify"> Permiso para <%=rol.getRol()%></h2> 
             <br> 
             <%for(int i=0; i<lista.size();i++){%>
                 <div class="row form-group">

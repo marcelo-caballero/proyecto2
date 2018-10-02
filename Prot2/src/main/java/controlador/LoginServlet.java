@@ -83,7 +83,7 @@ public class LoginServlet extends HttpServlet {
                 // Valida Parametros no vacios
                 //if (cuenta != null && contraseña != null) {
                 UsuarioJpaController usuMng = new UsuarioJpaController();
-                usuario = usuMng.getUsuario(cuenta, hashtext);
+                usuario = usuMng.getUsuarioLogin(cuenta, hashtext);
                 if (usuario == null) {
 
                     response.sendRedirect("errorLogin.jsp");

@@ -35,6 +35,20 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Rol.findByIdRol", query = "SELECT r FROM Rol r WHERE r.idRol = :idRol"),
     @NamedQuery(name = "Rol.findByDescripcion", query = "SELECT r FROM Rol r WHERE r.descripcion = :descripcion")})
 public class Rol implements Serializable {
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idRol")
+    private List<Permiso> permisoList;
+
+    @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 2147483647)
+    @Column(name = "rol")
+    private String rol;
+    @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 2147483647)
+    @Column(name = "estado")
+    private String estado;
     
     private static final long serialVersionUID = 1L;
     @Id
@@ -110,6 +124,31 @@ public class Rol implements Serializable {
     @Override
     public String toString() {
         return "modelo.Rol[ idRol=" + idRol + " ]";
+    }
+
+    public String getRol() {
+        return rol;
+    }
+
+    public void setRol(String rol) {
+        this.rol = rol;
+    }
+
+    public String getEstado() {
+        return estado;
+    }
+
+    public void setEstado(String estado) {
+        this.estado = estado;
+    }
+
+    @XmlTransient
+    public List<Permiso> getPermisoList() {
+        return permisoList;
+    }
+
+    public void setPermisoList(List<Permiso> permisoList) {
+        this.permisoList = permisoList;
     }
     
 }

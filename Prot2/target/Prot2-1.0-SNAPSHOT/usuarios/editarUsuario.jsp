@@ -4,6 +4,10 @@
     Author     : Acer
 --%>
 
+<%@page import="modeloMng.ClienteJpaController"%>
+<%@page import="modelo.Cliente"%>
+<%@page import="modeloMng.AbogadoJpaController"%>
+<%@page import="modelo.Abogado"%>
 <%@page import="modeloMng.UsuarioJpaController"%>
 <%@page import="modeloMng.RolJpaController"%>
 <%@page import="java.util.List"%>
@@ -23,6 +27,8 @@
             Integer idUsuario = Integer.parseInt(request.getParameter("idUsuario")); 
             Usuario usu = new UsuarioJpaController().findUsuario(idUsuario); 
             List<Rol> listaRol = new RolJpaController().findRolEntities();
+            List<Abogado> listaAbogado = new AbogadoJpaController().getListaAbogadoSinUsuario();
+            List<Cliente> listaCliente = new ClienteJpaController().getListaClienteSinUsuario(); 
             
         %>
         <%@include file="//WEB-INF/menuCabecera.jsp" %>
@@ -53,17 +59,18 @@
                                 if(usu.getIdRol().getIdRol() == listaRol.get(j).getIdRol()){
                             %> 
                                     <option selected value="<%=listaRol.get(j).getIdRol()%>">   
-                                        <%=listaRol.get(j).getDescripcion()%>  
+                                        <%=listaRol.get(j).getRol()%>  
                                     </option>
                                 <%}else{%>
                                     <option value="<%=listaRol.get(j).getIdRol()%>">   
-                                        <%=listaRol.get(j).getDescripcion()%>  
+                                        <%=listaRol.get(j).getRol()%>  
                                     </option>
                                 <%}%>
                              <%}%>
                     </select>             
                 </div>
             </div>
+            
             
             <div class="row form-group">
                 <div class="col-3">
@@ -77,9 +84,12 @@
                            type="text" 
                            placeholder="Escriba la cuenta del usuario"
                            required 
-                           value="<%=usu.getCuenta()%>" 
-                           minlength="8"
-                           onkeypress="return isLetterNumberKey(event)">
+                           value="<%=usu.getCuenta()%>"
+                           onkeypress="return isLetterNumberKey(event)"
+                           <%if(usu.getAsociado() != null){%>
+                                readonly
+                           <%}%>
+                           >
                     <div id="cuenta-retro"></div>
                 </div> 
             </div>
@@ -93,16 +103,109 @@
                            name="contrasena"
                            id="contrasena"
                            class="form-control"
-                           type="text" 
+                           type="password" 
                            placeholder="Escriba la contraseña"
                            minlength="8"
-                           value="<%=usu.getPassword()%>"  
-                           onkeypress="return isNotSpaceKey(event)"
                            required >
                     <div id="contrasena-retro"></div>
                 </div> 
+                <div class="col-1">
+                    <i class="fa fa-eye"
+                       id="verContrasena"
+                       style="font-size:24px"  
+                       onmouseover="this.style.cursor = 'pointer'" 
+                       onclick='verPassword()'>  
+                    </i>
+                </div>
             </div>
                        
+            <div class="row form-group">
+                <div class="col-3">
+                    <label for="contrasena">Confirmación de contraseña:</label> 
+                </div>
+                <div class="col-6">
+                    <input form="editarUsuario"
+                           name=""
+                           id="contrasenaConfirmacion"
+                           class="form-control"
+                           type="password" 
+                           placeholder="Escriba de nuevo la contraseña"
+                           minlength="8"
+                           required >
+                    <div id="contrasenaConfirmacion-retro"></div>
+                </div> 
+                <div class="col-1">
+                    <i class="fa fa-eye"
+                       id="verContrasenaConfirmacion"
+                       style="font-size:24px"  
+                       onmouseover="this.style.cursor = 'pointer'" 
+                       onclick='verPasswordConfirmacion()'>  
+                    </i>
+                </div>
+            </div>
+                     
+            <%if(usu.getAsociado() == null){%>
+                <div class="row form-group">
+                    <div class="col-3">
+                        <label for="asociado">Asociar cuenta a:</label>
+                    </div>  
+                    <div class="col-6">
+                        <select form="editarUsuario" 
+                                name="asociar" 
+                                id="asociar" 
+                                onchange="habilitarSelect()"
+                                class="form-control">
+                                <option selected value="">Ninguno</option>
+                                <%if(listaAbogado.size() > 0){%>
+                                    <option  value="ABOGADO">Abogado</option>
+                                <%}%>
+                                <%if(listaCliente.size() > 0){%>
+                                    <option  value="CLIENTE">Cliente</option>
+                                <%}%>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="row form-group">
+                    <div class="col-3">
+                        <label for="idAbogado">Abogado:</label>
+                    </div>  
+                    <div class="col-6">
+                        <select form="editarUsuario" 
+                                name="idAbogado" 
+                                id="idAbogado" 
+                                disabled
+                                class="form-control">
+                                <%for (int j = 0; j < listaAbogado.size(); j++) {%> 
+                                    <option value="<%=listaAbogado.get(j).getIdAbogado()%>">  
+                                        <%=listaAbogado.get(j).getNombreApellido()%>   
+                                    </option>
+                                <%}%>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="row form-group">
+                    <div class="col-3">
+                        <label for="idCliente">Cliente</label>
+                    </div>  
+                    <div class="col-6">
+                        <select form="editarUsuario" 
+                                name="idCliente" 
+                                id="idCliente"
+                                disabled
+                                class="form-control">
+                                <%for (int j = 0; j < listaCliente.size(); j++) {%> 
+                                    <option value="<%=listaCliente.get(j).getIdCliente()%>">  
+                                        <%=listaCliente.get(j).getNombreCliente()%> 
+                                    </option>
+                                <%}%>
+                        </select>
+                    </div>
+                </div>
+            <%}%> 
+
+            
             <div class="row form-group">
                 <div class="col-5">
                 </div>
@@ -113,18 +216,68 @@
                            onclick="validarFormulario()">
                 </div>    
             </div>
-       
+            
         </div>
         <br>
         <script>
+            function verPassword(){
+                 var contraseña =  document.getElementById("contrasena");
+                 var boton = document.getElementById("verContrasena");
+                 
+                 if(contraseña.type === "password"){
+                     contraseña.type = "text";
+                     boton.setAttribute("class","fa fa-eye-slash");
+                  
+                 }else{
+                     contraseña.type = "password";
+                     boton.setAttribute("class","fa fa-eye");
+                 }
+                 
+            }
             
-            
+            function verPasswordConfirmacion(){
+                 
+                 var contraseñaConfirmacion = document.getElementById("contrasenaConfirmacion");
+                 var boton = document.getElementById("verContrasenaConfirmacion");
+                 
+                 if(contraseñaConfirmacion.type === "password"){
+                     contraseñaConfirmacion.type = "text";
+                     boton.setAttribute("class","fa fa-eye-slash");
+                 }else{
+                     contraseñaConfirmacion.type = "password";
+                     boton.setAttribute("class","fa fa-eye");
+                    
+                 }
+                 
+            }
+            function habilitarSelect(){
+                var asociarSelect = document.getElementById("asociar");
+                var abogadoSelect = document.getElementById("idAbogado");
+                var clienteSelect = document.getElementById("idCliente");
+                if(asociarSelect.value == ""){
+                    abogadoSelect.disabled = true;
+                    clienteSelect.disabled = true;
+                }
+                if(asociarSelect.value == "ABOGADO"){
+                    
+                    abogadoSelect.disabled = false;
+                    clienteSelect.disabled = true;
+                }
+                if(asociarSelect.value == "CLIENTE"){
+                    
+                    abogadoSelect.disabled = true;
+                    clienteSelect.disabled = false;
+                }
+                
+                
+            }
             function validarFormulario(){
                
                 var cuentaValida = validarCuenta();
                 var contraseñaValido = validarContraseña();
+                var contraseñaConfirmacionValido = validarContraseñaConfirmacion();
                 
-                if(cuentaValida && contraseñaValido){
+                if(cuentaValida && contraseñaValido && contraseñaConfirmacionValido){
                     validarUnicidadCuenta();
 
                 }
@@ -206,10 +359,10 @@
                 var retroCuenta = document.getElementById("cuenta-retro");
                 var strCuenta = cuentaInput.value; 
                 
-                if(strCuenta.length < 8 ){ 
+                if(strCuenta.length == 0 ){ 
                     cuentaInput.setAttribute("class","form-control is-invalid");
                     retroCuenta.setAttribute("class","invalid-feedback");
-                    retroCuenta.textContent = 'El nombre de la cuenta debe contener mínimo 8 caracteres';
+                    retroCuenta.textContent = 'El campo esta vacío';
                     
                     return false;
                 }
@@ -276,11 +429,24 @@
                 return true;
             }
             
-            //No se inserta espacios
-            function isNotSpaceKey(evt){
-                var charCode = (evt.which) ? evt.which : event.keyCode;
-                if (charCode > 31 && (charCode == 32 ))
+            function validarContraseñaConfirmacion(){
+                var contrasenaInput = document.getElementById("contrasenaConfirmacion");
+                var retroContrasena = document.getElementById("contrasenaConfirmacion-retro");
+                var strContrasena = contrasenaInput.value;
+                
+                if(strContrasena != document.getElementById("contrasena").value){
+                    contrasenaInput.setAttribute("class","form-control is-invalid");
+                    retroContrasena.setAttribute("class","invalid-feedback");
+                    retroContrasena.textContent = 'No coincide con la contraseña';
+                    
                     return false;
+                    
+                }
+                
+                contrasenaInput.setAttribute("class","form-control is-valid");
+                retroContrasena.setAttribute("class","valid-feedback");
+                retroContrasena.textContent = '';
+                
                 return true;
             }
             

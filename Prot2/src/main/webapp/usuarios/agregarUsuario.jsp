@@ -43,13 +43,21 @@
                 <div class="col-6">
                     <select form="agregarUsuario" 
                             name="idRol" 
-                            id="idRol" 
-                            class="form-control">
+                            id="idRol"
+                            <%if(listaRol.size() == 0) {%>
+                                class="form-control is-invalid"
+                            <%}else{%>
+                                class="form-control"
+                            <%}%>
+                            >
                             <%for (int j = 0; j < listaRol.size(); j++) {%>   
                                 <option value="<%=listaRol.get(j).getIdRol()%>">   
-                                    <%=listaRol.get(j).getDescripcion()%>  
+                                    <%=listaRol.get(j).getRol()%>   
                                 </option>
                             <%}%>
+                        <%if(listaRol.size() == 0) {%>
+                            <div class="invalid-feedback">Debe existir al menos un rol</div>
+                        <%}%>
                     </select>             
                 </div>
             </div>
@@ -65,8 +73,7 @@
                            class="form-control"
                            type="text" 
                            placeholder="Escriba la cuenta del usuario"
-                           required 
-                           minlength="8"
+                           required
                            onkeypress="return isLetterNumberKey(event)">
                     <div id="cuenta-retro"></div>
                 </div> 
@@ -84,12 +91,44 @@
                            type="password" 
                            placeholder="Escriba la contraseña"
                            minlength="8"
-                           onkeypress="return isNotSpaceKey(event)"
                            required >
                     <div id="contrasena-retro"></div>
-                </div> 
+                </div>
+                <div class="col-1">
+                    <i class="fa fa-eye"
+                       id="verContrasena"
+                       style="font-size:24px"  
+                       onmouseover="this.style.cursor = 'pointer'" 
+                       onclick='verPassword()'>  
+                    </i>
+                </div>
             </div>
-                       
+                    
+            <div class="row form-group">
+                <div class="col-3">
+                    <label for="contrasena">Confirmación de contraseña:</label> 
+                </div>
+                <div class="col-6">
+                    <input form="agregarUsuario"
+                           name=""
+                           id="contrasenaConfirmacion"
+                           class="form-control"
+                           type="password" 
+                           placeholder="Escriba de nuevo la contraseña"
+                           minlength="8"
+                           required >
+                    <div id="contrasenaConfirmacion-retro"></div>
+                </div>
+                <div class="col-1">
+                    <i class="fa fa-eye"
+                       id="verContrasenaConfirmacion"
+                       style="font-size:24px"  
+                       onmouseover="this.style.cursor = 'pointer'" 
+                       onclick='verPasswordConfirmacion()'>  
+                    </i>
+                </div>
+            </div>
+                     
             <div class="row form-group">
                 <div class="col-5">
                 </div>
@@ -97,6 +136,9 @@
                     <input id="agregar"
                            type="button"
                            value="Guardar"
+                           <%if(listaRol.size() == 0) {%>
+                                disabled
+                           <%}%>
                            onclick="validarFormulario()">
                 </div>    
             </div>
@@ -105,13 +147,44 @@
         <br>
         <script>
             
+            function verPassword(){
+                 var contraseña =  document.getElementById("contrasena");
+                 var boton = document.getElementById("verContrasena");
+                 
+                 if(contraseña.type === "password"){
+                     contraseña.type = "text";
+                     boton.setAttribute("class","fa fa-eye-slash");
+                  
+                 }else{
+                     contraseña.type = "password";
+                     boton.setAttribute("class","fa fa-eye");
+                 }
+                 
+            }
+            
+            function verPasswordConfirmacion(){
+                 
+                 var contraseñaConfirmacion = document.getElementById("contrasenaConfirmacion");
+                 var boton = document.getElementById("verContrasenaConfirmacion");
+                 
+                 if(contraseñaConfirmacion.type === "password"){
+                     contraseñaConfirmacion.type = "text";
+                     boton.setAttribute("class","fa fa-eye-slash");
+                 }else{
+                     contraseñaConfirmacion.type = "password";
+                     boton.setAttribute("class","fa fa-eye");
+                    
+                 }
+                 
+            }
             
             function validarFormulario(){
                
                 var cuentaValida = validarCuenta();
                 var contraseñaValido = validarContraseña();
+                var contraseñaConfirmacionValido = validarContraseñaConfirmacion();
                 
-                if(cuentaValida && contraseñaValido){
+                if(cuentaValida && contraseñaValido && contraseñaConfirmacionValido){
                     validarUnicidadCuenta();
 
                 }
@@ -193,10 +266,10 @@
                 var retroCuenta = document.getElementById("cuenta-retro");
                 var strCuenta = cuentaInput.value; 
                 
-                if(strCuenta.length < 8 ){ 
+                if(strCuenta.length == 0 ){ 
                     cuentaInput.setAttribute("class","form-control is-invalid");
                     retroCuenta.setAttribute("class","invalid-feedback");
-                    retroCuenta.textContent = 'El nombre de la cuenta debe contener mínimo 8 caracteres';
+                    retroCuenta.textContent = 'El campo esta vacío';
                     
                     return false;
                 }
@@ -252,6 +325,27 @@
             }
             
             
+            function validarContraseñaConfirmacion(){
+                var contrasenaInput = document.getElementById("contrasenaConfirmacion");
+                var retroContrasena = document.getElementById("contrasenaConfirmacion-retro");
+                var strContrasena = contrasenaInput.value;
+                
+                if(strContrasena != document.getElementById("contrasena").value){
+                    contrasenaInput.setAttribute("class","form-control is-invalid");
+                    retroContrasena.setAttribute("class","invalid-feedback");
+                    retroContrasena.textContent = 'No coincide con la contraseña';
+                    
+                    return false;
+                    
+                }
+                
+                contrasenaInput.setAttribute("class","form-control is-valid");
+                retroContrasena.setAttribute("class","valid-feedback");
+                retroContrasena.textContent = '';
+                
+                return true;
+            }
+            
             //Permite unicamente la insercion de numeros y letras
             function isLetterNumberKey(evt){
                 var charCode = (evt.which) ? evt.which : event.keyCode;
@@ -262,15 +356,6 @@
                     return false;
                 return true;
             }
-            
-            //No se inserta espacios
-            function isNotSpaceKey(evt){
-                var charCode = (evt.which) ? evt.which : event.keyCode;
-                if (charCode > 31 && (charCode == 32 ))
-                    return false;
-                return true;
-            }
-            
             
             
            

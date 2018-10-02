@@ -7,6 +7,8 @@ package controlador;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -16,6 +18,8 @@ import modelo.Abogado;
 import modelo.Usuario;
 import modeloMng.AbogadoJpaController;
 import modeloMng.UsuarioJpaController;
+import modeloMng.exceptions.IllegalOrphanException;
+import modeloMng.exceptions.NonexistentEntityException;
 
 /**
  *
@@ -65,7 +69,7 @@ public class AbogadoServlet extends HttpServlet {
         
         if(request.getParameter("agregar") != null){
             try{
-                Integer idUsuario = Integer.parseInt(request.getParameter("idUsuario"));
+                
                 Long ci = Long.parseLong(request.getParameter("ci"));
                 String nombre = request.getParameter("nombre");
                 String apellido = request.getParameter("apellido");
@@ -74,15 +78,18 @@ public class AbogadoServlet extends HttpServlet {
                 String regProf = request.getParameter("regProf");
                 
                 Abogado abogado = new Abogado();
-                Usuario usuario = usuarioControl.findUsuario(idUsuario);
                 
-                abogado.setIdUsuario(usuario);
+                
+                
                 abogado.setCi(ci);
                 abogado.setNombre(nombre);
                 abogado.setApellido(apellido);
                 abogado.setDireccion(direccion);
                 abogado.setTelefono(telefono);
-                abogado.setRegistroProfesional(regProf);
+                abogado.setEstado("ACTIVO");
+                if(regProf.length() > 0){
+                    abogado.setRegistroProfesional(regProf);
+                }
                 
                 abogadoControl.create(abogado);
                 
@@ -105,14 +112,22 @@ public class AbogadoServlet extends HttpServlet {
                 
                 Abogado abogado = abogadoControl.findAbogado(idAbogado);
                 
-                abogado.setCi(ci);
-                abogado.setNombre(nombre);
-                abogado.setApellido(apellido);
-                abogado.setDireccion(direccion);
-                abogado.setTelefono(telefono);
-                abogado.setRegistroProfesional(regProf);
-                
-                abogadoControl.edit(abogado);
+                if(abogado.getEstado().equals("ACTIVO")){
+                    abogado.setCi(ci);
+                    abogado.setNombre(nombre);
+                    abogado.setApellido(apellido);
+                    abogado.setDireccion(direccion);
+                    abogado.setTelefono(telefono);
+                    
+                    if(regProf.length() > 0){
+                        abogado.setRegistroProfesional(regProf);
+                    }
+
+                    abogadoControl.edit(abogado);
+                }else{
+                    
+                    request.getSession().setAttribute("mensajeErrorABM", "El Agente posee estado Inactivo, no se puede editar");
+                }
                 
             }catch(Exception e){
                 request.getSession().setAttribute("mensajeErrorABM", "No se pudo editar el agente");
@@ -122,13 +137,36 @@ public class AbogadoServlet extends HttpServlet {
         }
         
         if(request.getParameter("eliminar") != null){
+                
             try {
                 Integer idAbogado = Integer.parseInt(request.getParameter("idAbogado"));
-                abogadoControl.destroy(idAbogado);
+                Abogado abogado = abogadoControl.findAbogado(idAbogado);
+                boolean borrar = true;
                 
-            } catch (Exception e) {
+                if(abogado.getExpedienteList().size()> 0){
+                    
+                    borrar = false;
+                }
                 
-                request.getSession().setAttribute("mensajeErrorABM", "No se pudo eliminar el agente");
+                if(abogado.getIdUsuario() != null){
+                    
+                    borrar = false;
+                }
+                
+                if(borrar){
+                    abogadoControl.destroy(idAbogado);
+                    
+                }else{
+                    
+                    abogado.setEstado("INACTIVO");
+                    abogadoControl.edit(abogado); 
+                }
+                
+                
+            }catch (Exception e){
+            
+                 request.getSession().setAttribute("mensajeErrorABM", "No se pudo eliminar el agente");
+                 
             }finally{
            
                 response.sendRedirect("abogados.jsp");

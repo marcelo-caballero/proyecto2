@@ -182,18 +182,18 @@ public class PermisoJpaController implements Serializable {
         }
     }
     
-    public Boolean permisoRolVentana(Integer idRol, Integer idVentana) {
+    public Boolean permisoRolVentana(Integer idRol, String ventana) {
         EntityManager em = getEntityManager();
         
         try {
            
             String consulta = "select count(p) from Permiso p where p.idRol.idRol = :idRol "+
-                              "and p.idVentana.idVentana =:idVentana";
+                              "and p.idVentana.nombre =:ventana";
             
             Query q = em.createQuery(consulta);
             q.setParameter("idRol",idRol);
-            q.setParameter("idVentana",idVentana);
-            Integer cant = ((Long) q.getSingleResult()).intValue();
+            q.setParameter("ventana",ventana); 
+            Integer cant = ((Long) q.getSingleResult()).intValue(); 
             
             if(cant>0){
                 return  true;

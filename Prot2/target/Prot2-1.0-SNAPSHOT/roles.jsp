@@ -14,7 +14,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Usuario - Ta'angapp</title>
+        <title>Rol - Ta'angapp</title>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <%@include file="//WEB-INF/paginaCabecera.jsp" %>
         <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.16/css/jquery.dataTables.css">
@@ -40,8 +40,9 @@
                     <tr>
                         
                         <th>Rol</th>
+                        <th>Estado</th>
                         <th>
-                            <%if(permisoControlAcceso.permisoRolVentana(rolUsuarioConectado,37)){%>
+                            <%if(permisoControlAcceso.permisoRolVentana(rolUsuarioConectado,"agregarRol.jsp")){%> 
                                 <i class="fa fa-plus-circle" 
                                     style="font-size:24px"  
                                     onmouseover="this.style.cursor = 'pointer'" 
@@ -57,16 +58,24 @@
 
                     <tr>
                         <input id="idRol-<%=i%>" type="hidden"  value="<%=lista.get(i).getIdRol()%>"/>   
-                        <td id="descripcion-<%=i%>"><%=lista.get(i).getDescripcion()%></td>
+                        <td id="nombreRol-<%=i%>"><%=lista.get(i).getRol()%></td>
+                        <td><%=lista.get(i).getEstado().substring(0,1)+lista.get(i).getEstado().substring(1).toLowerCase()%></td> 
                         <td>
-                            <%if(permisoControlAcceso.permisoRolVentana(rolUsuarioConectado,38)){%>
+                            <%if(permisoControlAcceso.permisoRolVentana(rolUsuarioConectado,"verRol.jsp")){%> 
+                                <i class="fa fa-search" 
+                                   style="font-size:24px"  
+                                   onmouseover="this.style.cursor = 'pointer'" 
+                                   onclick='window.location.href = "<%=request.getContextPath()%>/roles/verRol.jsp?idRol=<%=lista.get(i).getIdRol()%>"'>  
+                                </i>
+                            <%}%>
+                            <%if(permisoControlAcceso.permisoRolVentana(rolUsuarioConectado,"editarRol.jsp")){%>
                                 <i class="fa fa-edit" 
                                    style="font-size:24px"  
                                    onmouseover="this.style.cursor = 'pointer'" 
                                    onclick='window.location.href = "<%=request.getContextPath()%>/roles/editarRol.jsp?idRol=<%=lista.get(i).getIdRol()%>"'>  
                                 </i>
                             <%}%>
-                            <%if(permisoControlAcceso.permisoRolVentana(rolUsuarioConectado,39 )){%> 
+                            <%if(permisoControlAcceso.permisoRolVentana(rolUsuarioConectado,"eliminarRol" )){%> 
                                 <i class="fa fa-remove" 
                                    style="font-size:24px"  
                                    onmouseover="this.style.cursor = 'pointer'" 
@@ -109,12 +118,12 @@
                 $(document).ready(function () {
 
                     $("#modal-eliminar").modal();
-                    var descripcion = document.getElementById("descripcion-"+fila).textContent;
+                    var nombreRol = document.getElementById("nombreRol-"+fila).textContent;
                     var idRol = document.getElementById("idRol-"+fila).value; 
                     
                     document.getElementById("eliminar-rol").value = idRol; 
                     document.getElementById("eliminar-mensaje").textContent =
-                            "¿Desea eliminar el rol " + descripcion + "?";
+                            "¿Desea eliminar el rol " + nombreRol + "?";
                     
                     
                 });

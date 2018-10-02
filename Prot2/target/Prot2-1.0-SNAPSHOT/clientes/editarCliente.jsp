@@ -40,19 +40,6 @@
                   <input type="hidden" name="idCliente" value="<%=idCliente%>"> 
             </form>
             
-            <div class="row form-group">
-                <div class="col-3">
-                    <label for="idUsuario">Cuenta de Usuario:</label>
-                </div>  
-                <div class="col-6">
-                    <input  form="editarCliente" 
-                            name="idUsuario" 
-                            type="text"
-                            class="form-control"
-                            disabled
-                            value="<%=cliente.getIdUsuario().getCuenta()%>"> 
-                </div>
-            </div>
                  
             <div class="row form-group">
                 <div class="col-3">

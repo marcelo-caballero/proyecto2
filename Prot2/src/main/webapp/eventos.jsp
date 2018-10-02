@@ -50,8 +50,8 @@
                         <th>Nombre</th>
                         <th>Fecha a notificar</th>
                         <th>
-                            <%if(permisoControlAcceso.permisoRolVentana(rolUsuarioConectado,15)){%>
-                                <i class="fa fa-plus-circle" 
+                            <%if(permisoControlAcceso.permisoRolVentana(rolUsuarioConectado,"agregarEvento.jsp")){%> 
+                                <i class="fa fa-plus-circle"  
                                     style="font-size:24px"  
                                     onmouseover="this.style.cursor = 'pointer'" 
                                     onclick='window.location.href = "<%=request.getContextPath()%>/eventos/agregarEvento.jsp"'> 
@@ -70,21 +70,21 @@
                         <td id=""><%=listaEventos.get(i).getStringFecha()%></td>   
                         
                         <td>
-                            <%if(permisoControlAcceso.permisoRolVentana(rolUsuarioConectado,16 )){%>
+                            <%if(permisoControlAcceso.permisoRolVentana(rolUsuarioConectado,"verEvento.jsp" )){%> 
                                 <i class="fa fa-search" 
                                    style="font-size:24px"  
                                    onmouseover="this.style.cursor = 'pointer'" 
                                    onclick='window.location.href = "<%=request.getContextPath()%>/eventos/verEvento.jsp?idEvento=<%=listaEventos.get(i).getIdEvento()%>"'>
                                 </i>
                             <%}%>
-                            <%if(permisoControlAcceso.permisoRolVentana(rolUsuarioConectado, 17)){%>
+                            <%if(permisoControlAcceso.permisoRolVentana(rolUsuarioConectado,"editarEvento.jsp")){%> 
                                 <i class="fa fa-edit" 
                                    style="font-size:24px"  
                                    onmouseover="this.style.cursor = 'pointer'" 
                                    onclick='window.location.href = "<%=request.getContextPath()%>/eventos/editarEvento.jsp?idEvento=<%=listaEventos.get(i).getIdEvento()%>"'> 
                                 </i>
                             <%}%>
-                            <%if(permisoControlAcceso.permisoRolVentana(rolUsuarioConectado, 18)){%>
+                            <%if(permisoControlAcceso.permisoRolVentana(rolUsuarioConectado,"eliminarEvento")){%>
                                 <i class="fa fa-remove" 
                                    style="font-size:24px"  
                                    onmouseover="this.style.cursor = 'pointer'" 

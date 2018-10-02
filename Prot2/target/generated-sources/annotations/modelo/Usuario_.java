@@ -8,11 +8,12 @@ import modelo.Abogado;
 import modelo.Cliente;
 import modelo.Rol;
 
-@Generated(value="EclipseLink-2.5.2.v20140319-rNA", date="2018-09-14T15:38:18")
+@Generated(value="EclipseLink-2.5.2.v20140319-rNA", date="2018-09-19T10:33:45")
 @StaticMetamodel(Usuario.class)
 public class Usuario_ { 
 
     public static volatile ListAttribute<Usuario, Cliente> clienteList;
+    public static volatile SingularAttribute<Usuario, String> estado;
     public static volatile SingularAttribute<Usuario, String> password;
     public static volatile SingularAttribute<Usuario, Rol> idRol;
     public static volatile SingularAttribute<Usuario, Integer> idUsuario;

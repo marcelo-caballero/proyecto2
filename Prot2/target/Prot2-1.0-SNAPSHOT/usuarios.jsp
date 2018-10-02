@@ -41,8 +41,9 @@
                         <th>Código Usuario</th>
                         <th>Cuenta</th>
                         <th>Rol</th>
+                        <th>Estado</th>
                         <th>
-                            <%if(permisoControlAcceso.permisoRolVentana(rolUsuarioConectado,32 )){%>
+                            <%if(permisoControlAcceso.permisoRolVentana(rolUsuarioConectado,"agregarUsuario.jsp")){%> 
                                 <i class="fa fa-plus-circle" 
                                     style="font-size:24px"  
                                     onmouseover="this.style.cursor = 'pointer'" 
@@ -60,16 +61,17 @@
                         <input id="idUsuario-<%=i%>" type="hidden"  value="<%=lista.get(i).getIdUsuario()%>"/>   
                         <td><%=lista.get(i).getIdUsuario()%></td>
                         <td id="cuenta-<%=i%>"><%=lista.get(i).getCuenta()%></td> 
-                        <td><%=lista.get(i).getIdRol().getDescripcion()%></td>
+                        <td><%=lista.get(i).getIdRol().getRol()%></td>
+                        <td><%=lista.get(i).getEstado()%></td> 
                         <td>
-                            <%if(permisoControlAcceso.permisoRolVentana(rolUsuarioConectado, 33)){%>
+                            <%if(permisoControlAcceso.permisoRolVentana(rolUsuarioConectado,"verUsuario.jsp")){%> 
                                 <i class="fa fa-search" 
                                    style="font-size:24px"  
                                    onmouseover="this.style.cursor = 'pointer'" 
                                    onclick='window.location.href = "<%=request.getContextPath()%>/usuarios/verUsuario.jsp?idUsuario=<%=lista.get(i).getIdUsuario()%>"'>  
                                 </i>
                             <%}%>
-                            <%if(permisoControlAcceso.permisoRolVentana(rolUsuarioConectado,34 )){%>
+                            <%if(permisoControlAcceso.permisoRolVentana(rolUsuarioConectado,"editarUsuario.jsp" )){%>
                                 <i class="fa fa-edit" 
                                    style="font-size:24px"  
 
@@ -77,10 +79,10 @@
                                    onclick='window.location.href = "<%=request.getContextPath()%>/usuarios/editarUsuario.jsp?idUsuario=<%=lista.get(i).getIdUsuario()%>"'>  
                                 </i>
                             <%}%>
-                            <%if(permisoControlAcceso.permisoRolVentana(rolUsuarioConectado,35)){%>
+                            <%if(permisoControlAcceso.permisoRolVentana(rolUsuarioConectado,"eliminarUsuario")){%>
                                 <i class="fa fa-remove" 
                                    style="font-size:24px"  
-                                   onmouseover="this.style.cursor = 'pointer'" 
+                                   onmouseover="this.style.cursor = 'pointer'"
                                    onclick="modalEliminar('<%=i%>')"> 
                                 </i>
                             <%}%>

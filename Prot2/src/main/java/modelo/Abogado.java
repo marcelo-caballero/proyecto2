@@ -43,6 +43,17 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Abogado.findByRegistroProfesional", query = "SELECT a FROM Abogado a WHERE a.registroProfesional = :registroProfesional")})
 public class Abogado implements Serializable {
 
+    @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 2147483647)
+    @Column(name = "estado")
+    private String estado;
+
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "ci")
+    private long ci;
+
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -69,9 +80,6 @@ public class Abogado implements Serializable {
     @Size(min = 1, max = 2147483647)
     @Column(name = "telefono")
     private String telefono;
-    @NotNull
-    @Column(name = "ci")
-    private Long ci;
     @Basic(optional = false)
     @Size(min = 1, max = 2147483647)
     @Column(name = "registro_profesional")
@@ -140,13 +148,6 @@ public class Abogado implements Serializable {
         this.telefono = telefono;
     }
 
-    public Long getCi() {
-        return ci;
-    }
-
-    public void setCi(Long ci) {
-        this.ci = ci;
-    }
 
     public String getRegistroProfesional() {
         if(this.registroProfesional == null){
@@ -212,5 +213,21 @@ public class Abogado implements Serializable {
     
     public String getNombreApellido(){
         return this.nombre + " "+ this.apellido;
+    }
+
+    public long getCi() {
+        return ci;
+    }
+
+    public void setCi(long ci) {
+        this.ci = ci;
+    }
+
+    public String getEstado() {
+        return estado;
+    }
+
+    public void setEstado(String estado) {
+        this.estado = estado;
     }
 }

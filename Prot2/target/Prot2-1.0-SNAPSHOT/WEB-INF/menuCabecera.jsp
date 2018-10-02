@@ -37,43 +37,43 @@
         <div class="col-9" id="linea2">
             <ul class="nav nav-tabs" >
                 
-                <%if(permisoControlAcceso.permisoRolVentana(rolUsuarioConectado, 1)){%>
+                <%if(permisoControlAcceso.permisoRolVentana(rolUsuarioConectado,"marcas.jsp")){%> 
                     <li class="nav-item" >
                         <a class="nav-link" href="<%=request.getContextPath()%>/marcas.jsp">Marcas</a>
                     </li>
                 <%}%>
                 
-                <%if(permisoControlAcceso.permisoRolVentana(rolUsuarioConectado, 6)){%>
+                <%if(permisoControlAcceso.permisoRolVentana(rolUsuarioConectado,"expedientes.jsp")){%>
                     <li class="nav-item">
                         <a class="nav-link" href="<%=request.getContextPath()%>/expedientes.jsp">Expedientes</a>
                     </li>
                 <%}%>
                 
-                <%if(permisoControlAcceso.permisoRolVentana(rolUsuarioConectado, 21)){%> 
+                <%if(permisoControlAcceso.permisoRolVentana(rolUsuarioConectado,"abogados.jsp")){%>  
                     <li class="nav-item">
                         <a class="nav-link" href="<%=request.getContextPath()%>/abogados.jsp">Agentes</a>
                     </li>
                 <%}%>
                 
-                <%if(permisoControlAcceso.permisoRolVentana(rolUsuarioConectado,26)){%> 
+                <%if(permisoControlAcceso.permisoRolVentana(rolUsuarioConectado,"clientes.jsp")){%>  
                     <li class="nav-item">
                         <a class="nav-link" href="<%=request.getContextPath()%>/clientes.jsp">Titulares</a>
                     </li>
                 <%}%>    
                     
-                <%if(permisoControlAcceso.permisoRolVentana(rolUsuarioConectado,31)){%>
+                <%if(permisoControlAcceso.permisoRolVentana(rolUsuarioConectado,"usuarios.jsp")){%> 
                     <li class="nav-item">
                         <a class="nav-link" href="<%=request.getContextPath()%>/usuarios.jsp">Usuarios</a>
                     </li>
                 <%}%>
                 
-                <%if(permisoControlAcceso.permisoRolVentana(rolUsuarioConectado,36)){%>
+                <%if(permisoControlAcceso.permisoRolVentana(rolUsuarioConectado,"roles.jsp")){%> 
                     <li class="nav-item">
                         <a class="nav-link" href="<%=request.getContextPath()%>/roles.jsp">Roles</a>
                     </li>
                 <%}%>
                 
-                <%if(permisoControlAcceso.permisoRolVentana(rolUsuarioConectado,40)){%>
+                <%if(permisoControlAcceso.permisoRolVentana(rolUsuarioConectado,"permisos.jsp")){%>
                     <li class="nav-item">
                         <a class="nav-link" href="<%=request.getContextPath()%>/permisos.jsp">Permisos</a>
                     </li>

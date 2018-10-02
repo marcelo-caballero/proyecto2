@@ -36,24 +36,6 @@
                   novalidate>
             </form>
             
-            <div class="row form-group">
-                <div class="col-3">
-                    <label for="idUsuario">Cuenta de Usuario:</label>
-                </div>  
-                <div class="col-6">
-                    <select form="agregarCliente" 
-                            name="idUsuario" 
-                            id="idUsuario" 
-                            class="form-control">
-                            <%for (int j = 0; j < listaUsuario.size(); j++) {%>   
-                                <option value="<%=listaUsuario.get(j).getIdUsuario()%>">  
-                                    <%=listaUsuario.get(j).getCuenta()%>  
-                                </option>
-                            <%}%>
-                    </select>
-                    <div id="idUsuario-retro"></div>
-                </div>
-            </div>
                  
             <div class="row form-group">
                 <div class="col-3">

@@ -14,6 +14,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import modelo.Rol;
 import modeloMng.RolJpaController;
+import modeloMng.exceptions.IllegalOrphanException;
+import modeloMng.exceptions.NonexistentEntityException;
 
 /**
  *
@@ -53,10 +55,14 @@ public class RolServlet extends HttpServlet {
             try {
                 rolControl.destroy(idRol);
                 
-            } catch (Exception e) {
+            }catch(IllegalOrphanException e) {
+                
+                request.getSession().setAttribute("mensajeErrorABM", "El rol se encuentra asignado a uno o varios usuarios");
+            
+            }catch(Exception e){
                 
                 request.getSession().setAttribute("mensajeErrorABM", "No se pudo eliminar el rol");
-            
+                
             }finally{
                 
                 response.sendRedirect("roles.jsp");
@@ -68,11 +74,13 @@ public class RolServlet extends HttpServlet {
         if(request.getParameter("agregar")!= null){
             try{
                 
-                String descripcion = request.getParameter("rol");
-                
+                String descripcion = request.getParameter("descripcion");
+                String nombreRol = request.getParameter("rol");
                 
                 Rol rol = new Rol();
+                rol.setRol(nombreRol);
                 rol.setDescripcion(descripcion);
+                rol.setEstado("NO ASIGNADO");
                 
                 rolControl.create(rol);
                 
@@ -92,9 +100,12 @@ public class RolServlet extends HttpServlet {
                 Integer idRol = Integer.parseInt(request.getParameter("idRol"));
                 
                 Rol rol = rolControl.findRol(idRol);
-                String descripcion = request.getParameter("rol");
+                String nombreRol = request.getParameter("rol");
+                String descripcion = request.getParameter("descripcion");
                 
+                rol.setRol(nombreRol);
                 rol.setDescripcion(descripcion);
+                
                 
                 rolControl.edit(rol);
                 

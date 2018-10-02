@@ -47,7 +47,7 @@
                         <th>Clase</th>
                         <th>Status</th>
                         <th>
-                            <%if(permisoControlAcceso.permisoRolVentana(rolUsuarioConectado,7)){%> 
+                            <%if(permisoControlAcceso.permisoRolVentana(rolUsuarioConectado,"agregarExpediente.jsp")){%> 
                                 <i class="fa fa-plus-circle" 
                                    style="font-size:24px"  
                                    onmouseover="this.style.cursor = 'pointer'" 
@@ -70,21 +70,21 @@
                         <td id=""><%=lista.get(i).getNroClase().getNroClase()%></td>     
                         <td id=""><%=lista.get(i).getIdEstado().getDescripcion()%></td>  
                         <td>
-                            <%if(permisoControlAcceso.permisoRolVentana(rolUsuarioConectado,8)){%>
+                            <%if(permisoControlAcceso.permisoRolVentana(rolUsuarioConectado,"verExpediente.jsp")){%>
                                 <i class="fa fa-search" 
                                    style="font-size:24px"  
                                    onmouseover="this.style.cursor = 'pointer'" 
                                    onclick='window.location.href = "<%=request.getContextPath()%>/expedientes/verExpediente.jsp?idExpediente=<%=lista.get(i).getIdExpediente()%>"'>  
                                 </i>
                             <%}%>
-                            <%if(permisoControlAcceso.permisoRolVentana(rolUsuarioConectado, 19)){%>
+                            <%if(permisoControlAcceso.permisoRolVentana(rolUsuarioConectado,"editarExpediente.jsp")){%> 
                                 <i class="fa fa-edit" 
                                    style="font-size:24px"  
                                    onmouseover="this.style.cursor = 'pointer'" 
                                    onclick='window.location.href = "<%=request.getContextPath()%>/expedientes/editarExpediente.jsp?idExpediente=<%=lista.get(i).getIdExpediente()%>"'> 
                                 </i>
                             <%}%>
-                            <%if(permisoControlAcceso.permisoRolVentana(rolUsuarioConectado,20)){%> 
+                            <%if(permisoControlAcceso.permisoRolVentana(rolUsuarioConectado,"eliminarExpediente")){%>  
                                 <i class="fa fa-remove" 
                                    style="font-size:24px"  
                                    onmouseover="this.style.cursor = 'pointer'" 

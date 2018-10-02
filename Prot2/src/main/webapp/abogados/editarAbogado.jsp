@@ -38,17 +38,7 @@
                 <input type="hidden" name="idAbogado" value="<%=idAbogado%>"> 
             </form>
             
-            <div class="row form-group">
-                <div class="col-3">
-                    <label for="idUsuario">Cuenta de Usuario:</label>
-                </div>  
-                <div class="col-6">
-                    <input form="editarAbogado" 
-                            readonly
-                            class="form-control"
-                            value="<%=abogado.getIdUsuario().getCuenta()%>"> 
-                </div>
-            </div>
+            
                     
             <div class="row form-group">
                 <div class="col-3">
@@ -62,6 +52,9 @@
                            type="number" 
                            placeholder="Escriba el número de cédula del agente"
                            required 
+                           <%if(abogado.getExpedienteList().size() > 0){%>
+                                readonly
+                           <%}%>
                            value="<%=abogado.getCi()%>"
                            onkeypress="return isNumberKey(event)">
                     <div id="ci-retro"></div>
@@ -80,6 +73,9 @@
                            type="text" 
                            placeholder="Escriba el nombre del agente"
                            maxlength=""
+                           <%if(abogado.getExpedienteList().size() > 0){%>
+                                readonly
+                           <%}%>
                            value="<%=abogado.getNombre()%>" 
                            required >
                     <div id="nombre-retro"></div>
@@ -98,6 +94,9 @@
                            type="text" 
                            placeholder="Escriba el apellido del agente"
                            maxlength=""
+                           <%if(abogado.getExpedienteList().size()> 0){%>
+                                readonly
+                           <%}%>
                            value="<%=abogado.getApellido()%>" 
                            required >
                     <div id="apellido-retro"></div>
@@ -171,6 +170,9 @@
         <br>
         <script>
             function validarFormulario(){
+                var regProf = document.getElementById("regProf");
+                regProf.value = regProf.value.trim();
+                
                 var ciValido = validarCi();
                 var nombreValido = validarNombre();
                 var apellidoValido = validarApellido();
@@ -279,6 +281,8 @@
                 var retroNombre = document.getElementById("nombre-retro");
                 var strNombre = nombreInput.value.trim();
                 
+                nombreInput.value = strNombre;
+                
                 if(strNombre.length == 0){ 
                     nombreInput.setAttribute("class","form-control is-invalid");
                     retroNombre.setAttribute("class","invalid-feedback");
@@ -298,6 +302,8 @@
                 var apellidoInput = document.getElementById("apellido");
                 var retroApellido = document.getElementById("apellido-retro");
                 var strApellido = apellidoInput.value.trim();
+                
+                apellidoInput.value = strApellido;
                 
                 if(strApellido.length == 0){ 
                     apellidoInput.setAttribute("class","form-control is-invalid");
@@ -319,6 +325,8 @@
                 var retroDireccion = document.getElementById("direccion-retro");
                 var strDireccion = direccionInput.value.trim();
                 
+                direccionInput.value = strDireccion;
+                
                 if(strDireccion.length == 0){ 
                     direccionInput.setAttribute("class","form-control is-invalid");
                     retroDireccion.setAttribute("class","invalid-feedback");
@@ -334,30 +342,14 @@
                 return true;
             }
             
-            function validarDireccion(){
-                var direccionInput = document.getElementById("direccion");
-                var retroDireccion = document.getElementById("direccion-retro");
-                var strDireccion = direccionInput.value.trim();
-                
-                if(strDireccion.length == 0){ 
-                    direccionInput.setAttribute("class","form-control is-invalid");
-                    retroDireccion.setAttribute("class","invalid-feedback");
-                    retroDireccion.textContent = 'El campo esta vacío';
-                    
-                    return false;
-                }
-                
-                direccionInput.setAttribute("class","form-control is-valid");
-                retroDireccion.setAttribute("class","valid-feedback");
-                retroDireccion.textContent = '';
-                    
-                return true;
-            }
+            
             
             function validarTelefono(){
                 var telefonoInput = document.getElementById("telefono");
                 var retroTelefono = document.getElementById("telefono-retro");
                 var strTelefono = telefonoInput.value.trim();
+                
+                telefonoInput.value = strTelefono;
                 
                 if(strTelefono.length == 0){ 
                     telefonoInput.setAttribute("class","form-control is-invalid");

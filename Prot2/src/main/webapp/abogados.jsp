@@ -44,7 +44,7 @@
                         <th>Teléfono</th>
                         <th>Registro Profesional</th>
                         <th>
-                            <%if(permisoControlAcceso.permisoRolVentana(rolUsuarioConectado, 22)){%>
+                            <%if(permisoControlAcceso.permisoRolVentana(rolUsuarioConectado,"agregarAbogado.jsp")){%> 
                                 <i class="fa fa-plus-circle" 
                                     style="font-size:24px"  
                                     onmouseover="this.style.cursor = 'pointer'" 
@@ -66,21 +66,21 @@
                         <td><%=lista.get(i).getTelefono()%></td> 
                         <td><%=lista.get(i).getRegistroProfesional()%></td> 
                         <td>
-                            <%if(permisoControlAcceso.permisoRolVentana(rolUsuarioConectado,23 )){%>
+                            <%if(permisoControlAcceso.permisoRolVentana(rolUsuarioConectado,"verAbogado.jsp" )){%>
                                 <i class="fa fa-search" 
                                    style="font-size:24px"  
                                    onmouseover="this.style.cursor = 'pointer'" 
                                    onclick='window.location.href = "<%=request.getContextPath()%>/abogados/verAbogado.jsp?idAbogado=<%=lista.get(i).getIdAbogado()%>"'>  
                                 </i>
                             <%}%>
-                            <%if(permisoControlAcceso.permisoRolVentana(rolUsuarioConectado,24 )){%>
+                            <%if(permisoControlAcceso.permisoRolVentana(rolUsuarioConectado,"editarAbogado.jsp")){%>
                                 <i class="fa fa-edit" 
                                    style="font-size:24px"  
                                    onmouseover="this.style.cursor = 'pointer'" 
                                    onclick='window.location.href = "<%=request.getContextPath()%>/abogados/editarAbogado.jsp?idAbogado=<%=lista.get(i).getIdAbogado()%>"'> 
                                 </i>
                             <%}%>
-                            <%if(permisoControlAcceso.permisoRolVentana(rolUsuarioConectado,25)){%>
+                            <%if(permisoControlAcceso.permisoRolVentana(rolUsuarioConectado,"eliminarAbogado")){%>
                                 <i class="fa fa-remove" 
                                    style="font-size:24px"  
                                    onmouseover="this.style.cursor = 'pointer'" 

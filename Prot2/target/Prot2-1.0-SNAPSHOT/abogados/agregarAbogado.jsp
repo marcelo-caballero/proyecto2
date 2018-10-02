@@ -17,11 +17,8 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <%@include file="//WEB-INF/paginaCabecera.jsp" %>
     </head>
-    <body onload="verificarSelectNoVacios()">
-        <%
-            List<Usuario> listaUsuario = new UsuarioJpaController().getNuevosUsuariosRolAbogado();
-            
-        %>
+    <body>
+        
         <%@include file="//WEB-INF/menuCabecera.jsp" %>
         <br>
          
@@ -35,26 +32,7 @@
                   method="post" 
                   novalidate>
             </form>
-            
-            <div class="row form-group">
-                <div class="col-3">
-                    <label for="idUsuario">Cuenta de Usuario:</label>
-                </div>  
-                <div class="col-6">
-                    <select form="agregarAbogado" 
-                            name="idUsuario" 
-                            id="idUsuario" 
-                            class="form-control">
-                            <%for (int j = 0; j < listaUsuario.size(); j++) {%>   
-                                <option value="<%=listaUsuario.get(j).getIdUsuario()%>">  
-                                    <%=listaUsuario.get(j).getCuenta()%>  
-                                </option>
-                            <%}%>
-                    </select>
-                    <div id="idUsuario-retro"></div>
-                </div>
-            </div>
-                    
+                   
             <div class="row form-group">
                 <div class="col-3">
                     <label for="ci">C.I.Nº:</label> 
@@ -171,6 +149,9 @@
         <br>
         <script>
             function validarFormulario(){
+                var regProf = document.getElementById("regProf");
+                regProf.value = regProf.value.trim();
+                
                 var ciValido = validarCi();
                 var nombreValido = validarNombre();
                 var apellidoValido = validarApellido();
@@ -279,6 +260,8 @@
                 var retroNombre = document.getElementById("nombre-retro");
                 var strNombre = nombreInput.value.trim();
                 
+                nombreInput.value = strNombre;
+                
                 if(strNombre.length == 0){ 
                     nombreInput.setAttribute("class","form-control is-invalid");
                     retroNombre.setAttribute("class","invalid-feedback");
@@ -298,6 +281,8 @@
                 var apellidoInput = document.getElementById("apellido");
                 var retroApellido = document.getElementById("apellido-retro");
                 var strApellido = apellidoInput.value.trim();
+                
+                apellidoInput.value = strApellido;
                 
                 if(strApellido.length == 0){ 
                     apellidoInput.setAttribute("class","form-control is-invalid");
@@ -319,6 +304,8 @@
                 var retroDireccion = document.getElementById("direccion-retro");
                 var strDireccion = direccionInput.value.trim();
                 
+                direccionInput.value = strDireccion;
+                
                 if(strDireccion.length == 0){ 
                     direccionInput.setAttribute("class","form-control is-invalid");
                     retroDireccion.setAttribute("class","invalid-feedback");
@@ -334,30 +321,14 @@
                 return true;
             }
             
-            function validarDireccion(){
-                var direccionInput = document.getElementById("direccion");
-                var retroDireccion = document.getElementById("direccion-retro");
-                var strDireccion = direccionInput.value.trim();
-                
-                if(strDireccion.length == 0){ 
-                    direccionInput.setAttribute("class","form-control is-invalid");
-                    retroDireccion.setAttribute("class","invalid-feedback");
-                    retroDireccion.textContent = 'El campo esta vacío';
-                    
-                    return false;
-                }
-                
-                direccionInput.setAttribute("class","form-control is-valid");
-                retroDireccion.setAttribute("class","valid-feedback");
-                retroDireccion.textContent = '';
-                    
-                return true;
-            }
+            
             
             function validarTelefono(){
                 var telefonoInput = document.getElementById("telefono");
                 var retroTelefono = document.getElementById("telefono-retro");
                 var strTelefono = telefonoInput.value.trim();
+                
+                telefonoInput.value = strTelefono;
                 
                 if(strTelefono.length == 0){ 
                     telefonoInput.setAttribute("class","form-control is-invalid");
@@ -382,21 +353,7 @@
                 return true;
             }
             
-            //Verificar que los select no esten vacíos
-            function verificarSelectNoVacios(){
-                var idUsuarioInput = document.getElementById("idUsuario");
-                var retroIdUsuario = document.getElementById("idUsuario-retro");
-                var strIdUsuario = idUsuarioInput.value.trim();
-                
-                if(strIdUsuario.length == 0){ 
-                    idUsuarioInput.setAttribute("class","form-control is-invalid");
-                    retroIdUsuario.setAttribute("class","invalid-feedback");
-                    retroIdUsuario.textContent = 'Debe cargar primero la cuenta de usuario del nuevo abogado';
-                    
-                    document.getElementById("agregar").setAttribute("disabled","");
-                }
-                
-            }
+           
         </script>
     </body>
 </html>

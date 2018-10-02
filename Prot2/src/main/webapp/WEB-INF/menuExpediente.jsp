@@ -14,14 +14,14 @@
             Detalles</a>
     </li>
 
-    <%if (permisoControlAccesoExp.permisoRolVentana(rolUsuarioConectadoExp, 9)) {%>
+    <%if (permisoControlAccesoExp.permisoRolVentana(rolUsuarioConectadoExp,"documentos.jsp")){%>
     <li class="nav-item">
         <a class="nav-link" 
            href="<%=request.getContextPath()%>/documentos.jsp">
             Documentos</a>
     </li>
     <%}%>
-    <%if (permisoControlAccesoExp.permisoRolVentana(rolUsuarioConectadoExp, 14)) {%>
+    <%if (permisoControlAccesoExp.permisoRolVentana(rolUsuarioConectadoExp,"eventos.jsp")){%>
     <li class="nav-item">
         <a class="nav-link" href="<%=request.getContextPath()%>/eventos.jsp">
             Eventos</a>

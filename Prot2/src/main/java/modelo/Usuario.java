@@ -39,6 +39,16 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Usuario.findByPassword", query = "SELECT u FROM Usuario u WHERE u.password = :password")})
 public class Usuario implements Serializable {
 
+    @Size(max = 2147483647)
+    @Column(name = "asociado")
+    private String asociado;
+
+    @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 2147483647)
+    @Column(name = "estado")
+    private String estado;
+
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -149,6 +159,22 @@ public class Usuario implements Serializable {
     @Override
     public String toString() {
         return "modelo.Usuario[ idUsuario=" + idUsuario + " ]";
+    }
+
+    public String getEstado() {
+        return estado;
+    }
+
+    public void setEstado(String estado) {
+        this.estado = estado;
+    }
+
+    public String getAsociado() {
+        return asociado;
+    }
+
+    public void setAsociado(String asociado) {
+        this.asociado = asociado;
     }
     
 }

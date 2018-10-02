@@ -97,14 +97,27 @@
                 </div> 
             </div>
                 
+           
             <div class="row form-group">
                 <div class="col-3">
-                    <label>Cuenta de Usuario:</label>
+                    <label>Estado:</label>
                 </div>
                 <div class="col-6 form-control">
-                    <%=cliente.getIdUsuario().getCuenta()%> 
+                    <%=cliente.getEstado()%> 
                 </div> 
             </div>
+            
+            
+            <%if(cliente.getIdUsuario() != null){%> 
+                <div class="row form-group">
+                    <div class="col-3">
+                        <label>Cuenta de Usuario:</label>
+                    </div>
+                    <div class="col-6 form-control">
+                        <%=cliente.getIdUsuario().getCuenta()%> 
+                    </div> 
+                </div>
+            <%}%>
         </div>
         <br>
     </body>

@@ -323,4 +323,23 @@ public class ClienteJpaController implements Serializable {
             em.close();
         }
     }
+    
+    /**
+     * Retorna una lista de clientes que no tengan cuenta de usuario
+     * @return List<Cliente>
+     */
+    
+    public List<Cliente> getListaClienteSinUsuario() {
+        EntityManager em = getEntityManager();
+        
+        try {
+           
+            String consulta = "select c from Cliente c where c.idUsuario is null";
+            Query q = em.createQuery(consulta); 
+            return q.getResultList();
+            
+        }finally {
+            em.close();
+        }
+    }
 }

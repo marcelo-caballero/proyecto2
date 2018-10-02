@@ -174,7 +174,7 @@ public class MarcaServlet extends HttpServlet {
                 marcaControl.destroy(idMarca);
                 
             }catch(Exception e) {
-                
+                System.out.println(e);
                 request.getSession().setAttribute("mensajeErrorABM", "No se pudo eliminar la marca");
             
             }finally{

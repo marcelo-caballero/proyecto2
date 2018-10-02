@@ -43,7 +43,7 @@
                         <th>Dirección</th>
                         <th>Teléfono</th>
                         <th>
-                            <%if(permisoControlAcceso.permisoRolVentana(rolUsuarioConectado,27 )){%>
+                            <%if(permisoControlAcceso.permisoRolVentana(rolUsuarioConectado,"agregarCliente.jsp" )){%>
                                 <i class="fa fa-plus-circle" 
                                     style="font-size:24px"  
                                     onmouseover="this.style.cursor = 'pointer'" 
@@ -64,21 +64,21 @@
                         <td><%=lista.get(i).getDireccion()%></td>  
                         <td><%=lista.get(i).getTelefono()%></td>
                         <td>
-                            <%if(permisoControlAcceso.permisoRolVentana(rolUsuarioConectado, 28)){%>
+                            <%if(permisoControlAcceso.permisoRolVentana(rolUsuarioConectado,"verCliente.jsp")){%> 
                                 <i class="fa fa-search" 
                                    style="font-size:24px"  
                                    onmouseover="this.style.cursor = 'pointer'" 
                                    onclick='window.location.href = "<%=request.getContextPath()%>/clientes/verCliente.jsp?idCliente=<%=lista.get(i).getIdCliente()%>"'>  
                                 </i>
                             <%}%>
-                            <%if(permisoControlAcceso.permisoRolVentana(rolUsuarioConectado,29 )){%>
+                            <%if(permisoControlAcceso.permisoRolVentana(rolUsuarioConectado,"editarCliente.jsp")){%>
                                 <i class="fa fa-edit" 
                                    style="font-size:24px"  
                                    onmouseover="this.style.cursor = 'pointer'" 
                                    onclick='window.location.href = "<%=request.getContextPath()%>/clientes/editarCliente.jsp?idCliente=<%=lista.get(i).getIdCliente()%>"'>  
                                 </i>
                             <%}%>
-                            <%if(permisoControlAcceso.permisoRolVentana(rolUsuarioConectado,30 )){%>
+                            <%if(permisoControlAcceso.permisoRolVentana(rolUsuarioConectado,"eliminarCliente")){%>
                                 <i class="fa fa-remove" 
                                    style="font-size:24px"  
                                    onmouseover="this.style.cursor = 'pointer'" 

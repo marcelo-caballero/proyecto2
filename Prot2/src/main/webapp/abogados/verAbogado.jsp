@@ -87,14 +87,29 @@
                 </div> 
             </div>
                 
+            
             <div class="row form-group">
                 <div class="col-3">
-                    <label>Cuenta de Usuario:</label>
+                    <label>Estado:</label>
                 </div>
                 <div class="col-6 form-control">
-                    <%=abogado.getIdUsuario().getCuenta()%> 
+                    <%=abogado.getEstado()%> 
                 </div> 
             </div>
+          
+            
+            <%if(abogado.getIdUsuario() != null){%>
+                <div class="row form-group">
+                    <div class="col-3">
+                        <label>Cuenta de Usuario:</label>
+                    </div>
+                    <div class="col-6 form-control">
+                        <%=abogado.getIdUsuario().getCuenta()%> 
+                    </div> 
+                </div>
+            <%}%>
+            
+            
         </div>
         <br>
     </body>

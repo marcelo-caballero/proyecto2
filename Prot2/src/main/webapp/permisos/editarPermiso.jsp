@@ -44,7 +44,7 @@
                                id="menuMarca"
                                type="checkbox"
                                value="1"
-                               <%if(permisoControl.permisoRolVentana(idRol, 1)){%> 
+                               <%if(permisoControl.permisoRolVentana(idRol,"marcas.jsp")){%> 
                                   checked
                                <%}%>
                                onclick="ocultarSubmenuMarcas()"
@@ -57,7 +57,7 @@
                                id="agregarMarca"
                                type="checkbox"
                                value="2"
-                               <%if(permisoControl.permisoRolVentana(idRol, 2)){%> 
+                               <%if(permisoControl.permisoRolVentana(idRol,"agregarMarca.jsp")){%> 
                                   checked
                                <%}%>
                                >Agregar
@@ -68,7 +68,7 @@
                                id="verMarca"
                                type="checkbox"
                                value="3"
-                               <%if(permisoControl.permisoRolVentana(idRol, 3)){%> 
+                               <%if(permisoControl.permisoRolVentana(idRol, "verMarca.jsp")){%> 
                                   checked
                                <%}%>
                                >Ver
@@ -79,7 +79,7 @@
                                id="editarMarca"
                                type="checkbox"
                                value="4"
-                               <%if(permisoControl.permisoRolVentana(idRol, 4)){%> 
+                               <%if(permisoControl.permisoRolVentana(idRol, "editarMarca.jsp")){%> 
                                   checked
                                <%}%>
                                >Editar
@@ -90,7 +90,7 @@
                                id="eliminarMarca"
                                type="checkbox"
                                value="5"
-                               <%if(permisoControl.permisoRolVentana(idRol, 5)){%> 
+                               <%if(permisoControl.permisoRolVentana(idRol, "eliminarMarca")){%> 
                                   checked
                                <%}%>
                                >Eliminar
@@ -105,7 +105,7 @@
                                id="menuExpediente"
                                type="checkbox"
                                value="6"
-                               <%if(permisoControl.permisoRolVentana(idRol, 6)){%> 
+                               <%if(permisoControl.permisoRolVentana(idRol, "expedientes.jsp")){%> 
                                   checked
                                <%}%>
                                onclick="ocultarSubmenuExpediente()"
@@ -118,7 +118,7 @@
                                id="agregarExp"
                                type="checkbox"
                                value="7"
-                               <%if(permisoControl.permisoRolVentana(idRol, 7)){%> 
+                               <%if(permisoControl.permisoRolVentana(idRol, "agregarExpediente.jsp")){%> 
                                   checked
                                <%}%>
                                >Agregar
@@ -129,7 +129,7 @@
                                id="verExp"
                                type="checkbox"
                                value="8"
-                               <%if(permisoControl.permisoRolVentana(idRol, 8)){%> 
+                               <%if(permisoControl.permisoRolVentana(idRol, "verExpediente.jsp")){%> 
                                   checked
                                <%}%>
                                onclick="ocultarSubmenuVerExp()"
@@ -141,7 +141,7 @@
                                id="editarExp"
                                type="checkbox"
                                value="19"
-                               <%if(permisoControl.permisoRolVentana(idRol, 19)){%> 
+                               <%if(permisoControl.permisoRolVentana(idRol,"editarExpediente.jsp")){%> 
                                   checked
                                <%}%>
                                >Editar
@@ -152,7 +152,7 @@
                                id="eliminarExp"
                                type="checkbox"
                                value="20"
-                               <%if(permisoControl.permisoRolVentana(idRol, 20)){%> 
+                               <%if(permisoControl.permisoRolVentana(idRol, "eliminarExpediente")){%> 
                                   checked
                                <%}%>
                                >Eliminar
@@ -167,7 +167,7 @@
                                id="menuDocumento"
                                type="checkbox"
                                value="9"
-                               <%if(permisoControl.permisoRolVentana(idRol, 9)){%> 
+                               <%if(permisoControl.permisoRolVentana(idRol, "documentos.jsp")){%> 
                                   checked
                                <%}%>
                                onclick="ocultarSubmenuDocumento()"
@@ -180,7 +180,7 @@
                                id="agregarDoc"
                                type="checkbox"
                                value="10"
-                               <%if(permisoControl.permisoRolVentana(idRol, 10)){%> 
+                               <%if(permisoControl.permisoRolVentana(idRol, "agregarDocumento.jsp")){%> 
                                   checked
                                <%}%>
                                >Agregar
@@ -191,7 +191,7 @@
                                id="verDoc"
                                type="checkbox"
                                value="11"
-                               <%if(permisoControl.permisoRolVentana(idRol, 11)){%> 
+                               <%if(permisoControl.permisoRolVentana(idRol,"verDocumento.jsp")){%> 
                                   checked
                                <%}%>
                                >Ver
@@ -202,7 +202,7 @@
                                id="editarDoc"
                                type="checkbox"
                                value="12"
-                               <%if(permisoControl.permisoRolVentana(idRol, 12)){%> 
+                               <%if(permisoControl.permisoRolVentana(idRol, "editarDocumento.jsp")){%> 
                                   checked
                                <%}%>
                                >Editar
@@ -213,7 +213,7 @@
                                id="eliminarDoc"
                                type="checkbox"
                                value="13"
-                               <%if(permisoControl.permisoRolVentana(idRol, 13)){%> 
+                               <%if(permisoControl.permisoRolVentana(idRol, "eliminarDocumento")){%> 
                                   checked
                                <%}%>
                                >Eliminar
@@ -228,7 +228,7 @@
                                id="menuEvento"
                                type="checkbox"
                                value="14"
-                               <%if(permisoControl.permisoRolVentana(idRol, 14)){%> 
+                               <%if(permisoControl.permisoRolVentana(idRol, "eventos.jsp")){%> 
                                   checked
                                <%}%>
                                onclick="ocultarSubmenuEvento()"
@@ -241,7 +241,7 @@
                                id="agregarEven"
                                type="checkbox"
                                value="15"
-                               <%if(permisoControl.permisoRolVentana(idRol, 15)){%> 
+                               <%if(permisoControl.permisoRolVentana(idRol, "agregarEvento.jsp")){%> 
                                   checked
                                <%}%>
                                >Agregar
@@ -252,7 +252,7 @@
                                id="verEven"
                                type="checkbox"
                                value="16"
-                               <%if(permisoControl.permisoRolVentana(idRol, 16)){%> 
+                               <%if(permisoControl.permisoRolVentana(idRol,"verEvento.jsp")){%> 
                                   checked
                                <%}%>
                                >Ver
@@ -263,7 +263,7 @@
                                id="editarEven"
                                type="checkbox"
                                value="17"
-                               <%if(permisoControl.permisoRolVentana(idRol, 17)){%> 
+                               <%if(permisoControl.permisoRolVentana(idRol, "editarEvento.jsp")){%> 
                                   checked
                                <%}%>
                                >Editar
@@ -274,7 +274,7 @@
                                id="eliminarEven"
                                type="checkbox"
                                value="18"
-                               <%if(permisoControl.permisoRolVentana(idRol, 18)){%> 
+                               <%if(permisoControl.permisoRolVentana(idRol, "eliminarEvento")){%> 
                                   checked
                                <%}%>
                                >Eliminar
@@ -289,7 +289,7 @@
                                id="menuAgente"
                                type="checkbox"
                                value="21"
-                               <%if(permisoControl.permisoRolVentana(idRol, 21)){%> 
+                               <%if(permisoControl.permisoRolVentana(idRol, "abogados.jsp")){%> 
                                   checked
                                <%}%>
                                onclick="ocultarSubmenuAgente()"
@@ -302,7 +302,7 @@
                                id="agregarAgente"
                                type="checkbox"
                                value="22"
-                               <%if(permisoControl.permisoRolVentana(idRol, 22)){%> 
+                               <%if(permisoControl.permisoRolVentana(idRol, "agregarAbogado.jsp")){%> 
                                   checked
                                <%}%>
                                >Agregar
@@ -313,7 +313,7 @@
                                id="verAgente"
                                type="checkbox"
                                value="23"
-                               <%if(permisoControl.permisoRolVentana(idRol, 23)){%> 
+                               <%if(permisoControl.permisoRolVentana(idRol, "verAbogado.jsp")){%> 
                                   checked
                                <%}%>
                                >Ver
@@ -324,7 +324,7 @@
                                id="editarAgente"
                                type="checkbox"
                                value="24"
-                               <%if(permisoControl.permisoRolVentana(idRol, 24)){%> 
+                               <%if(permisoControl.permisoRolVentana(idRol, "editarAbogado.jsp")){%> 
                                   checked
                                <%}%>
                                >Editar
@@ -335,7 +335,7 @@
                                id="eliminarAgente"
                                type="checkbox"
                                value="25"
-                               <%if(permisoControl.permisoRolVentana(idRol, 25)){%> 
+                               <%if(permisoControl.permisoRolVentana(idRol, "eliminarAbogado")){%> 
                                   checked
                                <%}%>
                                >Eliminar
@@ -350,7 +350,7 @@
                                id="menuTitular"
                                type="checkbox"
                                value="26"
-                               <%if(permisoControl.permisoRolVentana(idRol, 26)){%> 
+                               <%if(permisoControl.permisoRolVentana(idRol, "clientes.jsp")){%> 
                                   checked
                                <%}%>
                                onclick="ocultarSubmenuTitular()"
@@ -363,7 +363,7 @@
                                id="agregarTitular"
                                type="checkbox"
                                value="27"
-                               <%if(permisoControl.permisoRolVentana(idRol, 27)){%> 
+                               <%if(permisoControl.permisoRolVentana(idRol, "agregarCliente.jsp")){%> 
                                   checked
                                <%}%>
                                >Agregar
@@ -374,7 +374,7 @@
                                id="verTitular"
                                type="checkbox"
                                value="28"
-                               <%if(permisoControl.permisoRolVentana(idRol, 28)){%> 
+                               <%if(permisoControl.permisoRolVentana(idRol,"verCliente.jsp")){%> 
                                   checked
                                <%}%>
                                >Ver
@@ -385,7 +385,7 @@
                                id="editarTitular"
                                type="checkbox"
                                value="29"
-                               <%if(permisoControl.permisoRolVentana(idRol, 29)){%> 
+                               <%if(permisoControl.permisoRolVentana(idRol, "editarCliente.jsp")){%> 
                                   checked
                                <%}%>
                                >Editar
@@ -396,7 +396,7 @@
                                id="eliminarTitular"
                                type="checkbox"
                                value="30"
-                               <%if(permisoControl.permisoRolVentana(idRol, 30)){%> 
+                               <%if(permisoControl.permisoRolVentana(idRol,"eliminarCliente")){%> 
                                   checked
                                <%}%>
                                >Eliminar
@@ -411,7 +411,7 @@
                                id="menuUsuario"
                                type="checkbox"
                                value="31"
-                               <%if(permisoControl.permisoRolVentana(idRol, 31)){%> 
+                               <%if(permisoControl.permisoRolVentana(idRol, "usuarios.jsp")){%> 
                                   checked
                                <%}%>
                                onclick="ocultarSubmenuUsuario()"
@@ -424,7 +424,7 @@
                                id="agregarUsuario"
                                type="checkbox"
                                value="32"
-                               <%if(permisoControl.permisoRolVentana(idRol, 32)){%> 
+                               <%if(permisoControl.permisoRolVentana(idRol, "agregarUsuario.jsp")){%> 
                                   checked
                                <%}%>
                                >Agregar
@@ -435,7 +435,7 @@
                                id="verUsuario"
                                type="checkbox"
                                value="33"
-                               <%if(permisoControl.permisoRolVentana(idRol, 33)){%> 
+                               <%if(permisoControl.permisoRolVentana(idRol, "verUsuario.jsp")){%> 
                                   checked
                                <%}%>
                                >Ver
@@ -446,7 +446,7 @@
                                id="editarUsuario"
                                type="checkbox"
                                value="34"
-                               <%if(permisoControl.permisoRolVentana(idRol, 34)){%> 
+                               <%if(permisoControl.permisoRolVentana(idRol, "editarUsuario.jsp")){%> 
                                   checked
                                <%}%>
                                >Editar
@@ -457,7 +457,7 @@
                                id="eliminarUsuario"
                                type="checkbox"
                                value="35"
-                               <%if(permisoControl.permisoRolVentana(idRol, 35)){%> 
+                               <%if(permisoControl.permisoRolVentana(idRol, "eliminarUsuario")){%> 
                                   checked
                                <%}%>
                                >Eliminar
@@ -472,7 +472,7 @@
                                id="menuRol"
                                type="checkbox"
                                value="36"
-                               <%if(permisoControl.permisoRolVentana(idRol, 36)){%> 
+                               <%if(permisoControl.permisoRolVentana(idRol, "roles.jsp")){%> 
                                   checked
                                <%}%>
                                onclick="ocultarSubmenuRol()"
@@ -485,7 +485,7 @@
                                id="agregarRol"
                                type="checkbox"
                                value="37"
-                               <%if(permisoControl.permisoRolVentana(idRol, 37)){%> 
+                               <%if(permisoControl.permisoRolVentana(idRol, "agregarRol.jsp")){%> 
                                   checked
                                <%}%>
                                >Agregar
@@ -497,7 +497,7 @@
                                id="editarRol"
                                type="checkbox"
                                value="38"
-                               <%if(permisoControl.permisoRolVentana(idRol, 38)){%> 
+                               <%if(permisoControl.permisoRolVentana(idRol, "editarRol.jsp")){%> 
                                   checked
                                <%}%>
                                >Editar
@@ -508,7 +508,7 @@
                                id="eliminarRol"
                                type="checkbox"
                                value="39"
-                               <%if(permisoControl.permisoRolVentana(idRol, 39)){%> 
+                               <%if(permisoControl.permisoRolVentana(idRol, "eliminarRol")){%> 
                                   checked
                                <%}%>
                                >Eliminar
@@ -523,7 +523,7 @@
                                id="menuPermiso"
                                type="checkbox"
                                value="40"
-                               <%if(permisoControl.permisoRolVentana(idRol, 40)){%> 
+                               <%if(permisoControl.permisoRolVentana(idRol, "permisos.jsp")){%> 
                                   checked
                                <%}%>
                                onclick="ocultarSubmenuPermiso()"
@@ -536,7 +536,7 @@
                                id="agregarPermiso"
                                type="checkbox"
                                value="41"
-                               <%if(permisoControl.permisoRolVentana(idRol, 41)){%> 
+                               <%if(permisoControl.permisoRolVentana(idRol, "editarPermiso.jsp")){%> 
                                   checked
                                <%}%>
                                >Editar
@@ -548,7 +548,7 @@
                                id="verPermiso"
                                type="checkbox"
                                value="42"
-                               <%if(permisoControl.permisoRolVentana(idRol, 42)){%> 
+                               <%if(permisoControl.permisoRolVentana(idRol, "verPermiso.jsp")){%>  
                                   checked
                                <%}%>
                                >Ver
