@@ -174,9 +174,10 @@ public class DocumentoServlet extends HttpServlet {
                 documento.setNombreDocumento(nombre);
                 documento.setIdTipoDocumento(tipoDocControl.findTipoDocumento(idTipoDoc));
                 documento.setDescripcion(descripcion);
-                //Si  hay archivo a guardar, cambia fecha
+                documento.setFecha(fecha);
+                //Si se selecciona un nuevo archivo, se actualiza
                 if(bFile != null){
-                    documento.setFecha(fecha);
+                    
                     documento.setDocumento(bFile);
                 }    
                 

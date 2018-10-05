@@ -109,7 +109,7 @@
                            id="descripcion"
                            class="form-control"
                            rows="6"
-                           maxlength="250"
+                           maxlength=""
                            placeholder="Escriba una breve descripción"
                            required
                            ></textarea>
@@ -148,6 +148,7 @@
                 var nombreInput = document.getElementById("nombre");
                 var retroNombre = document.getElementById("nombre-retro");
                 var strNombre = nombreInput.value.trim();
+                nombreInput.value = strNombre;
                 
                 if(strNombre.length === 0){ 
                     nombreInput.setAttribute("class","form-control is-invalid");
@@ -169,6 +170,7 @@
                 var descripcionInput = document.getElementById("descripcion");
                 var retroDescripcion = document.getElementById("descripcion-retro");
                 var strDescripcion = descripcionInput.value.trim();
+                descripcionInput.value = strDescripcion;
                 
                 if(strDescripcion.length === 0){ 
                     descripcionInput.setAttribute("class","form-control is-invalid");

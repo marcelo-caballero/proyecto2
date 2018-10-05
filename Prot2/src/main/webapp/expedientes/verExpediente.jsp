@@ -63,20 +63,20 @@
                 <div class="col-3">
                     <label>Clase:</label>
                 </div>
-                <div class="col-6">
-                    <div class="row form-group">
-                        <div class="col-2 form-control">
-                            <%=expediente.getNroClase().getNroClase()%>
-                        </div>
-                    </div>
-                    <div class="row form-group">
-                        <div class="col form-control">
-                            <%=expediente.getNroClase().getDescripcion()%> 
-                        </div>
-                    </div>  
+                <div class="col-6 form-control">
+                        <%=expediente.getNroClase().getNroClase()%>
                 </div>
             </div>
             
+            <div class="row form-group">
+                <div class="col-3">
+                    <label>Producto:</label>
+                </div>
+                <div class="col-6 form-control">
+                    <%=expediente.getProducto()%>
+                </div>
+            </div>
+                
             <div class="row form-group">
                 <div class="col-3">
                         <label>Estado:</label>
@@ -137,15 +137,6 @@
                 </div>
                 <div class="col-6 form-control">
                     <%=expediente.getIdMarca().getDenominacion()%>  
-                </div>
-            </div>
-            
-            <div class="row form-group">
-                <div class="col-3">
-                    <label>Producto:</label>
-                </div>
-                <div class="col-6 form-control">
-                    <%=expediente.getProducto()%>
                 </div>
             </div>
                 

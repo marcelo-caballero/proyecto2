@@ -71,16 +71,17 @@
                 
             <div class="row form-group">
                 <div class="col-3">
-                    <label for="fechaDoc">Fecha de subida: </label>
+                    <label for="fechaDoc">Fecha: </label>
                 </div>
                 <div class="col-6">
                      <input form="editarDocumento"
                            name="fechaDoc"
+                           id="fecha"
                            class="form-control"
                            type="date"
                            value="<%=new SimpleDateFormat("yyyy-MM-dd").format(documento.getFecha())%>"
-                           required
-                           readonly> 
+                           required>
+                     <div id="fecha-retro"></div>
                 </div>
             </div>
                 
@@ -194,9 +195,10 @@
                 var nombreValido= validarNombre();
                 var descripcionValido = validarDescripcion();
                 var archivoValido = validarArchivo();
+                var fechaValido = validarFecha();
                 
                 
-                if(nombreValido && descripcionValido && archivoValido){
+                if(nombreValido && descripcionValido && archivoValido && fechaValido){
                     
                     validarNombreNoDuplicado();
                 }
@@ -280,12 +282,13 @@
                 
                 var nombreDocInput = document.getElementById("nombreDoc");
                 var retroNombreDoc = document.getElementById("nombreDoc-retro");
-                var strNombre = nombreDocInput.value;
+                var strNombre = nombreDocInput.value.trim();
+                nombreDocInput.value = strNombre;
                 var patt = new RegExp('[<>\/:?*"|]');
                 
                 //Si contiene caracteres invalidos, lo informa
                 
-                if(strNombre.trim().length === 0){ 
+                if(strNombre.length === 0){ 
                     nombreDocInput.setAttribute("class","form-control is-invalid");
                     retroNombreDoc.setAttribute("class","invalid-feedback");
                     retroNombreDoc.setAttribute("pattern","");
@@ -316,6 +319,7 @@
                 var descripcionInput = document.getElementById("descripcionDoc");
                 var retroDescripcion = document.getElementById("descripcionDoc-retro");
                 var strDescripcion = descripcionInput.value;
+                descripcionInput.value = strDescripcion;
                 
                 
                 if(strDescripcion.trim().length === 0){
@@ -356,6 +360,27 @@
                 retroArchivo.setAttribute("class","valid-feedback");
                 retroArchivo.textContent = ''; 
                     
+                
+                return true;
+            }
+            
+            function validarFecha(){
+                
+                var fechaInput = document.getElementById("fecha");
+                var retroFecha = document.getElementById("fecha-retro");
+                var strFecha = fechaInput.value.trim(); 
+                
+                if(strFecha.length === 0){ 
+                    fechaInput.setAttribute("class","form-control is-invalid");
+                    retroFecha.setAttribute("class","invalid-feedback");
+                    retroFecha.textContent = 'El campo esta vacío';
+                    
+                    return false;
+                } 
+                
+                fechaInput.setAttribute("class","form-control is-valid");
+                retroFecha.setAttribute("class","valid-feedback");
+                retroFecha.textContent = ''; 
                 
                 return true;
             }

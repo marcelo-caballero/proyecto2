@@ -57,9 +57,19 @@
             listaTipoExpediente = new TipoExpedienteJpaController().findTipoExpedienteEntities();  
 
         %>
+        
+        <%--> Input tipo hidden para cambiar el contenido producto 
+               segun el número de clase <--%>
+        <%for (int j = 0; j < listaClase.size(); j++) {%> 
+            <input type="hidden" 
+                   id="descripcion-<%=listaClase.get(j).getNroClase()%>" 
+                   value="<%=listaClase.get(j).getDescripcion()%>">                          
+        <%}%>
+        <%--><--%>
+        
         <%@include file="//WEB-INF/menuCabecera.jsp" %>
         <br>
-
+        
         <div class ="container form-control">
             <h2 class="text-justify">Editar Expediente</h2> 
             <br>
@@ -93,21 +103,46 @@
                     <label for="nroClase">Clase:</label>
                 </div>
                 <div class="col-6">
-                    <input form="editarExpediente"
+                    <select form="editarExpediente"
                            name="nroClase"
                            id="nroClase"
-                           type="text" 
                            class="form-control"
-                           placeholder="Escriba el número de clase"
-                           required
-                           onkeypress="return isNumberKey(event)"
-                           maxlength="2"
-                           value="<%=expediente.getNroClase().getNroClase()%>" 
-                           >
+                           onchange="cambiarDescripcionClase()"
+                           required>
+                           <%for (int j = 0; j < listaClase.size(); j++) {
+                                if(listaClase.get(j).getNroClase() == expediente.getNroClase().getNroClase()){%> 
+                                    <option selected value="<%=listaClase.get(j).getNroClase()%>"> 
+                                        <%=listaClase.get(j).getNroClase()%>  
+                                    </option>
+                                <%}else{%>
+                                    <option value="<%=listaClase.get(j).getNroClase()%>"> 
+                                        <%=listaClase.get(j).getNroClase()%>  
+                                    </option>
+                                <%}%>
+                           <%}%>
+                    </select>
                     <div id="nroClase-retro"></div>
                 </div>
             </div>
             
+            <div class="row form-group">
+                <div class="col-3">
+                    <label for="producto">Producto:</label>
+                </div>
+                <div class="col-6">
+                    <textarea   form="editarExpediente"
+                                name="producto"
+                                id="producto"
+                                class="form-control"
+                                rows="8"
+                                maxlength="700"
+                                placeholder="Escriba una breve descripción del producto"
+                                required
+                                ><%=expediente.getProducto()%></textarea> 
+                    <div id="producto-retro"></div>
+                </div>
+            </div>
+                    
             <div class="row form-group">
                 <div class="col-3">
                     <label for="fechaSolicitud">Fecha de Solicitud:</label>
@@ -263,25 +298,7 @@
                     </select>
                 </div>
             </div>
-                    
-            <div class="row form-group">
-                <div class="col-3">
-                    <label for="producto">Producto:</label>
-                </div>
-                <div class="col-6">
-                    <textarea   form="editarExpediente"
-                                name="producto"
-                                id="producto"
-                                class="form-control"
-                                rows="6"
-                                maxlength="250"
-                                placeholder="Escriba una breve descripción del producto"
-                                required
-                                ><%=expediente.getProducto()%></textarea> 
-                    <div id="producto-retro"></div>
-                </div>
-            </div>
-                    
+                   
             <div class="row form-group">
                 <div class="col-3">
                     <label for="obs">Observación:</label>
@@ -312,6 +329,14 @@
         </div>
         <br>
         <script>
+            
+            function cambiarDescripcionClase() {
+                var nroClase = document.getElementById("nroClase").value;
+                var descripcion = document.getElementById("descripcion-"+nroClase).value;
+                
+                document.getElementById("producto").value = descripcion;
+            }
+            
             function validarFormulario(){
                 var nroExpedienteValido = validarNroExpediente();
                 var nroClase = validarNroClase();
@@ -456,6 +481,7 @@
                 var productoInput = document.getElementById("producto");
                 var retroProducto = document.getElementById("producto-retro");
                 var strProducto = productoInput.value.trim();
+                productoInput.value = strProducto;
                 
                 if(strProducto.length == 0){ 
                     productoInput.setAttribute("class","form-control is-invalid");

@@ -64,18 +64,17 @@
                 
             <div class="row form-group">
                 <div class="col-3">
-                    <label for="fechaDoc">Fecha actual: </label>
+                    <label for="fechaDoc">Fecha: </label>
                 </div>
                 <div class="col-6">
                     <input form="agregarDocumento"
                            name="fechaDoc"
-                           id=""
+                           id="fecha"
                            class="form-control"
                            type="date"
                            value="<%=new SimpleDateFormat("yyyy-MM-dd").format(new Date())%>"
-                           required
-                           readonly> 
-                    <div id=""></div>
+                           required> 
+                    <div id="fecha-retro"></div>
                 </div>
             </div>
 
@@ -183,9 +182,9 @@
                 var nombreValido= validarNombre();
                 var descripcionValido = validarDescripcion();
                 var archivoValido = validarArchivo();
+                var fechaValido = validarFecha();
                 
-                
-                if(nombreValido && descripcionValido && archivoValido){
+                if(nombreValido && descripcionValido && archivoValido && fechaValido){
                     
                     validarNombreNoDuplicado();
                 }
@@ -270,12 +269,13 @@
                 
                 var nombreDocInput = document.getElementById("nombreDoc");
                 var retroNombreDoc = document.getElementById("nombreDoc-retro");
-                var strNombre = nombreDocInput.value;
+                var strNombre = nombreDocInput.value.trim();
                 var patt = new RegExp('[<>\/:?*"|]');
+                nombreDocInput.value = strNombre;
                 
                 //Si contiene caracteres invalidos, lo informa
                 
-                if(strNombre.trim().length == 0){ 
+                if(strNombre.length == 0){ 
                     nombreDocInput.setAttribute("class","form-control is-invalid");
                     retroNombreDoc.setAttribute("class","invalid-feedback");
                     retroNombreDoc.textContent = 'El campo esta vacío';
@@ -304,10 +304,10 @@
                 
                 var descripcionInput = document.getElementById("descripcionDoc");
                 var retroDescripcion = document.getElementById("descripcionDoc-retro");
-                var strDescripcion = descripcionInput.value;
+                var strDescripcion = descripcionInput.value.trim();
+                descripcionInput.value = strDescripcion;
                 
-                
-                if(strDescripcion.trim().length == 0){
+                if(strDescripcion.length == 0){
 
                     descripcionInput.setAttribute("class","form-control is-invalid");
                     retroDescripcion.setAttribute("class","invalid-feedback");
@@ -353,74 +353,31 @@
                     
                 
                 return true;
-            }   
+            }  
+            
+            function validarFecha(){
+                
+                var fechaInput = document.getElementById("fecha");
+                var retroFecha = document.getElementById("fecha-retro");
+                var strFecha = fechaInput.value.trim(); 
+                
+                if(strFecha.length === 0){ 
+                    fechaInput.setAttribute("class","form-control is-invalid");
+                    retroFecha.setAttribute("class","invalid-feedback");
+                    retroFecha.textContent = 'El campo esta vacío';
+                    
+                    return false;
+                } 
+                
+                fechaInput.setAttribute("class","form-control is-valid");
+                retroFecha.setAttribute("class","valid-feedback");
+                retroFecha.textContent = ''; 
+                
+                return true;
+            }
         </script>     
     </body>
 </html>
 
 
 
-<%--
-      <div class="row">
-          <div class="col-6">
-              <label for="idExpDoc">Número de Expediente:</label>
-              <input form="agregarDocumento"
-                     name="idExpDoc"
-                     class="form-control"
-                     type="text"
-                     readonly
-                     value="<%=expediente.getNroExpediente()%>">
-
-                    <label for="nombreDoc">Nombre del documento:</label>
-                    <input form="agregarDocumento"
-                           name="nombreDoc"
-                           class="form-control"
-                           type="text">
-
-                    <label for="fechaDoc">Fecha: </label>
-                    <input form="agregarDocumento"
-                           name="fechaDoc"
-                           class="form-control"
-                           type="date"
-                           value="<%=new SimpleDateFormat("yyyy-MM-dd").format(new Date())%>"> 
-
-
-                    <label for="idTipoDoc">Tipo de Documento:</label>
-                    <input id="idDoc" class="form-control" disabled >
-                    <select form="agregarDocumento"
-                            name="idTipoDoc" 
-                            class="form-control"
-                            id="idTipoDoc"
-                            onchange="cambiarIdTipo()">
-
-                        <%for (int j = 0; j < listaTipoDoc.size(); j++) {%>
-
-                        <option value="<%=listaTipoDoc.get(j).getIdTipoDocumento()%>" >
-                            <%=listaTipoDoc.get(j).getDescripcion()%>
-                        </option>
-
-                        <%}%>
-                    </select>
-
-                    <label for="descripcion">Descripción: </label>
-                    <input form="agregarDocumento"
-                           name="descripcionDoc"
-                           class="form-control"
-                           type="text">
-
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-5">
-                </div>
-                <div class="col-2">
-                    
-
-                        <input form="agregarDocumento"
-                               name="agregar"
-                               type="submit"
-                               value="Agregar">
-                    
-                </div>
-            </div>
---%>
