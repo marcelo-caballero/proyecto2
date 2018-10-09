@@ -2,7 +2,7 @@
 *.class
 
 # maven
-/target
+target/
 
 # Log file
 *.log
