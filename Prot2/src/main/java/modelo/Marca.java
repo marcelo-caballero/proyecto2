@@ -141,6 +141,7 @@ public class Marca implements Serializable {
         return "modelo.Marca[ idMarca=" + idMarca + " ]";
     }
 
+  
     
     
 }

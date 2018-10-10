@@ -1,8 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package modelo;
 
 import java.io.Serializable;
@@ -38,6 +34,10 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "Evento.findByDescripcion", query = "SELECT e FROM Evento e WHERE e.descripcion = :descripcion"),
     @NamedQuery(name = "Evento.findByFecha", query = "SELECT e FROM Evento e WHERE e.fecha = :fecha")})
 public class Evento implements Serializable {
+
+    @Size(max = 2147483647)
+    @Column(name = "prioridad")
+    private String prioridad;
 
     @Basic(optional = false)
     @NotNull
@@ -146,6 +146,14 @@ public class Evento implements Serializable {
     public String getStringFecha(){
         String fecha = new SimpleDateFormat("dd-MM-yyyy").format(this.fecha);
         return fecha;  
+    }
+
+    public String getPrioridad() {
+        return prioridad;
+    }
+
+    public void setPrioridad(String prioridad) {
+        this.prioridad = prioridad;
     }
     
 }

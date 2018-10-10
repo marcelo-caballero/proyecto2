@@ -18,7 +18,7 @@
     </head>
     <body>
         <%
-            
+
             Integer idEvento = Integer.parseInt(request.getParameter("idEvento"));
             Evento evento = new EventoJpaController().findEvento(idEvento);
 
@@ -26,11 +26,11 @@
 
         <%@include file="//WEB-INF/menuCabecera.jsp" %>
         <br>
-        
+
         <div class="container">
-           <%@include file="//WEB-INF/menuExpediente.jsp" %>     
+            <%@include file="//WEB-INF/menuExpediente.jsp" %>     
         </div>
-        
+
         <div class="container form-control">
             <h2 class="text-justify">Evento</h2> 
             <br>
@@ -62,6 +62,15 @@
                 </div>
             </div>
 
+            <div class="row form-group">
+                <div class="col-3">
+                    <label>Prioridad: </label>
+                </div>
+                <div class="col-6 form-control" id="fecha">
+                    <%=evento.getPrioridad()%>   
+                </div>
+            </div>
+                
             <div class="row form-group">
                 <div class="col-3">
                     <label>Descripción:</label>

@@ -69,14 +69,14 @@ public class EventoServlet extends HttpServlet {
                 String nombre = request.getParameter("nombre");
                 String descripcion = request.getParameter("descripcion");
                 Date fecha = formatoFecha.parse(request.getParameter("fecha"));
-                
+                String prioridad = request.getParameter("prioridad");
                 Evento evento = new Evento();
                 
                 evento.setIdExpediente(expControl.findExpediente(idExp));
                 evento.setNombre(nombre);
                 evento.setDescripcion(descripcion);
                 evento.setFecha(fecha);
-                
+                evento.setPrioridad(prioridad);
                 eventoControl.create(evento);
                 
             } 
@@ -97,13 +97,17 @@ public class EventoServlet extends HttpServlet {
                 
                 String nombre = request.getParameter("nombre");
                 String descripcion = request.getParameter("descripcion");
-                Date fecha = formatoFecha.parse(request.getParameter("fecha"));
                 
+                      
+                Date fecha = formatoFecha.parse(request.getParameter("fecha"));
+                String prioridad = request.getParameter("prioridad");
+                System.out.println("prioridad "+prioridad);
                 Evento evento = eventoControl.findEvento(idEvento);
                 
                 evento.setNombre(nombre);
                 evento.setDescripcion(descripcion);
                 evento.setFecha(fecha);
+                evento.setPrioridad(prioridad);
                 
                 eventoControl.edit(evento); 
                 

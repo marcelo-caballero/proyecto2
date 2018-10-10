@@ -1,9 +1,3 @@
-<%-- 
-    Document   : documentos
-    Created on : 27-ago-2018, 12:44:47
-    Author     : Acer
---%>
-
 
 <%@page import="modelo.Evento"%>
 <%@page import="java.util.List"%>
@@ -49,6 +43,7 @@
                         
                         <th>Nombre</th>
                         <th>Fecha a notificar</th>
+                        <th>Prioridad</th>
                         <th>
                             <%if(permisoControlAcceso.permisoRolVentana(rolUsuarioConectado,"agregarEvento.jsp")){%> 
                                 <i class="fa fa-plus-circle"  
@@ -68,6 +63,7 @@
                         <input id="idEvento-<%=i%>" type="hidden"  value="<%=listaEventos.get(i).getIdEvento()%>"/>  
                         <td id="nombre-<%=i%>"><%=listaEventos.get(i).getNombre()%></td>
                         <td id=""><%=listaEventos.get(i).getStringFecha()%></td>   
+                        <td id="prioridad"><%=listaEventos.get(i).getPrioridad()%></td> 
                         
                         <td>
                             <%if(permisoControlAcceso.permisoRolVentana(rolUsuarioConectado,"verEvento.jsp" )){%> 

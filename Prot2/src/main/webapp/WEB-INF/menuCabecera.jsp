@@ -36,7 +36,9 @@
         <div class="col" id="linea1" ></div>
         <div class="col-9" id="linea2">
             <ul class="nav nav-tabs" >
-                
+                    <li class="nav-item" >
+                        <a class="nav-link" href="<%=request.getContextPath()%>/menu.jsp"><i class="fa fa-home"></i></a>
+                    </li>
                 <%if(permisoControlAcceso.permisoRolVentana(rolUsuarioConectado,"marcas.jsp")){%> 
                     <li class="nav-item" >
                         <a class="nav-link" href="<%=request.getContextPath()%>/marcas.jsp">Marcas</a>
