@@ -18,7 +18,9 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import javax.persistence.criteria.CriteriaBuilder;
 import modelo.Marca;
+import modelo.Marca_;
 import modeloMng.exceptions.IllegalOrphanException;
 import modeloMng.exceptions.NonexistentEntityException;
 
@@ -224,8 +226,10 @@ public class MarcaJpaController implements Serializable {
     private List<Marca> findMarcaEntities(boolean all, int maxResults, int firstResult) {
         EntityManager em = getEntityManager();
         try {
-            CriteriaQuery cq = em.getCriteriaBuilder().createQuery();
+            CriteriaBuilder cb = em.getCriteriaBuilder();
+            CriteriaQuery cq = cb.createQuery();
             cq.select(cq.from(Marca.class));
+            cq.orderBy(cb.asc(cq.from(Marca.class).get(Marca_.denominacion)));
             Query q = em.createQuery(cq);
             if (!all) {
                 q.setMaxResults(maxResults);

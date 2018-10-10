@@ -47,6 +47,9 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Expediente.findByObservacion", query = "SELECT e FROM Expediente e WHERE e.observacion = :observacion")})
 public class Expediente implements Serializable {
 
+    @Column(name = "nro_certificado")
+    private Integer nroCertificado;
+
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -276,6 +279,14 @@ public class Expediente implements Serializable {
     public String getStringFechaSolicitud(){
         String fecha = new SimpleDateFormat("dd-MM-yyyy").format(this.fechaSolicitud);
         return fecha;  
+    }
+
+    public Integer getNroCertificado() {
+        return nroCertificado;
+    }
+
+    public void setNroCertificado(Integer nroCertificado) {
+        this.nroCertificado = nroCertificado;
     }
     
 }
