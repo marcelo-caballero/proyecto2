@@ -27,7 +27,12 @@
         <br>
          
         <div class ="container form-control">
-        
+            <%if(rol.getEstado().equals("ASIGNADO")){%>
+                <div class="alert alert-info alert-dismissible">
+                    <button type="button" class="close" data-dismiss="alert">&times;</button>
+                    <strong>¡Información! </strong> No se puede editar un rol ya asignado a una cuenta de usuario
+                </div>
+            <%}%>
             <h2 class="text-justify">Editar Rol</h2>
             <br> 
         
@@ -53,11 +58,7 @@
                            type="text" 
                            placeholder="Escriba el nombre del rol"
                            required 
-                           value="<%=rol.getRol()%>" 
-                           onkeypress="return isNotSpaceKey(event)" 
-                           <%if(rol.getEstado().equals("ASIGNADO")){%>
-                                readonly
-                           <%}%>
+                           value="<%=rol.getRol()%>"
                            >
                     <div id="rol-retro"></div>
                 </div> 
@@ -82,19 +83,19 @@
             </div>
             
   
-            
-            <div class="row form-group">
-                <div class="col-5">
+            <%if(rol.getEstado().equals("NO ASIGNADO")){%>
+                <div class="row form-group">
+                    <div class="col-5">
+                    </div>
+                    <div class="col-2">
+                        <input id="editar"
+                               type="button"
+                               value="Editar"
+                               onclick="validarFormulario()"
+                              >
+                    </div>    
                 </div>
-                <div class="col-2">
-                    <input id="editar"
-                           type="button"
-                           value="Editar"
-                           onclick="validarFormulario()"
-                          >
-                </div>    
-            </div>
-       
+            <%}%>
         </div>
         <br>
         <script>
@@ -104,14 +105,15 @@
                 
                 if(validoRol && validoDescripcion){
                     
-                    document.getElementById("editarRol").submit();
+                    validarRolNoDuplicado();
                 }   
             }
             
             function validarRol(){
                 var rolInput = document.getElementById("rol");
                 var retroRol = document.getElementById("rol-retro");
-                var strRol = rolInput.value;
+                var strRol = rolInput.value.trim();
+                rolInput.value = strRol;
                 
                 if(strRol.length == 0){ 
                     rolInput.setAttribute("class","form-control is-invalid");
@@ -150,14 +152,75 @@
                 return true;
             }
             
-            function isNotSpaceKey(evt){
-                var charCode = (evt.which) ? evt.which : event.keyCode;
-                if (charCode > 31 && (charCode == 32 ))
-                    return false;
-                return true;
+            //Llamada al ajax para validar que nombre
+            //del rol no este duplicado
+            //Si esta duplicado informa al usuario
+            //Caso contrario, envia el formulario al servlet
+            function validarRolNoDuplicado(){
+                
+                var rolInput = document.getElementById("rol");
+                var retroRol = document.getElementById("rol-retro");
+                var strRol = rolInput.value.trim();
+                
+                var xmlHttp = new XMLHttpRequest();
+                xmlHttp.open("GET",
+                "<%=request.getContextPath()%>/RolServlet?existeRol="+strRol+"&idRol="+<%=idRol%>, 
+                true);
+
+                xmlHttp.onreadystatechange=function(){
+                    
+                   if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
+                       
+                        clearTimeout(xmlHttpTimeout); 
+                        
+                        var objectoJSON = JSON.parse(this.responseText);
+                        var existeRol = objectoJSON.existeRol;
+                        
+                        if(existeRol == null){
+                            
+                            rolInput.setAttribute("class","form-control is-invalid");
+                            retroRol.setAttribute("class","invalid-feedback");
+                            retroRol.textContent = '¡Ocurrió un fallo! No se pudo comprobar la unicidad del rol';
+                            
+                            //se desbloquea boton editar
+                            document.getElementById("editar").removeAttribute("disabled");
+                            
+                        } else if(existeRol){
+                            
+                            rolInput.setAttribute("class","form-control is-invalid");
+                            retroRol.setAttribute("class","invalid-feedback");
+                            retroRol.textContent = 'Ya existe un rol con el mismo nombre';
+                            
+                            //se desbloquea boton editar
+                            document.getElementById("editar").removeAttribute("disabled");
+                            
+                        }else{
+                            //se envia formulario
+                            document.getElementById("editarRol").submit();
+                            
+                        }
+                       
+                    }
+                };
+                
+                //bloquear boton editar
+                document.getElementById("editar").setAttribute("disabled","");
+                xmlHttp.send();
+                
+                // Timeout para abortar despues 5 segundos
+                var xmlHttpTimeout=setTimeout(ajaxTimeout,5000);
+                function ajaxTimeout(){
+                    xmlHttp.abort();
+                 
+                    rolInput.setAttribute("class","form-control is-invalid");
+                    retroRol.setAttribute("class","invalid-feedback");
+                    retroRol.textContent = 'No se pudo validar que el rol no sea duplicado. \n Intente más tarde';
+                    
+                    // Se desbloque boton editar
+                    document.getElementById("editar").removeAttribute("disabled");
+                }
+                
             }
-            
-            
            
         </script>
     </body>

@@ -50,9 +50,17 @@ public class TipoExpediente implements Serializable {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "tipoExpediente")
     private List<Expediente> expedienteList;
 
+    /*Numero de idRenovacionMarcas usado por el sistema*/
+    private static int nroIdRenovacion = 2;
+    public int getIdRenovacionMarcas(){
+    
+        return nroIdRenovacion;
+    }
+    
     public TipoExpediente() {
     }
 
+   
     public TipoExpediente(Integer idTipoExpediente) {
         this.idTipoExpediente = idTipoExpediente;
     }

@@ -1,5 +1,5 @@
 <%-- 
-    Document   : agregarUsuario
+    Document   : agregarRol
     Created on : 13-sep-2018, 12:47:26
     Author     : Acer
 --%>
@@ -49,7 +49,6 @@
                            type="text" 
                            placeholder="Escriba el nombre del rol"
                            required
-                           onkeypress="return isNotSpaceKey(event)"
                            >
                     <div id="rol-retro"></div>
                 </div> 
@@ -95,14 +94,15 @@
                 
                 if(validoRol && validoDescripcion){
                     
-                    document.getElementById("agregarRol").submit();
+                    validarRolNoDuplicado();
                 }   
             }
             
             function validarRol(){
                 var rolInput = document.getElementById("rol");
                 var retroRol = document.getElementById("rol-retro");
-                var strRol = rolInput.value;
+                var strRol = rolInput.value.trim();
+                rolInput.value = strRol;
                 
                 if(strRol.length == 0){ 
                     rolInput.setAttribute("class","form-control is-invalid");
@@ -141,15 +141,75 @@
                 return true;
             }
             
-            function isNotSpaceKey(evt){
-                var charCode = (evt.which) ? evt.which : event.keyCode;
-                if (charCode > 31 && (charCode == 32 ))
-                    return false;
-                return true;
+            //Llamada al ajax para validar que nombre
+            //del rol no este duplicado
+            //Si esta duplicado informa al usuario
+            //Caso contrario, envia el formulario al servlet
+            function validarRolNoDuplicado(){
+                
+                var rolInput = document.getElementById("rol");
+                var retroRol = document.getElementById("rol-retro");
+                var strRol = rolInput.value.trim();
+                
+                var xmlHttp = new XMLHttpRequest();
+                xmlHttp.open("GET",
+                "<%=request.getContextPath()%>/RolServlet?existeRol="+strRol, 
+                true);
+
+                xmlHttp.onreadystatechange=function(){
+                    
+                   if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
+                       
+                        clearTimeout(xmlHttpTimeout); 
+                        
+                        var objectoJSON = JSON.parse(this.responseText);
+                        var existeRol = objectoJSON.existeRol;
+                        
+                        if(existeRol == null){
+                            
+                            rolInput.setAttribute("class","form-control is-invalid");
+                            retroRol.setAttribute("class","invalid-feedback");
+                            retroRol.textContent = '¡Ocurrió un fallo! No se pudo comprobar la unicidad del rol';
+                            
+                            //se desbloquea boton agregar
+                            document.getElementById("agregar").removeAttribute("disabled");
+                            
+                        } else if(existeRol){
+                            
+                            rolInput.setAttribute("class","form-control is-invalid");
+                            retroRol.setAttribute("class","invalid-feedback");
+                            retroRol.textContent = 'Ya existe un rol con el mismo nombre';
+                            
+                            //se desbloquea boton agregar
+                            document.getElementById("agregar").removeAttribute("disabled");
+                            
+                        }else{
+                            //se envia formulario
+                            document.getElementById("agregarRol").submit();
+                            
+                        }
+                       
+                    }
+                };
+                
+                //bloquear boton agregar
+                document.getElementById("agregar").setAttribute("disabled","");
+                xmlHttp.send();
+                
+                // Timeout para abortar despues 5 segundos
+                var xmlHttpTimeout=setTimeout(ajaxTimeout,5000);
+                function ajaxTimeout(){
+                    xmlHttp.abort();
+                 
+                    rolInput.setAttribute("class","form-control is-invalid");
+                    retroRol.setAttribute("class","invalid-feedback");
+                    retroRol.textContent = 'No se pudo validar que el rol no sea duplicado. \n Intente más tarde';
+                    
+                    // Se desbloque boton agregar
+                    document.getElementById("agregar").removeAttribute("disabled");
+                }
+                
             }
-            
-            
-           
         </script>
     </body>
 </html>

@@ -94,7 +94,7 @@ public class ExpedienteServlet extends HttpServlet {
                 String observacion = request.getParameter("obs");
                 Date fechaEstado = formatoFecha.parse(request.getParameter("fechaEstado")); 
                 Date fechaSolicitud = formatoFecha.parse(request.getParameter("fechaSolicitud"));
-    
+                String nroCertificado = request.getParameter("nroCertificado");
             
             
                 Cliente cliente = clienteControl.findCliente(idCliente);
@@ -114,9 +114,14 @@ public class ExpedienteServlet extends HttpServlet {
                 exp.setNroClase(clase);
                 exp.setTipoExpediente(tipoExpediente);
                 exp.setProducto(producto);
-                exp.setObservacion(observacion);
                 exp.setFechaEstado(fechaEstado);
                 exp.setFechaSolicitud(fechaSolicitud);
+                if(observacion.length() > 0){
+                   exp.setObservacion(observacion); 
+                }
+                if(nroCertificado != null){
+                    exp.setNroCertificado(Integer.parseInt(nroCertificado)); 
+                }
             
                 expControl.create(exp);
             }catch(Exception e){
@@ -160,7 +165,7 @@ public class ExpedienteServlet extends HttpServlet {
                 String observacion = request.getParameter("obs");
                 Date fechaEstado = formatoFecha.parse(request.getParameter("fechaEstado")); 
                 Date fechaSolicitud = formatoFecha.parse(request.getParameter("fechaSolicitud"));
-    
+                String nroCertificado = request.getParameter("nroCertificado");
             
             
                 Cliente cliente = clienteControl.findCliente(idCliente);
@@ -179,10 +184,18 @@ public class ExpedienteServlet extends HttpServlet {
                 exp.setNroClase(clase);
                 exp.setTipoExpediente(tipoExpediente);
                 exp.setProducto(producto);
-                exp.setObservacion(observacion);
+                
                 exp.setFechaEstado(fechaEstado);
                 exp.setFechaSolicitud(fechaSolicitud);
-            
+                if(observacion.length() > 0){
+                   exp.setObservacion(observacion); 
+                }
+                if(nroCertificado != null){
+                    exp.setNroCertificado(Integer.parseInt(nroCertificado)); 
+                }else{
+                    exp.setNroCertificado(null);
+                }
+                
                 expControl.edit(exp);
             }catch(Exception e){
                 

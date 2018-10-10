@@ -38,7 +38,8 @@
             <table id="mytable" class="table table-striped table-bordered dt-responsive nowrap">
                 <thead style="background-color:whitesmoke">
                     <tr>
-                        <th>Código Usuario</th>
+                        
+                        <%-- <th>Código Usuario</th> --%>
                         <th>Cuenta</th>
                         <th>Rol</th>
                         <th>Estado</th>
@@ -59,10 +60,10 @@
 
                     <tr>
                         <input id="idUsuario-<%=i%>" type="hidden"  value="<%=lista.get(i).getIdUsuario()%>"/>   
-                        <td><%=lista.get(i).getIdUsuario()%></td>
+                        <%-- <td><%=lista.get(i).getIdUsuario()%></td>  --%>
                         <td id="cuenta-<%=i%>"><%=lista.get(i).getCuenta()%></td> 
                         <td><%=lista.get(i).getIdRol().getRol()%></td>
-                        <td><%=lista.get(i).getEstado()%></td> 
+                        <td><%=lista.get(i).getEstado().substring(0,1)+lista.get(i).getEstado().substring(1).toLowerCase()%></td> 
                         <td>
                             <%if(permisoControlAcceso.permisoRolVentana(rolUsuarioConectado,"verUsuario.jsp")){%> 
                                 <i class="fa fa-search" 

@@ -121,7 +121,18 @@
                     <%=expediente.getTipoExpediente().getDescripcion()%>
                 </div>
             </div>
-             
+            
+            <%if(expediente.getNroCertificado()!= null){%>
+                <div class="row form-group">
+                    <div class="col-3">
+                        <label>Número de certificado de marca:</label>
+                    </div>
+                    <div class="col-6 form-control">
+                        <%=expediente.getNroCertificado()%> 
+                    </div>
+                </div>
+            <%}%>
+                
             <div class="row form-group">
                 <div class="col-3">
                     <label>Signo:</label>

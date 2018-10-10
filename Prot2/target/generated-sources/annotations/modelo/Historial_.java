@@ -7,7 +7,7 @@ import javax.persistence.metamodel.StaticMetamodel;
 import modelo.Abogado;
 import modelo.Expediente;
 
-@Generated(value="EclipseLink-2.5.2.v20140319-rNA", date="2018-09-19T10:33:45")
+@Generated(value="EclipseLink-2.5.2.v20140319-rNA", date="2018-10-09T14:31:22")
 @StaticMetamodel(Historial.class)
 public class Historial_ { 
 

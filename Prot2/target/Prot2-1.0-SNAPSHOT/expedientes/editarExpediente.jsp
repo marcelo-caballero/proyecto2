@@ -5,6 +5,7 @@
 --%>
 
 
+<%@page import="java.util.Calendar"%>
 <%@page import="java.text.SimpleDateFormat"%>
 <%@page import="java.util.Date"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
@@ -33,7 +34,7 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <%@include file="//WEB-INF/paginaCabecera.jsp" %>
     </head>
-    <body>
+    <body onload="cambiarDescripcionClase()">
         <%
             Integer idExp = Integer.parseInt(request.getParameter("idExpediente"));
             Expediente  expediente = new ExpedienteJpaController().findExpediente(idExp);
@@ -55,6 +56,11 @@
 
             List<TipoExpediente> listaTipoExpediente;
             listaTipoExpediente = new TipoExpedienteJpaController().findTipoExpedienteEntities();  
+
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(new Date());
+            cal.add(Calendar.YEAR, -10);
+            Date fechaLimiteInferior = cal.getTime(); 
 
         %>
         
@@ -127,6 +133,20 @@
             
             <div class="row form-group">
                 <div class="col-3">
+                    <label for="producto">Descripción de la clase:</label>
+                </div>
+                <div class="col-6"> 
+                    <textarea   id="descripcionClase"
+                                class="form-control"
+                                rows="8"
+                                maxlength="700"
+                                readonly
+                                ></textarea>
+                </div>
+            </div>
+                    
+            <div class="row form-group">
+                <div class="col-3">
                     <label for="producto">Producto:</label>
                 </div>
                 <div class="col-6">
@@ -154,6 +174,8 @@
                            type="date" 
                            class="form-control"
                            value="<%=new SimpleDateFormat("yyyy-MM-dd").format(expediente.getFechaSolicitud())%>"
+                           min="<%=new SimpleDateFormat("yyyy-MM-dd").format(fechaLimiteInferior)%>"
+                           max="<%=new SimpleDateFormat("yyyy-MM-dd").format(new Date())%>"
                            required>
                     <div id="fechaSolicitud-retro"></div>
                 </div>               
@@ -161,7 +183,7 @@
                
             <div class="row form-group">
                 <div class="col-3">
-                    <label for="idEstadoMarca">Estado:</label>
+                    <label for="idEstadoMarca">Estado Actual:</label>
                 </div>  
                 <div class="col-6">
                     <select form="editarExpediente" 
@@ -282,7 +304,8 @@
                     <select form="editarExpediente"
                             name="idTipoExpediente" 
                             id="idTipoExpediente"
-                            class="form-control">
+                            class="form-control"
+                            onchange="habilitarNroCertificado()">
                             <%for (int j = 0; j < listaTipoExpediente.size(); j++) {
                                 if(listaTipoExpediente.get(j).getIdTipoExpediente() == expediente.getTipoExpediente().getIdTipoExpediente()){
                             %> 
@@ -298,7 +321,26 @@
                     </select>
                 </div>
             </div>
-                   
+            
+            <div class="row form-group">
+                <div class="col-3">
+                    <label for="nroCertificado">Número de Certificado de Marca:</label>
+                </div>
+                <div class="col-6">  
+                    <input form="editarExpediente"
+                            name="nroCertificado" 
+                            id="nroCertificado"
+                            class="form-control"
+                            onkeypress="return isNumberKey(event)"
+                            <%if(expediente.getNroCertificado() != null){%>
+                                value="<%=expediente.getNroCertificado()%>" 
+                            <%}else{%> 
+                                disabled
+                            <%}%> >
+                    <div id="nroCertificado-retro"></div>
+                </div>
+            </div>
+                    
             <div class="row form-group">
                 <div class="col-3">
                     <label for="obs">Observación:</label>
@@ -311,7 +353,8 @@
                                 rows="6"
                                 maxlength="250"
                                 placeholder="Escriba una breve observacion"
-                                ><%=expediente.getObservacion()%></textarea> 
+                                ><%if(expediente.getObservacion() != null){%><%=expediente.getObservacion()%><%}%>
+                                </textarea>  
                     <div id="obs-retro"></div>
                 </div>
             </div>
@@ -334,7 +377,51 @@
                 var nroClase = document.getElementById("nroClase").value;
                 var descripcion = document.getElementById("descripcion-"+nroClase).value;
                 
-                document.getElementById("producto").value = descripcion;
+                document.getElementById("descripcionClase").value = descripcion;
+            }
+            
+            function habilitarNroCertificado(){
+                var nroCertificadoInput = document.getElementById("nroCertificado");
+                var tipoExpedienteInput = document.getElementById("idTipoExpediente");
+                
+                var retroNroCertificado = document.getElementById("nroCertificado-retro");
+                
+                //Si el tipo de expediente es renovacion entonces se solicita un nro certificado marca
+                if(tipoExpedienteInput.value == <%=new TipoExpediente().getIdRenovacionMarcas()%>){
+                    
+                    nroCertificadoInput.disabled = false;
+                    
+                }else{
+                    nroCertificadoInput.disabled = true;
+                    nroCertificadoInput.value = "";
+                    nroCertificadoInput.setAttribute("class","form-control");
+                    retroNroCertificado.setAttribute("class","");
+                    retroNroCertificado.textContent = '';
+                    
+                }
+                
+            }
+            
+            function validarNroCertificado(){
+                var nroCertificadoInput = document.getElementById("nroCertificado"); 
+                var retroNroCertificado = document.getElementById("nroCertificado-retro");
+                
+                if(!nroCertificadoInput.disabled){
+                    if(nroCertificadoInput.value.length == 0){
+                        nroCertificadoInput.setAttribute("class","form-control is-invalid");
+                        retroNroCertificado.setAttribute("class","invalid-feedback");
+                        retroNroCertificado.textContent = 'El campo esta vacío';
+
+                        return false;
+                    }  
+                }
+                
+                nroCertificadoInput.setAttribute("class","form-control is-valid");
+                retroNroCertificado.setAttribute("class","valid-feedback");
+                retroNroCertificado.textContent = '';
+
+                return true;
+                
             }
             
             function validarFormulario(){
@@ -343,12 +430,17 @@
                 var productoValido = validarProducto();
                 var fechaSolicitudValido = validarFechaSolicitud();
                 var fechaEstadoValido = validarFechaEstado(fechaSolicitudValido);
+                //var marcaValido = validarMarca();
+                //var abogadoValido = validarAbogado();
+                //var clienteValido = validarCliente();
+                var nroCertificadoValido = validarNroCertificado();
                 
                 if(nroExpedienteValido && 
                     nroClase && 
                     productoValido && 
                     fechaEstadoValido && 
-                    fechaSolicitudValido){
+                    fechaSolicitudValido &&
+                    nroCertificadoValido){
                     
                     validarUnicidadNroExpediente();
                     
@@ -544,6 +636,17 @@
                     
                     return false;
                 }
+                
+                if(!fechaSolicitudInput.validity.valid){
+                    
+                    fechaSolicitudInput.setAttribute("class","form-control is-invalid");
+                    retroFechaSolicitud.setAttribute("class","invalid-feedback");
+                    
+                    retroFechaSolicitud.textContent = 'La fecha debe estar entre 10 años atrás hasta hoy';
+                    
+                    return false;
+                    
+                }
    
                 fechaSolicitudInput.setAttribute("class","form-control is-valid");
                 retroFechaSolicitud.setAttribute("class","valid-feedback");
@@ -561,6 +664,65 @@
                     return false;
                 return true;
             }
+            
+            /*function validarAbogado(){
+                var idAbogadoSelect = document.getElementById("idAbogado");
+                var retroIdAbogado = document.getElementById("idAbogado-retro");
+                var strIdAbogado = idAbogadoSelect.value;
+                
+                if(strIdAbogado == -1){ 
+                    idAbogadoSelect.setAttribute("class","form-control is-invalid");
+                    retroIdAbogado.setAttribute("class","invalid-feedback");
+                    retroIdAbogado.textContent = 'Seleccione un agente válido';
+                    
+                    return false;
+                } 
+                
+                idAbogadoSelect.setAttribute("class","form-control is-valid");
+                retroIdAbogado.setAttribute("class","valid-feedback");
+                retroIdAbogado.textContent = '';
+                
+                return true;
+            }
+            
+            function validarCliente(){
+                var idClienteSelect = document.getElementById("idCliente");
+                var retroIdCliente = document.getElementById("idCliente-retro");
+                var strIdCliente = idClienteSelect.value;
+                
+                if(strIdCliente == -1){ 
+                    idClienteSelect.setAttribute("class","form-control is-invalid");
+                    retroIdCliente.setAttribute("class","invalid-feedback");
+                    retroIdCliente.textContent = 'Seleccione un titular válido';
+                    
+                    return false;
+                }
+                
+                idClienteSelect.setAttribute("class","form-control is-valid");
+                retroIdCliente.setAttribute("class","valid-feedback");
+                retroIdCliente.textContent = '';
+                
+                return true;
+            }
+            
+            
+            function validarMarca(){
+                var idMarcaSelect = document.getElementById("idMarca");
+                var retroIdMarca = document.getElementById("idMarca-retro");
+                var strIdMarca = idMarcaSelect.value;
+                
+                if(strIdMarca == -1){ 
+                    idMarcaSelect.setAttribute("class","form-control is-invalid");
+                    retroIdMarca.setAttribute("class","invalid-feedback");
+                    retroIdMarca.textContent = 'Seleccione una marca válida';
+                    return false
+                }
+                
+                idMarcaSelect.setAttribute("class","form-control is-valid");
+                retroIdMarca.setAttribute("class","valid-feedback");
+                retroIdMarca.textContent = '';
+                return true;
+            }*/
         </script>
     </body>
 </html>
