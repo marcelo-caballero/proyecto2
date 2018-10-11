@@ -200,5 +200,42 @@ public class RolJpaController implements Serializable {
             em.close();
         }
     }
+
+    public Boolean existeRolDuplicado(String rol, Integer idRol) {
+       EntityManager em = getEntityManager();
+       
+        try {
+            String consulta =   "select count(r) from Rol r "+
+                                " where trim(upper(r.rol)) = trim(upper(:rol))";
+                    
+            if(idRol != null){
+                consulta+= " and r.idRol != :idRol"; 
+            }
+            Query q = em.createQuery(consulta);
+            
+           
+            q.setParameter("rol", rol);
+            
+            if(idRol != null){
+                q.setParameter("idRol", idRol);
+            }
+             
+            Integer cant = ((Long) q.getSingleResult()).intValue();
+            System.out.println(cant+ " cantidad");
+            
+            if(cant>0){
+                return  true;
+            }else{
+                return false;
+            }
+            
+        } catch(Exception e){
+            System.out.println(e);
+            return null;
+            
+        }finally {
+            em.close();
+        }
+    }
     
 }

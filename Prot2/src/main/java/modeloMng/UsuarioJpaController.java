@@ -412,6 +412,23 @@ public class UsuarioJpaController implements Serializable {
         }finally {
             em.close();
         }
+      
+    }
     
+    /*Retorna la cantidad de usuarios con rol que se pasa como argumento*/
+    public int cantidadUsuariosRol(Integer idRol) {
+        EntityManager em = getEntityManager();
+        try {
+            String consulta =   "select count(u) from Usuario u "+
+                                "where u.idRol.idRol = :idRol";
+            Query q = em.createQuery(consulta);
+            
+            q.setParameter("idRol", idRol);
+            
+            return ((Long) q.getSingleResult()).intValue();
+            
+        } finally {
+            em.close();
+        }
     }
 }
