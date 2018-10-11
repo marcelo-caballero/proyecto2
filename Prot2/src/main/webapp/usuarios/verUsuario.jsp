@@ -65,7 +65,7 @@
                     <label>Estado:</label>
                 </div>
                 <div class="col-6 form-control">
-                    <%=usu.getEstado()%>  
+                    <%=usu.getEstado().substring(0,1)+usu.getEstado().substring(1).toLowerCase()%>  
                 </div> 
             </div>
                 
@@ -75,7 +75,7 @@
                         <label>Asociado: </label>
                     </div>
                     <div class="col-6 form-control">
-                        <%=usu.getAsociado()%>  
+                        <%=usu.getAsociado().substring(0,1)+usu.getAsociado().substring(1).toLowerCase()%>  
                     </div> 
                 </div>
             <%}%>

@@ -22,6 +22,7 @@ import modeloMng.AbogadoJpaController;
 import modeloMng.ClienteJpaController;
 import modeloMng.RolJpaController;
 import modeloMng.UsuarioJpaController;
+import modeloMng.exceptions.IllegalOrphanException;
 
 /**
  *
@@ -83,11 +84,27 @@ public class UsuarioServlet extends HttpServlet {
             
             Integer idUsuario = Integer.parseInt(request.getParameter("idUsuario")); 
             Usuario usuario = usuarioControl.findUsuario(idUsuario);
-            
+            Integer idRol = usuario.getIdRol().getIdRol();
+           
             try {
                 usuario.setEstado("INACTIVO");
                 usuarioControl.edit(usuario);
-               
+                
+                usuarioControl.destroy(idUsuario);
+                
+                //Solamente ocurre si el usuario se borra de la BD, 
+                //es decir si destroy no lanza excepcion.
+                //Cambia el estado del rol si corresponde
+                /**************************************************/
+                if(usuarioControl.cantidadUsuariosRol(idRol) == 0){
+                    Rol rol = rolControl.findRol(idRol);
+                    rol.setEstado("NO ASIGNADO");
+                    rolControl.edit(rol);
+                }
+                /**************************************************/
+                
+            }catch(IllegalOrphanException ex){    
+                
                 
             } catch (Exception e) {
                 
@@ -125,17 +142,16 @@ public class UsuarioServlet extends HttpServlet {
                 usuario.setPassword(hashtext);
                 usuario.setEstado("ACTIVO");
                 
-                if(rol.getEstado().equals("NO ASIGNADO")){
-                    rol.setEstado("ASIGNADO");
-                    rolControl.edit(rol);
-                }
-                
                 usuarioControl.create(usuario);
                 
-               
+                /* Cambia el estado del rol*/
+                Rol rol2 = rolControl.findRol(idRol);
+                rol2.setEstado("ASIGNADO");
+                rolControl.edit(rol2);
+               /****************************/
                 
             }catch (Exception e) {
-                System.out.println(e);
+                
                 request.getSession().setAttribute("mensajeErrorABM", "No se pudo agregar el usuario");
             
             }finally{
@@ -149,64 +165,75 @@ public class UsuarioServlet extends HttpServlet {
             try{
                 
                 Integer idUsuario = Integer.parseInt(request.getParameter("idUsuario"));
-                
                 Usuario usuario = usuarioControl.findUsuario(idUsuario);
+                Integer idRolViejo = usuario.getIdRol().getIdRol();
                 
-                if(usuario.getEstado().equals("ACTIVO")){
-                    Integer idRol = Integer.parseInt(request.getParameter("idRol"));
-                    String cuenta = request.getParameter("cuenta");
-                    String contraseña = request.getParameter("contrasena");
-                    String asociado = request.getParameter("asociar");
-                    String abogado = request.getParameter("idAbogado");
-                    String cliente = request.getParameter("idCliente");
+                Integer idRolNuevo = Integer.parseInt(request.getParameter("idRol"));
+                String cuenta = request.getParameter("cuenta");
+                String contraseña = request.getParameter("contrasena");
+                String asociado = request.getParameter("asociar");
+                String abogado = request.getParameter("idAbogado");
+                String cliente = request.getParameter("idCliente");
 
-                    MessageDigest md = MessageDigest.getInstance("MD5");
-                    byte[] messageDigest = md.digest(contraseña.getBytes()); //EN VEZ DE INPUT PASARLE CONTRASEÑA
-                    BigInteger number = new BigInteger(1, messageDigest);
-                    String hashtext = number.toString(16);
+                MessageDigest md = MessageDigest.getInstance("MD5");
+                byte[] messageDigest = md.digest(contraseña.getBytes()); //EN VEZ DE INPUT PASARLE CONTRASEÑA
+                BigInteger number = new BigInteger(1, messageDigest);
+                String hashtext = number.toString(16);
 
-                    while (hashtext.length() < 32) {
-                        hashtext = "0" + hashtext;
+                while (hashtext.length() < 32) {
+                    hashtext = "0" + hashtext;
+                }
+
+                Rol rol = rolControl.findRol(idRolNuevo);
+
+
+                usuario.setIdRol(rol);
+                usuario.setPassword(hashtext);
+                usuario.setCuenta(cuenta);
+                if(asociado != null){
+                    if(asociado.length() > 0){
+                        usuario.setAsociado(asociado);
+                    }
+                }
+                usuarioControl.edit(usuario);
+
+
+                /*Asocia el idUsuario al abogado o cliente*/
+                if(asociado != null){
+                    if(asociado.equals("ABOGADO")){
+                        Integer idAbogado = Integer.parseInt(abogado);
+                        Abogado abo = abogadoControl.findAbogado(idAbogado);
+
+                        abo.setIdUsuario(usuario);
+                        abogadoControl.edit(abo);
+
+
                     }
 
-                    Rol rol = rolControl.findRol(idRol);
-                    
-                    
-                    usuario.setIdRol(rol);
-                    usuario.setPassword(hashtext);
-                    usuario.setCuenta(cuenta);
-                    if(asociado != null){
-                        if(asociado.length() > 0){
-                            usuario.setAsociado(asociado);
-                        }
+                    if(asociado.equals("CLIENTE")){
+                        Integer idCliente = Integer.parseInt(cliente);
+                        Cliente cli = clienteControl.findCliente(idCliente);
+
+                        cli.setIdUsuario(usuario);
+                        clienteControl.edit(cli);
                     }
-                    usuarioControl.edit(usuario);
-                    
-
-                    if(asociado != null){
-                        if(asociado.equals("ABOGADO")){
-                            Integer idAbogado = Integer.parseInt(abogado);
-                            Abogado abo = abogadoControl.findAbogado(idAbogado);
-
-                            abo.setIdUsuario(usuario);
-                            abogadoControl.edit(abo);
-
-
-                        }
-
-                        if(asociado.equals("CLIENTE")){
-                            Integer idCliente = Integer.parseInt(cliente);
-                            Cliente cli = clienteControl.findCliente(idCliente);
-
-                            cli.setIdUsuario(usuario);
-                            clienteControl.edit(cli);
-                        }
-                    }
-                }else{
-                    
-                    request.getSession().setAttribute("mensajeErrorABM", "Un usuario con estado Inactivo no se puede editar");
                 }
                 
+                /*Rol establecer estado*/
+                if(idRolViejo != idRolNuevo){
+                    Rol rolViejo = rolControl.findRol(idRolViejo);
+                    Rol rolNuevo = rolControl.findRol(idRolNuevo);
+                    
+                    rolNuevo.setEstado("ASIGNADO");
+                    rolControl.edit(rolNuevo);
+                    
+                    if(usuarioControl.cantidadUsuariosRol(idRolViejo) == 0){
+                        rolViejo.setEstado("NO ASIGNADO");
+                        rolControl.edit(rolViejo);
+                    }
+                
+                }
+                /************************************************************/
                 
             }catch (Exception e) {
                 System.out.println(e);

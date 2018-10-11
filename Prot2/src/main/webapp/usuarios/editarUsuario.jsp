@@ -35,7 +35,12 @@
         <br>
          
         <div class ="container form-control">
-        
+            <%if(usu.getEstado().equals("INACTIVO")){%>
+                <div class="alert alert-info alert-dismissible">
+                    <button type="button" class="close" data-dismiss="alert">&times;</button>
+                    <strong>¡Información! </strong> No se puede editar un usuario con estado inactivo
+                </div>
+            <%}%>
             <h2 class="text-justify"> Editar Usuario</h2>
             <br> 
         
@@ -205,17 +210,18 @@
                 </div>
             <%}%> 
 
-            
-            <div class="row form-group">
-                <div class="col-5">
+            <%if(usu.getEstado().equals("ACTIVO")){%>
+                <div class="row form-group">
+                    <div class="col-5">
+                    </div>
+                    <div class="col-2">
+                        <input id="editar"
+                               type="button"
+                               value="Editar"
+                               onclick="validarFormulario()">
+                    </div>    
                 </div>
-                <div class="col-2">
-                    <input id="editar"
-                           type="button"
-                           value="Editar"
-                           onclick="validarFormulario()">
-                </div>    
-            </div>
+            <%}%>
             
         </div>
         <br>

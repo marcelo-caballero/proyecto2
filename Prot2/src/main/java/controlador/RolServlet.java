@@ -6,7 +6,7 @@
 package controlador;
 
 import java.io.IOException;
-//import java.io.PrintWriter;
+import java.io.PrintWriter;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -32,9 +32,34 @@ public class RolServlet extends HttpServlet {
             throws ServletException, IOException {
         
         request.setCharacterEncoding("UTF-8");
+        /*Retorna un json a la consulta del ajax
+          Si ya existe un nombre porexpediente, retorna true
+          caso contrario, false
+        */
+        RolJpaController rolControl = new RolJpaController();
+        Boolean existeRol = null;
+        Integer idRol = null;
+        
+        String rol = request.getParameter("existeRol");
         
         
+        //Cuando la operacion es editar 
         
+        if(request.getParameter("idRol") != null){
+            idRol = Integer.parseInt(request.getParameter("idRol"));
+        }
+        
+        //La operacion es agregar
+        if(rol != null){
+           
+            existeRol = rolControl.existeRolDuplicado(rol,idRol); 
+            
+            try (PrintWriter out = response.getWriter()) {
+                out.println("{\"existeRol\":"+existeRol+"}");
+            }
+        }
+        /**/
+     
     }
 
     
@@ -85,7 +110,7 @@ public class RolServlet extends HttpServlet {
                 rolControl.create(rol);
                 
             }catch (Exception e) {
-                
+                //System.out.println("Excepcion:\n"+e);
                 request.getSession().setAttribute("mensajeErrorABM", "No se pudo agregar el rol");
             
             }finally{
@@ -106,8 +131,9 @@ public class RolServlet extends HttpServlet {
                 rol.setRol(nombreRol);
                 rol.setDescripcion(descripcion);
                 
-                
-                rolControl.edit(rol);
+                if(rol.getEstado().equals("NO ASIGNADO")){
+                    rolControl.edit(rol);
+                }
                 
             }catch (Exception e) {
                 
