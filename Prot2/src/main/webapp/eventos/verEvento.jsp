@@ -55,13 +55,13 @@
 
             <div class="row form-group">
                 <div class="col-3">
-                    <label>Fecha del Evento: </label>
+                    <label>Programado para: </label>
                 </div>
                 <div class="col-6 form-control" id="fecha">
-                    <%=evento.getStringFecha()%>   
+                    <%=evento.getStringFecha()%> <label> a las </label> <%=evento.getStringHora()%>:<%=evento.getStringMinuto()%> 
                 </div>
             </div>
-
+           
             <div class="row form-group">
                 <div class="col-3">
                     <label>Prioridad: </label>

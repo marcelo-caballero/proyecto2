@@ -37,11 +37,11 @@
             
             List<Cliente> listaCliente;
             ClienteJpaController clienteControl = new ClienteJpaController();
-            listaCliente = clienteControl.findClienteEntities();
+            listaCliente = clienteControl.getListaClienteActivo();
             
             List<Abogado> listaAbogado;
             AbogadoJpaController abogadoControl = new AbogadoJpaController();
-            listaAbogado= abogadoControl.findAbogadoEntities(); 
+            listaAbogado= abogadoControl.getListaAbogadoActivo(); 
 
             List<EstadoMarca> listaEstadoMarca;
             EstadoMarcaJpaController estadoMarcaControl = new EstadoMarcaJpaController();
@@ -60,10 +60,14 @@
             listaTipoExpediente = tipoExpedienteControl.findTipoExpedienteEntities();  
 
 
+            //Fecha correspondiente hace 10 años a partir de hoy
             Calendar cal = Calendar.getInstance();
             cal.setTime(new Date());
             cal.add(Calendar.YEAR, -10);
             Date fechaLimiteInferior = cal.getTime(); 
+
+            String fechaHaceDiezAños = new SimpleDateFormat("yyyy-MM-dd").format(fechaLimiteInferior);
+            String hoy = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
             
         %>
         <%--> Input tipo hidden para cambiar el contenido producto 
@@ -168,9 +172,9 @@
                            id="fechaSolicitud"
                            type="date"
                            class="form-control" 
-                           value="<%=new SimpleDateFormat("yyyy-MM-dd").format(new Date())%>"
-                           min="<%=new SimpleDateFormat("yyyy-MM-dd").format(fechaLimiteInferior)%>"
-                           max="<%=new SimpleDateFormat("yyyy-MM-dd").format(new Date())%>"
+                           value="<%=hoy%>"
+                           min="<%=fechaHaceDiezAños%>"
+                           max="<%=hoy%>"
                            required>
                     <div id="fechaSolicitud-retro"></div>
                 </div>               
@@ -204,7 +208,8 @@
                            id="fechaEstado"
                            type="date" 
                            class="form-control"
-                           value="<%=new SimpleDateFormat("yyyy-MM-dd").format(new Date())%>"
+                           value="<%=hoy%>" 
+                           max="<%=hoy%>"
                            required>
                     <div id="fechaEstado-retro"></div>
                 </div>
@@ -387,6 +392,9 @@
             }
             
             function validarFormulario(){
+                var obsInput = document.getElementById("obs");
+                obsInput.value = obsInput.value.trim();
+                
                 var nroExpedienteValido = validarNroExpediente();
                 var nroClase = validarNroClase();
                 var productoValido = validarProducto();
@@ -562,6 +570,17 @@
                 var retroFechaEstado = document.getElementById("fechaEstado-retro");
                 var strFechaEstado = fechaEstadoInput.value.trim(); 
                 
+                if(!fechaSolicitudValido){
+                    fechaEstadoInput.setAttribute("class","form-control is-invalid");
+                    retroFechaEstado.setAttribute("class","invalid-feedback");
+                    retroFechaEstado.textContent = 'Escriba una fecha de solicitud válida';
+                    
+                    return false;
+                }
+                
+                fechaEstadoInput.setAttribute("min",document.getElementById("fechaSolicitud").value);
+
+
                 if(strFechaEstado.length == 0){ 
                     fechaEstadoInput.setAttribute("class","form-control is-invalid");
                     retroFechaEstado.setAttribute("class","invalid-feedback");
@@ -570,18 +589,22 @@
                     return false;
                 }
                 
-                if(fechaSolicitudValido){
-                    fechaEstadoInput.setAttribute("min",document.getElementById("fechaSolicitud").value);
-                
-                    if(fechaEstadoInput.validity.rangeUnderflow){
-                        fechaEstadoInput.setAttribute("class","form-control is-invalid");
-                        retroFechaEstado.setAttribute("class","invalid-feedback");
-                        retroFechaEstado.textContent = 'La fecha del estado debe ser mayor o igual que la fecha de solicitud';
+                if(fechaEstadoInput.validity.rangeUnderflow){
+                    fechaEstadoInput.setAttribute("class","form-control is-invalid");
+                    retroFechaEstado.setAttribute("class","invalid-feedback");
+                    retroFechaEstado.textContent = 'La fecha del estado no debe ser anterior a la fecha de solicitud';
 
-                        return false;
-                    }
+                    return false;
                 }
                 
+                if(fechaEstadoInput.validity.rangeOverflow){
+                    fechaEstadoInput.setAttribute("class","form-control is-invalid");
+                    retroFechaEstado.setAttribute("class","invalid-feedback");
+                    retroFechaEstado.textContent = 'La fecha del estado no debe ser posterior a la fecha de hoy';
+
+                    return false;
+                }
+                    
                 fechaEstadoInput.setAttribute("class","form-control is-valid");
                 retroFechaEstado.setAttribute("class","valid-feedback");
                 retroFechaEstado.textContent = '';
@@ -608,7 +631,8 @@
                     fechaSolicitudInput.setAttribute("class","form-control is-invalid");
                     retroFechaSolicitud.setAttribute("class","invalid-feedback");
                     
-                    retroFechaSolicitud.textContent = 'La fecha debe estar entre 10 años atrás hasta hoy';
+                    retroFechaSolicitud.textContent = 
+                        'La fecha debe estar entre <%=new SimpleDateFormat("dd/MM/yyyy").format(fechaLimiteInferior)%> y <%=new SimpleDateFormat("dd/MM/yyyy").format(new Date())%>';
                     
                     return false;
                     

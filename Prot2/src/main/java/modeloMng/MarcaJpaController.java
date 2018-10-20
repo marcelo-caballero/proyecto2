@@ -10,7 +10,6 @@ import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
-import modelo.Pais;
 import modelo.TipoMarca;
 import modelo.Expediente;
 import java.util.ArrayList;
@@ -26,7 +25,7 @@ import modeloMng.exceptions.NonexistentEntityException;
 
 /**
  *
- * @author Acer
+ * @author User
  */
 public class MarcaJpaController implements Serializable {
 
@@ -47,11 +46,6 @@ public class MarcaJpaController implements Serializable {
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            Pais idPais = marca.getIdPais();
-            if (idPais != null) {
-                idPais = em.getReference(idPais.getClass(), idPais.getIdPais());
-                marca.setIdPais(idPais);
-            }
             TipoMarca idTipoMarca = marca.getIdTipoMarca();
             if (idTipoMarca != null) {
                 idTipoMarca = em.getReference(idTipoMarca.getClass(), idTipoMarca.getIdTipoMarca());
@@ -64,10 +58,6 @@ public class MarcaJpaController implements Serializable {
             }
             marca.setExpedienteList(attachedExpedienteList);
             em.persist(marca);
-            if (idPais != null) {
-                idPais.getMarcaList().add(marca);
-                idPais = em.merge(idPais);
-            }
             if (idTipoMarca != null) {
                 idTipoMarca.getMarcaList().add(marca);
                 idTipoMarca = em.merge(idTipoMarca);
@@ -95,8 +85,6 @@ public class MarcaJpaController implements Serializable {
             em = getEntityManager();
             em.getTransaction().begin();
             Marca persistentMarca = em.find(Marca.class, marca.getIdMarca());
-            Pais idPaisOld = persistentMarca.getIdPais();
-            Pais idPaisNew = marca.getIdPais();
             TipoMarca idTipoMarcaOld = persistentMarca.getIdTipoMarca();
             TipoMarca idTipoMarcaNew = marca.getIdTipoMarca();
             List<Expediente> expedienteListOld = persistentMarca.getExpedienteList();
@@ -113,10 +101,6 @@ public class MarcaJpaController implements Serializable {
             if (illegalOrphanMessages != null) {
                 throw new IllegalOrphanException(illegalOrphanMessages);
             }
-            if (idPaisNew != null) {
-                idPaisNew = em.getReference(idPaisNew.getClass(), idPaisNew.getIdPais());
-                marca.setIdPais(idPaisNew);
-            }
             if (idTipoMarcaNew != null) {
                 idTipoMarcaNew = em.getReference(idTipoMarcaNew.getClass(), idTipoMarcaNew.getIdTipoMarca());
                 marca.setIdTipoMarca(idTipoMarcaNew);
@@ -129,14 +113,6 @@ public class MarcaJpaController implements Serializable {
             expedienteListNew = attachedExpedienteListNew;
             marca.setExpedienteList(expedienteListNew);
             marca = em.merge(marca);
-            if (idPaisOld != null && !idPaisOld.equals(idPaisNew)) {
-                idPaisOld.getMarcaList().remove(marca);
-                idPaisOld = em.merge(idPaisOld);
-            }
-            if (idPaisNew != null && !idPaisNew.equals(idPaisOld)) {
-                idPaisNew.getMarcaList().add(marca);
-                idPaisNew = em.merge(idPaisNew);
-            }
             if (idTipoMarcaOld != null && !idTipoMarcaOld.equals(idTipoMarcaNew)) {
                 idTipoMarcaOld.getMarcaList().remove(marca);
                 idTipoMarcaOld = em.merge(idTipoMarcaOld);
@@ -195,11 +171,6 @@ public class MarcaJpaController implements Serializable {
             }
             if (illegalOrphanMessages != null) {
                 throw new IllegalOrphanException(illegalOrphanMessages);
-            }
-            Pais idPais = marca.getIdPais();
-            if (idPais != null) {
-                idPais.getMarcaList().remove(marca);
-                idPais = em.merge(idPais);
             }
             TipoMarca idTipoMarca = marca.getIdTipoMarca();
             if (idTipoMarca != null) {

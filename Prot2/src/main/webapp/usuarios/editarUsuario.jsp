@@ -27,8 +27,8 @@
             Integer idUsuario = Integer.parseInt(request.getParameter("idUsuario")); 
             Usuario usu = new UsuarioJpaController().findUsuario(idUsuario); 
             List<Rol> listaRol = new RolJpaController().findRolEntities();
-            List<Abogado> listaAbogado = new AbogadoJpaController().getListaAbogadoSinUsuario();
-            List<Cliente> listaCliente = new ClienteJpaController().getListaClienteSinUsuario(); 
+            List<Abogado> listaAbogado = new AbogadoJpaController().getListaAbogadoActivoSinUsuario();
+            List<Cliente> listaCliente = new ClienteJpaController().getListaClienteActivoSinUsuario(); 
             
         %>
         <%@include file="//WEB-INF/menuCabecera.jsp" %>

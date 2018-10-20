@@ -29,11 +29,11 @@
         <br>
         
         <div class="container">
-           <%@include file="//WEB-INF/mensajeErrorABM.jsp" %>
            <%@include file="//WEB-INF/menuExpediente.jsp" %>      
         </div>
 
         <div class="container  form-control"> 
+            <%@include file="//WEB-INF/mensajeErrorABM.jsp" %>
             <h2 class="text-justify">Eventos</h2>
             <br>
             

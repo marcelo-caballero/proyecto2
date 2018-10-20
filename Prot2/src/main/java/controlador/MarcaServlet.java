@@ -23,7 +23,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
 import modelo.Marca;
 import modeloMng.MarcaJpaController;
-import modeloMng.PaisJpaController;
 import modeloMng.TipoMarcaJpaController;
 //import modeloMng.exceptions.IllegalOrphanException;
 //import modeloMng.exceptions.NonexistentEntityException;
@@ -76,7 +75,6 @@ public class MarcaServlet extends HttpServlet {
         request.setCharacterEncoding("UTF-8");
 
         TipoMarcaJpaController tipoMarcaControl = new TipoMarcaJpaController();
-        PaisJpaController paisControl = new PaisJpaController();
         MarcaJpaController marcaControl = new MarcaJpaController();
 
         //agregar
@@ -84,7 +82,6 @@ public class MarcaServlet extends HttpServlet {
             try{
                 
                 Integer idTipoMarca = Integer.parseInt(request.getParameter("idTipoMarca"));
-                BigDecimal idPais = new BigDecimal(Integer.parseInt(request.getParameter("idPais")));
                 String denominacion = request.getParameter("denominacion");
                 Part filePart = request.getPart("imagenMarca");
                 byte[] bFile = null;
@@ -99,7 +96,6 @@ public class MarcaServlet extends HttpServlet {
 
                 Marca marca = new Marca();
                 marca.setIdTipoMarca(tipoMarcaControl.findTipoMarca(idTipoMarca));
-                marca.setIdPais(paisControl.findPais(idPais));
                 marca.setDenominacion(denominacion);
                 marca.setImagenMarca(bFile);
 
@@ -121,7 +117,6 @@ public class MarcaServlet extends HttpServlet {
             try {
                 Integer idMarca = Integer.parseInt(request.getParameter("idMarca"));
                 Integer idTipoMarca = Integer.parseInt(request.getParameter("idTipoMarca"));
-                BigDecimal idPais = new BigDecimal(Integer.parseInt(request.getParameter("idPais")));
                 String denominacion = request.getParameter("denominacion");
 
                 Part filePart = request.getPart("imagenMarca");
@@ -131,7 +126,6 @@ public class MarcaServlet extends HttpServlet {
                 Marca marca = marcaControl.findMarca(idMarca);
 
                 marca.setIdTipoMarca(tipoMarcaControl.findTipoMarca(idTipoMarca));
-                marca.setIdPais(paisControl.findPais(idPais));
                 marca.setDenominacion(denominacion);
 
                 //Si el signo es denominativo, no se enviará
@@ -187,7 +181,7 @@ public class MarcaServlet extends HttpServlet {
         
     }
     
-
+    
     @Override
     public String getServletInfo() {
         return "ABM Marca";

@@ -42,7 +42,7 @@
                     <tr>
                         <th>Número</th>
                         <th>Agente</th>
-                        <th>Cliente</th>
+                        <th>Titular</th>
                         <th>Marca</th>
                         <th>Clase</th>
                         <th>Status</th>

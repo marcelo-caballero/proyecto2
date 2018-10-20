@@ -33,7 +33,31 @@
             List<TipoDocumento> listaTipoDoc = tipoDocControl.findTipoDocumentoEntities();
 
             Integer idDoc = Integer.parseInt(request.getParameter("idDocumento"));
-            Documento documento = new DocumentoJpaController().findDocumento(idDoc); 
+            DocumentoJpaController documentoControl = new DocumentoJpaController();
+            
+            //El documento actual
+            Documento documento = documentoControl.findDocumento(idDoc);
+            Integer idExp = documento.getIdExpediente().getIdExpediente();
+            
+            //El último documento del expediente
+            Documento ultimoDocumento = documentoControl.getUltimoDocumento(idExp);
+            
+            Date fechaLimiteInferior = null; 
+            Integer folioDesde = 0;
+            Integer folioHasta = 0;
+            
+            //Si el ultimo documento es el unico documento del expediente
+            if(ultimoDocumento.getFolioDesde() == 1){
+                
+                //entonces la fechaLimiteInferior es la fecha de solicitud del expediente
+                fechaLimiteInferior = documento.getIdExpediente().getFechaSolicitud();
+                folioDesde = 1;
+                
+            }else{
+                //Caso contrario la fechaLimiteInferior es la fecha del documento anterior al ultimo documento
+                fechaLimiteInferior = documentoControl.getFechaDocumentoFolioHasta(ultimoDocumento.getFolioDesde()-1,idExp);
+                folioDesde = ultimoDocumento.getFolioDesde();
+            }
         %>
 
         <%@include file="//WEB-INF/menuCabecera.jsp" %>
@@ -44,6 +68,12 @@
         </div>
         
         <div class="container form-control">
+            <%if(documento.getIdDocumento() != ultimoDocumento.getIdDocumento()){%> 
+                <div class="alert alert-info alert-dismissible">
+                    <button type="button" class="close" data-dismiss="alert">&times;</button>
+                    <strong>¡Información! </strong>Solamente se permite editar el último documento del expediente
+                </div>
+            <%}%>
             <h2 class="text-justify">Editar Documento</h2> 
             <br>
             
@@ -79,6 +109,7 @@
                            id="fecha"
                            class="form-control"
                            type="date"
+                           min="<%=new SimpleDateFormat("yyyy-MM-dd").format(fechaLimiteInferior)%>"
                            value="<%=new SimpleDateFormat("yyyy-MM-dd").format(documento.getFecha())%>"
                            required>
                      <div id="fecha-retro"></div>
@@ -141,6 +172,47 @@
              
             <div class="row form-group">
                 <div class="col-3">
+                    <label for="">Folio: </label>
+                </div>
+                <div class="col-6">
+                    <div class="row">
+                        <div class="col-2">
+                            <label for="folioDesde">Desde:</label>
+                        </div>
+                        <div class="col">
+                            <input form="editarDocumento"
+                                name="folioDesde"
+                                id="folioDesde"
+                                class="form-control"
+                                type="number"
+                                placeholder="desde"
+                                required
+                                readonly
+                                value="<%=documento.getFolioDesde()%>" 
+                                maxlength="">
+                        </div>
+                        <div class="col-2">
+                            <label for="folioHasta">hasta:</label>
+                        </div>
+                        <div class="col">
+                            <input form="editarDocumento"
+                                    name="folioHasta"
+                                    id="folioHasta"
+                                    class="form-control"
+                                    type="number"
+                                    placeholder="hasta"
+                                    required
+                                    min="<%=folioDesde%>"
+                                    value="<%=documento.getFolioHasta()%>"
+                                    maxlength="">
+                            <div id="folio-retro"></div>
+                        </div>
+                    </div>    
+                </div>
+            </div>
+                        
+            <div class="row form-group">
+                <div class="col-3">
                     <label for="descripcion">Descripción: </label>
                 </div>
                 <div class="col-6">
@@ -156,7 +228,7 @@
                     <div id="descripcionDoc-retro"></div>
                 </div>
             </div>
-                            
+            
             <div class="row form-group">
                 <div class="col-3">
                     <label for="archivoDoc">Documento: </label>
@@ -172,16 +244,18 @@
                 </div>
             </div>
 
-            <div class="row form-group">
-                <div class="col-5">
+            <%if(documento.getIdDocumento() == ultimoDocumento.getIdDocumento()){%> 
+                <div class="row form-group">
+                    <div class="col-5">
+                    </div>
+                    <div class="col-2"><input form="editarDocumento"
+                               id="editar"
+                               type="button"
+                               value="Editar"
+                               onclick="validarFormulario()">
+                    </div>
                 </div>
-                <div class="col-2"><input form="editarDocumento"
-                           id="editar"
-                           type="button"
-                           value="Editar"
-                           onclick="validarFormulario()">
-                </div>
-            </div>
+            <%}%>
 
         </div>
         <br>
@@ -196,17 +270,161 @@
                 var descripcionValido = validarDescripcion();
                 var archivoValido = validarArchivo();
                 var fechaValido = validarFecha();
+                var folioHastaValido = validarFolioHasta();
                 
-                
-                if(nombreValido && descripcionValido && archivoValido && fechaValido){
+                if(nombreValido && descripcionValido && archivoValido && fechaValido && folioHastaValido){
                     
-                    validarNombreNoDuplicado();
+                    document.getElementById("editarDocumento").submit();
                 }
-                
-                
+                 
             }
  
-            //Llamada al ajax para validar que nombre
+            function validarFolioHasta(){
+                
+                var folioHastaInput = document.getElementById("folioHasta");
+                var retroFolioHasta= document.getElementById("folio-retro");
+                //var strFolioHasta = folioHastaInput.value;
+               
+                
+                if(!folioHastaInput.validity.valid ){
+
+                    folioHastaInput.setAttribute("class","form-control is-invalid");
+                    retroFolioHasta.setAttribute("class","invalid-feedback");
+                    retroFolioHasta.textContent = 'El número es inválido ';
+                    
+                    return false;
+                }
+                
+                folioHastaInput.setAttribute("class","form-control is-valid");
+                retroFolioHasta.setAttribute("class","valid-feedback");
+                retroFolioHasta.textContent = '';
+                    
+                 
+                return true;
+            }
+            
+            //Se valida que:
+            //El nombre no este vacio
+            //Que no sea una secuencia de espacios en blanco
+            //Que no tenga caracteres especiales
+            function validarNombre(){
+                
+                var nombreDocInput = document.getElementById("nombreDoc");
+                var retroNombreDoc = document.getElementById("nombreDoc-retro");
+                var strNombre = nombreDocInput.value.trim();
+                nombreDocInput.value = strNombre;
+                var patt = new RegExp('[<>\/:?*"|]');
+                
+                //Si contiene caracteres invalidos, lo informa
+                
+                if(strNombre.length == 0){ 
+                    nombreDocInput.setAttribute("class","form-control is-invalid");
+                    retroNombreDoc.setAttribute("class","invalid-feedback");
+                    retroNombreDoc.setAttribute("pattern","");
+                    retroNombreDoc.textContent = 'El campo esta vacío';
+                    
+                    return false;
+                }
+                
+                if(patt.test(strNombre)){
+
+                    nombreDocInput.setAttribute("class","form-control is-invalid");
+                    retroNombreDoc.setAttribute("class","invalid-feedback");
+                    retroNombreDoc.textContent = 'No debe contener los caracteres <>\/:?*"|';
+                    return false;
+                }
+                
+                nombreDocInput.setAttribute("class","form-control is-valid");
+                retroNombreDoc.setAttribute("class","valid-feedback");
+                retroNombreDoc.textContent = '';
+                
+                return true;
+            }
+            
+            
+            //Se valida que la descripcion no este vacía
+            function validarDescripcion(){
+                
+                var descripcionInput = document.getElementById("descripcionDoc");
+                var retroDescripcion = document.getElementById("descripcionDoc-retro");
+                var strDescripcion = descripcionInput.value;
+                descripcionInput.value = strDescripcion;
+                
+                
+                if(strDescripcion.trim().length == 0){
+
+                    descripcionInput.setAttribute("class","form-control is-invalid");
+                    retroDescripcion.setAttribute("class","invalid-feedback");
+                    retroDescripcion.textContent = 'Escriba la descripción';
+                    
+                    return false;
+                }
+                
+                descripcionInput.setAttribute("class","form-control is-valid");
+                retroDescripcion.setAttribute("class","valid-feedback");
+                retroDescripcion.textContent = '';
+                    
+                 
+                return true;
+            }
+            
+            function validarArchivo(){
+                
+                var archivoInput = document.getElementById("archivoDoc");
+                var retroArchivo = document.getElementById("archivoDoc-retro");
+                var strArchivo = archivoInput.value;
+                var formato = (strArchivo.substring(strArchivo.lastIndexOf("."))).toLowerCase();
+                
+               
+                if(strArchivo.length > 0 && formato !== ".pdf"){
+                    archivoInput.setAttribute("class","form-control is-invalid");
+                    retroArchivo.setAttribute("class","invalid-feedback");
+                    retroArchivo.textContent = 'El formato debe ser pdf'; 
+                    
+                    return false;
+                    
+                }
+                
+                archivoInput.setAttribute("class","form-control is-valid");
+                retroArchivo.setAttribute("class","valid-feedback");
+                retroArchivo.textContent = ''; 
+                    
+                
+                return true;
+            }
+            
+            function validarFecha(){
+                
+                var fechaInput = document.getElementById("fecha");
+                var retroFecha = document.getElementById("fecha-retro");
+                var strFecha = fechaInput.value.trim(); 
+                
+                if(strFecha.length == 0){ 
+                    fechaInput.setAttribute("class","form-control is-invalid");
+                    retroFecha.setAttribute("class","invalid-feedback");
+                    retroFecha.textContent = 'El campo esta vacío';
+                    
+                    return false;
+                } 
+                
+                if(!fechaInput.validity.valid){ 
+                    fechaInput.setAttribute("class","form-control is-invalid");
+                    retroFecha.setAttribute("class","invalid-feedback");
+                    retroFecha.textContent = 'La fecha no debe ser anterior a <%=new SimpleDateFormat("dd/MM/yyyy").format(fechaLimiteInferior)%>';
+                    
+                    return false;
+                } 
+                fechaInput.setAttribute("class","form-control is-valid");
+                retroFecha.setAttribute("class","valid-feedback");
+                retroFecha.textContent = ''; 
+                
+                return true;
+            }
+        </script>     
+    </body>
+</html>
+
+<%-- //Llamada al ajax para validar que nombre
             //del documento no este duplicado por expediente
             //Si esta duplicado informa al cliente
             //Caso contrario, envia el formulario
@@ -274,119 +492,5 @@
                 }
                 
             }
-            //Se valida que:
-            //El nombre no este vacio
-            //Que no sea una secuencia de espacios en blanco
-            //Que no tenga caracteres especiales
-            function validarNombre(){
-                
-                var nombreDocInput = document.getElementById("nombreDoc");
-                var retroNombreDoc = document.getElementById("nombreDoc-retro");
-                var strNombre = nombreDocInput.value.trim();
-                nombreDocInput.value = strNombre;
-                var patt = new RegExp('[<>\/:?*"|]');
-                
-                //Si contiene caracteres invalidos, lo informa
-                
-                if(strNombre.length === 0){ 
-                    nombreDocInput.setAttribute("class","form-control is-invalid");
-                    retroNombreDoc.setAttribute("class","invalid-feedback");
-                    retroNombreDoc.setAttribute("pattern","");
-                    retroNombreDoc.textContent = 'El campo esta vacío';
-                    
-                    return false;
-                }
-                
-                if(patt.test(strNombre)){
-
-                    nombreDocInput.setAttribute("class","form-control is-invalid");
-                    retroNombreDoc.setAttribute("class","invalid-feedback");
-                    retroNombreDoc.textContent = 'No debe contener los caracteres <>\/:?*"|';
-                    return false;
-                }
-                
-                nombreDocInput.setAttribute("class","form-control is-valid");
-                retroNombreDoc.setAttribute("class","valid-feedback");
-                retroNombreDoc.textContent = '';
-                
-                return true;
-            }
-            
-            
-            //Se valida que la descripcion no este vacía
-            function validarDescripcion(){
-                
-                var descripcionInput = document.getElementById("descripcionDoc");
-                var retroDescripcion = document.getElementById("descripcionDoc-retro");
-                var strDescripcion = descripcionInput.value;
-                descripcionInput.value = strDescripcion;
-                
-                
-                if(strDescripcion.trim().length === 0){
-
-                    descripcionInput.setAttribute("class","form-control is-invalid");
-                    retroDescripcion.setAttribute("class","invalid-feedback");
-                    retroDescripcion.textContent = 'Escriba la descripción';
-                    
-                    return false;
-                }
-                
-                descripcionInput.setAttribute("class","form-control is-valid");
-                retroDescripcion.setAttribute("class","valid-feedback");
-                retroDescripcion.textContent = '';
-                    
-                 
-                return true;
-            }
-            
-            function validarArchivo(){
-                
-                var archivoInput = document.getElementById("archivoDoc");
-                var retroArchivo = document.getElementById("archivoDoc-retro");
-                var strArchivo = archivoInput.value;
-                var formato = (strArchivo.substring(strArchivo.lastIndexOf("."))).toLowerCase();
-                
-               
-                if(strArchivo.length > 0 && formato !== ".pdf"){
-                    archivoInput.setAttribute("class","form-control is-invalid");
-                    retroArchivo.setAttribute("class","invalid-feedback");
-                    retroArchivo.textContent = 'El formato debe ser pdf'; 
-                    
-                    return false;
-                    
-                }
-                
-                archivoInput.setAttribute("class","form-control is-valid");
-                retroArchivo.setAttribute("class","valid-feedback");
-                retroArchivo.textContent = ''; 
-                    
-                
-                return true;
-            }
-            
-            function validarFecha(){
-                
-                var fechaInput = document.getElementById("fecha");
-                var retroFecha = document.getElementById("fecha-retro");
-                var strFecha = fechaInput.value.trim(); 
-                
-                if(strFecha.length === 0){ 
-                    fechaInput.setAttribute("class","form-control is-invalid");
-                    retroFecha.setAttribute("class","invalid-feedback");
-                    retroFecha.textContent = 'El campo esta vacío';
-                    
-                    return false;
-                } 
-                
-                fechaInput.setAttribute("class","form-control is-valid");
-                retroFecha.setAttribute("class","valid-feedback");
-                retroFecha.textContent = ''; 
-                
-                return true;
-            }
-        </script>     
-    </body>
-</html>
-
-
+--%>
 

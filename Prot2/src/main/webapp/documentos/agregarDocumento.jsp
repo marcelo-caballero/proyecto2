@@ -4,6 +4,8 @@
     Author     : Acer
 --%>
 
+<%@page import="modelo.Documento"%>
+<%@page import="modeloMng.DocumentoJpaController"%>
 <%@page import="java.text.SimpleDateFormat"%>
 <%@page import="java.util.Date"%>
 <%@page import="modelo.TipoDocumento"%>
@@ -29,6 +31,20 @@
 
             TipoDocumentoJpaController tipoDocControl = new TipoDocumentoJpaController();
             List<TipoDocumento> listaTipoDoc = tipoDocControl.findTipoDocumentoEntities();
+            
+            DocumentoJpaController documentoControl = new DocumentoJpaController();
+            Documento documento = documentoControl.getUltimoDocumento(idExp);
+            
+            Date fechaInferior = null;
+            Integer folioDesde = null;
+            
+            if(documento == null){
+                fechaInferior = expediente.getFechaSolicitud();  
+                folioDesde = 1; 
+            }else{
+                fechaInferior = documento.getFecha();
+                folioDesde = documento.getFolioHasta()+1; 
+            }
 
         %>
 
@@ -72,7 +88,8 @@
                            id="fecha"
                            class="form-control"
                            type="date"
-                           value="<%=new SimpleDateFormat("yyyy-MM-dd").format(new Date())%>"
+                           min="<%=new SimpleDateFormat("yyyy-MM-dd").format(fechaInferior)%>"
+                           value="<%=new SimpleDateFormat("yyyy-MM-dd").format(fechaInferior)%>"
                            required> 
                     <div id="fecha-retro"></div>
                 </div>
@@ -126,6 +143,46 @@
                 </div>
             </div>
 
+            <div class="row form-group">
+                <div class="col-3">
+                    <label for="">Folio: </label>
+                </div>
+                <div class="col-6">
+                    <div class="row">
+                        <div class="col-2">
+                            <label for="folioDesde">Desde:</label>
+                        </div>
+                        <div class="col">
+                            <input form="agregarDocumento"
+                                name="folioDesde"
+                                id="folioDesde"
+                                class="form-control"
+                                type="number"
+                                placeholder="desde"
+                                required
+                                readonly
+                                value="<%=folioDesde%>"
+                                maxlength="">
+                        </div>
+                        <div class="col-2">
+                            <label for="folioHasta">hasta:</label>
+                        </div>
+                        <div class="col">
+                            <input form="agregarDocumento"
+                                    name="folioHasta"
+                                    id="folioHasta"
+                                    class="form-control"
+                                    type="number"
+                                    placeholder="hasta"
+                                    required
+                                    min="<%=folioDesde%>"
+                                    maxlength="">
+                            <div id="folio-retro"></div>
+                        </div>
+                    </div>    
+                </div>
+            </div>
+                            
             <div class="row form-group">
                 <div class="col-3">
                     <label for="descripcion">Descripción: </label>
@@ -183,88 +240,40 @@
                 var descripcionValido = validarDescripcion();
                 var archivoValido = validarArchivo();
                 var fechaValido = validarFecha();
+                var folioHastaValido = validarFolioHasta();
                 
-                if(nombreValido && descripcionValido && archivoValido && fechaValido){
+                if(nombreValido && descripcionValido && archivoValido && fechaValido && folioHastaValido){
                     
-                    validarNombreNoDuplicado();
+                    document.getElementById("agregarDocumento").submit();
                 }
                 
                 
             }
  
-            //Llamada al ajax para validar que nombre
-            //del documento no este duplicado por expediente
-            //Si esta duplicado informa al cliente
-            //Caso contrario, envia el formulario
-            function validarNombreNoDuplicado(){
+           function validarFolioHasta(){
                 
-                var nombreDocInput = document.getElementById("nombreDoc");
-                var retroNombreDoc = document.getElementById("nombreDoc-retro");
-                var strNombre = nombreDocInput.value.trim();
+                var folioHastaInput = document.getElementById("folioHasta");
+                var retroFolioHasta= document.getElementById("folio-retro");
+                //var strFolioHasta = folioHastaInput.value;
+               
                 
-                var xmlHttp = new XMLHttpRequest();
-                xmlHttp.open("GET",
-                "<%=request.getContextPath()%>/DocumentoServlet?existeNombre="+strNombre, 
-                true);
+                if(!folioHastaInput.validity.valid ){
 
-                xmlHttp.onreadystatechange=function(){
+                    folioHastaInput.setAttribute("class","form-control is-invalid");
+                    retroFolioHasta.setAttribute("class","invalid-feedback");
+                    retroFolioHasta.textContent = 'El número es inválido ';
                     
-                   if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
-                       
-                        clearTimeout(xmlHttpTimeout); 
-                        
-                        var objectoJSON = JSON.parse(this.responseText);
-                        var existeNombre = objectoJSON.existeNombre;
-                        
-                        if(existeNombre == null){
-                            
-                            nombreDocInput.setAttribute("class","form-control is-invalid");
-                            retroNombreDoc.setAttribute("class","invalid-feedback");
-                            retroNombreDoc.textContent = '¡Ocurrió un fallo! No se pudo comprobar la unicidad del nombre';
-                            
-                            //se desbloquea boton agregar
-                            document.getElementById("agregar").removeAttribute("disabled");
-                            
-                        } else if(existeNombre){
-                            
-                            nombreDocInput.setAttribute("class","form-control is-invalid");
-                            retroNombreDoc.setAttribute("class","invalid-feedback");
-                            retroNombreDoc.textContent = 'Ya existe un documento con el mismo nombre';
-                            
-                            //se desbloquea boton agregar
-                            document.getElementById("agregar").removeAttribute("disabled");
-                            
-                        }else{
-                            //se envia formulario
-                            document.getElementById("agregarDocumento").submit();
-                            
-                        }
-                       
-                    }
-                };
-                
-                //bloquear boton agregar
-                document.getElementById("agregar").setAttribute("disabled","");
-                xmlHttp.send();
-                
-                // Timeout para abortar despues 5 segundos
-                var xmlHttpTimeout=setTimeout(ajaxTimeout,5000);
-                function ajaxTimeout(){
-                    xmlHttp.abort();
-                 
-                    nombreDocInput.setAttribute("class","form-control is-invalid");
-                    retroNombreDoc.setAttribute("class","invalid-feedback");
-                    retroNombreDoc.textContent = 'No se pudo validar que el nombre no sea duplicado. \n Intente más tarde';
-                    
-                    // Se desbloque boton agregar
-                    document.getElementById("agregar").removeAttribute("disabled");
+                    return false;
                 }
                 
+                folioHastaInput.setAttribute("class","form-control is-valid");
+                retroFolioHasta.setAttribute("class","valid-feedback");
+                retroFolioHasta.textContent = '';
+                    
+                 
+                return true;
             }
-            //Se valida que:
-            //El nombre no este vacio
-            //Que no sea una secuencia de espacios en blanco
-            //Que no tenga caracteres especiales
+            
             function validarNombre(){
                 
                 var nombreDocInput = document.getElementById("nombreDoc");
@@ -361,10 +370,18 @@
                 var retroFecha = document.getElementById("fecha-retro");
                 var strFecha = fechaInput.value.trim(); 
                 
-                if(strFecha.length === 0){ 
+                if(strFecha.length == 0){ 
                     fechaInput.setAttribute("class","form-control is-invalid");
                     retroFecha.setAttribute("class","invalid-feedback");
                     retroFecha.textContent = 'El campo esta vacío';
+                    
+                    return false;
+                } 
+                
+                if(!fechaInput.validity.valid){ 
+                    fechaInput.setAttribute("class","form-control is-invalid");
+                    retroFecha.setAttribute("class","invalid-feedback");
+                    retroFecha.textContent = 'La fecha no debe ser anterior a <%=new SimpleDateFormat("dd/MM/yyyy").format(fechaInferior)%>';
                     
                     return false;
                 } 
@@ -378,6 +395,76 @@
         </script>     
     </body>
 </html>
+<%-- 
+//Llamada al ajax para validar que nombre
+            //del documento no este duplicado por expediente
+            //Si esta duplicado informa al cliente
+            //Caso contrario, envia el formulario
+            function validarNombreNoDuplicado(){
+                
+                var nombreDocInput = document.getElementById("nombreDoc");
+                var retroNombreDoc = document.getElementById("nombreDoc-retro");
+                var strNombre = nombreDocInput.value.trim();
+                
+                var xmlHttp = new XMLHttpRequest();
+                xmlHttp.open("GET",
+                "<%=request.getContextPath()%>/DocumentoServlet?existeNombre="+strNombre, 
+                true);
 
+                xmlHttp.onreadystatechange=function(){
+                    
+                   if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
+                       
+                        clearTimeout(xmlHttpTimeout); 
+                        
+                        var objectoJSON = JSON.parse(this.responseText);
+                        var existeNombre = objectoJSON.existeNombre;
+                        
+                        if(existeNombre == null){
+                            
+                            nombreDocInput.setAttribute("class","form-control is-invalid");
+                            retroNombreDoc.setAttribute("class","invalid-feedback");
+                            retroNombreDoc.textContent = '¡Ocurrió un fallo! No se pudo comprobar la unicidad del nombre';
+                            
+                            //se desbloquea boton agregar
+                            document.getElementById("agregar").removeAttribute("disabled");
+                            
+                        } else if(existeNombre){
+                            
+                            nombreDocInput.setAttribute("class","form-control is-invalid");
+                            retroNombreDoc.setAttribute("class","invalid-feedback");
+                            retroNombreDoc.textContent = 'Ya existe un documento con el mismo nombre';
+                            
+                            //se desbloquea boton agregar
+                            document.getElementById("agregar").removeAttribute("disabled");
+                            
+                        }else{
+                            //se envia formulario
+                            document.getElementById("agregarDocumento").submit();
+                            
+                        }
+                       
+                    }
+                };
+                
+                //bloquear boton agregar
+                document.getElementById("agregar").setAttribute("disabled","");
+                xmlHttp.send();
+                
+                // Timeout para abortar despues 5 segundos
+                var xmlHttpTimeout=setTimeout(ajaxTimeout,5000);
+                function ajaxTimeout(){
+                    xmlHttp.abort();
+                 
+                    nombreDocInput.setAttribute("class","form-control is-invalid");
+                    retroNombreDoc.setAttribute("class","invalid-feedback");
+                    retroNombreDoc.textContent = 'No se pudo validar que el nombre no sea duplicado. \n Intente más tarde';
+                    
+                    // Se desbloque boton agregar
+                    document.getElementById("agregar").removeAttribute("disabled");
+                }
+                
+            }
+--%>
 
 

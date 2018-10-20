@@ -334,16 +334,17 @@ public class AbogadoJpaController implements Serializable {
     }
     
     /**
-     * Retorna una lista de abogados que no tengan cuenta de usuario
+     * Retorna una lista de abogados que no tengan cuenta de usuario y
+     * su estado es "ACTIVO"
      * @return List<Abogado>
      */
     
-    public List<Abogado> getListaAbogadoSinUsuario() {
+    public List<Abogado> getListaAbogadoActivoSinUsuario() {
         EntityManager em = getEntityManager();
         
         try {
            
-            String consulta = "select a from Abogado a where a.idUsuario is null";
+            String consulta = "select a from Abogado a where a.idUsuario is null and a.estado like 'ACTIVO' order by a.nombre";
             Query q = em.createQuery(consulta); 
             return q.getResultList();
             
@@ -352,4 +353,58 @@ public class AbogadoJpaController implements Serializable {
         }
     }
     
+    /**
+     * Retorna una lista de abogados cuyo estado sean "ACTIVOS"
+     * ordenados por nombre
+     * @return :List<Abogado>
+     */
+    public List<Abogado> getListaAbogadoActivo() {
+        EntityManager em = getEntityManager();
+        
+        try {
+           
+            String consulta = "select a from Abogado a where a.estado like 'ACTIVO' order by a.nombre";
+            Query q = em.createQuery(consulta); 
+            return q.getResultList();
+            
+        }finally {
+            em.close();
+        }
+    }
+    
+    /**
+     * Retorna un true si el abogado es editable, falso caso contrario
+     * @param idAbogado
+     * @return Boolean
+     */
+    public Boolean esEditable(Integer idAbogado) {
+       
+       EntityManager em = getEntityManager();
+       
+        try {
+            String consulta =   "select e.idAbogado.idAbogado from Expediente e where e.idAbogado.idAbogado = :idAbogado ";
+                              
+                
+            Query q = em.createQuery(consulta);
+            
+            q.setParameter("idAbogado", idAbogado);
+           
+             
+            List<Integer> lista = q.getResultList();
+           
+            if(lista.size() > 0){
+                return  false;
+            }else{
+                return true;
+            }
+            
+        } catch(Exception e){
+            
+            return false;
+            
+        }finally {
+            em.close();
+        }
+    }
+
 }

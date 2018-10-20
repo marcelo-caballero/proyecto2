@@ -53,9 +53,6 @@ public class Marca implements Serializable {
     private String denominacion;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idMarca")
     private List<Expediente> expedienteList;
-    @JoinColumn(name = "id_pais", referencedColumnName = "id_pais")
-    @ManyToOne(optional = false)
-    private Pais idPais;
     @JoinColumn(name = "id_tipo_marca", referencedColumnName = "id_tipo_marca")
     @ManyToOne(optional = false)
     private TipoMarca idTipoMarca;
@@ -100,14 +97,6 @@ public class Marca implements Serializable {
         this.expedienteList = expedienteList;
     }
 
-    public Pais getIdPais() {
-        return idPais;
-    }
-
-    public void setIdPais(Pais idPais) {
-        this.idPais = idPais;
-    }
-
     public TipoMarca getIdTipoMarca() {
         return idTipoMarca;
     }
@@ -141,7 +130,4 @@ public class Marca implements Serializable {
         return "modelo.Marca[ idMarca=" + idMarca + " ]";
     }
 
-  
-    
-    
 }

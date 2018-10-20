@@ -6,6 +6,7 @@
 package modeloMng;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -195,15 +196,80 @@ public class DocumentoJpaController implements Serializable {
         }
     }
 
-    /*Responde si existe una duplicacion de nombres de documento por expediente  
     
-      Si idDocumento es nulo:(GUARDAR)
-        Considera si el nombre esta o no duplicado por expediente
+    /**
+     * Retorna el ultimo documento guardado en el expediente
+     * @param idExpediente
+     * @return Documento
+     * 
+     */
+    public Documento getUltimoDocumento(Integer idExpediente) {
+       
+       EntityManager em = getEntityManager();
+       
+        try {
+            String consulta = "select d from Documento d "+ 
+                              " where d.idExpediente.idExpediente= :idExp "+
+                              "and d.idDocumento = (select max(d.idDocumento) from Documento d)";
+        
+            Query q = em.createQuery(consulta);
+            
+            q.setParameter("idExp", idExpediente);
+           
+             
+           
+            Documento documento = ((Documento) q.getSingleResult());
+            System.out.println(documento);
+            return documento;
+            
+        } catch(Exception e){
+            System.out.println(e);
+            return null;
+            
+        }finally {
+            em.close();
+        }
+    }
     
-      Si idDocumento no es nulo:(EDITAR)
-        Considera si el nombre esta o no duplicado por expediente
-        pero sin considerar el nombre del documento identificado por idDocumento
-    */
+    
+    public Date getFechaDocumentoFolioHasta(Integer hasta, Integer idExp) {
+       
+       EntityManager em = getEntityManager();
+       
+        try {
+            String consulta = "select d.fecha from Documento d "+ 
+                              " where d.idExpediente.idExpediente= :idExp "+
+                              "and d.folioHasta = :hasta";
+        
+            Query q = em.createQuery(consulta);
+            
+            q.setParameter("idExp", idExp);
+            q.setParameter("hasta", hasta);
+             
+           
+            Date fecha = ((Date) q.getSingleResult());
+            
+            return fecha;
+            
+        } catch(Exception e){
+           
+            return null;
+            
+        }finally {
+            em.close();
+        }
+    }
+    
+    
+    /*//    Responde si existe una duplicacion de nombres de documento por expediente  
+//    
+//      Si idDocumento es nulo:(GUARDAR)
+//        Considera si el nombre esta o no duplicado por expediente
+//    
+//      Si idDocumento no es nulo:(EDITAR)
+//        Considera si el nombre esta o no duplicado por expediente
+//        pero sin considerar el nombre del documento identificado por idDocumento
+//    
     public Boolean existeNombreDocumentoExpediente(Integer idExpediente, String nombre, Integer idDocumento) {
        
        EntityManager em = getEntityManager();
@@ -241,6 +307,5 @@ public class DocumentoJpaController implements Serializable {
         }finally {
             em.close();
         }
-    }
-    
+    }*/
 }

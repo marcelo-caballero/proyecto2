@@ -62,7 +62,8 @@
                            value="<%=evento.getIdExpediente().getNroExpediente()%>"> 
                 </div>
             </div>
-
+            
+            
             <div class="row form-group">    
                 <div class="col-3">
                     <label for="nombre">Nombre del evento:</label>
@@ -79,24 +80,6 @@
                            value="<%=evento.getNombre()%>" 
                            >
                     <div id="nombre-retro"></div>
-                </div>
-            </div>
-
-            <div class="row form-group">    
-                <div class="col-3">
-                    <label for="fecha">Programar para:</label>
-                </div>
-                <div class="col-6">
-                    <input form="editarEvento"
-                           name="fecha"
-                           id="fecha"
-                           class="form-control"
-                           type="date"
-                           value="<%=new SimpleDateFormat("yyyy-MM-dd").format(evento.getFecha())%>" 
-                           min="<%=new SimpleDateFormat("yyyy-MM-dd").format(fechaMinima)%>"  
-                           required
-                           >
-                    <div id="fecha-retro"></div>
                 </div>
             </div>
 
@@ -145,7 +128,64 @@
                     <div id="prioridad-retro"></div>
                 </div>
             </div>
-
+                    
+            <div class="row form-group">    
+                <div class="col-3">
+                    <label for="fecha">Programar para:</label>
+                </div>
+                <div class="col-6">
+                    <div class="row">
+                        <div class="col-6">
+                            <input form="editarEvento"
+                                   name="fecha"
+                                   id="fecha"
+                                   class="form-control"
+                                   type="date"
+                                   value="<%=new SimpleDateFormat("yyyy-MM-dd").format(evento.getFecha())%>" 
+                                   min="<%=new SimpleDateFormat("yyyy-MM-dd").format(fechaMinima)%>"  
+                                   required
+                                   >
+                            <div id="fecha-retro"></div>
+                        </div>
+                        <div class="col">
+                            <select form="editarEvento"
+                                   name="hora"
+                                   id="hora"
+                                   class="form-control"
+                                   type="number"
+                                   required
+                                   >
+                                   <%for(int i=0;i<24;i++){%> 
+                                        <%if(Integer.parseInt(evento.getStringHora()) == i){%> 
+                                            <option selected value="<%= (i<10) ? "0"+i : i%>"><%= (i<10) ? "0"+i : i%></option>
+                                        <%}else{%>
+                                            <option value="<%= (i<10) ? "0"+i : i%>"><%= (i<10) ? "0"+i : i%></option>
+                                        <%}%> 
+                                   <%}%>
+                            </select>
+                        </div>
+                        <div>:</div>
+                        <div class="col">
+                            <select form="editarEvento"
+                                   name="minuto"
+                                   id="minuto"
+                                   class="form-control"
+                                   type="number"
+                                   required
+                                   >
+                                   <%for(int i=0;i<60;i++){%> 
+                                        <%if(Integer.parseInt(evento.getStringMinuto()) == i){%> 
+                                            <option selected value="<%= (i<10) ? "0"+i : i%>"><%= (i<10) ? "0"+i : i%></option>
+                                        <%}else{%>
+                                            <option value="<%= (i<10) ? "0"+i : i%>"><%= (i<10) ? "0"+i : i%></option>
+                                        <%}%> 
+                                   <%}%>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+                            
             <div class="row form-group">    
                 <div class="col-3">
                     <label for="descripcion">Detalles del evento:</label>

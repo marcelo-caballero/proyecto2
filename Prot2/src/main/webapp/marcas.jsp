@@ -48,7 +48,6 @@
                     <tr>
                         <th>Nombre de la Marca</th>
                         <th>Signo</th>
-                        <th>País</th>
                         <th>
                             <%if(permisoControlAcceso.permisoRolVentana(rolUsuarioConectado,"agregarMarca.jsp")){%>
                                 <i class="fa fa-plus-circle" 
@@ -68,7 +67,7 @@
                         <input id="marca-<%=i%>" type="hidden"  value="<%=listaMarca.get(i).getIdMarca()%>"/> 
                         <td id="denominacion-<%=i%>"><%=listaMarca.get(i).getDenominacion()%></td>
                         <td id="signo-<%=i%>"><%=listaMarca.get(i).getIdTipoMarca().getDescripcion()%></td> 
-                        <td id="pais-<%=i%>" ><%=listaMarca.get(i).getIdPais().getPais()%></td>
+                       
                         <td>
                             <%if(permisoControlAcceso.permisoRolVentana(rolUsuarioConectado,"verMarca.jsp")){%> 
                                 <i class="fa fa-search" 

@@ -25,14 +25,12 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
- * @author Acer
+ * @author User
  */
 @Entity
 @Table(name = "expediente")
@@ -44,11 +42,9 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Expediente.findByFechaSolicitud", query = "SELECT e FROM Expediente e WHERE e.fechaSolicitud = :fechaSolicitud"),
     @NamedQuery(name = "Expediente.findByFechaEstado", query = "SELECT e FROM Expediente e WHERE e.fechaEstado = :fechaEstado"),
     @NamedQuery(name = "Expediente.findByProducto", query = "SELECT e FROM Expediente e WHERE e.producto = :producto"),
-    @NamedQuery(name = "Expediente.findByObservacion", query = "SELECT e FROM Expediente e WHERE e.observacion = :observacion")})
+    @NamedQuery(name = "Expediente.findByObservacion", query = "SELECT e FROM Expediente e WHERE e.observacion = :observacion"),
+    @NamedQuery(name = "Expediente.findByNroCertificado", query = "SELECT e FROM Expediente e WHERE e.nroCertificado = :nroCertificado")})
 public class Expediente implements Serializable {
-
-    @Column(name = "nro_certificado")
-    private Integer nroCertificado;
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -57,23 +53,22 @@ public class Expediente implements Serializable {
     @Column(name = "id_expediente")
     private Integer idExpediente;
     @Basic(optional = false)
-    @NotNull
     @Column(name = "nro_expediente")
     private BigInteger nroExpediente;
     @Basic(optional = false)
-    @NotNull
     @Column(name = "fecha_solicitud")
-    @Temporal(TemporalType.DATE)
+    @Temporal(TemporalType.TIMESTAMP)
     private Date fechaSolicitud;
+    @Basic(optional = false)
     @Column(name = "fecha_estado")
-    @Temporal(TemporalType.DATE)
+    @Temporal(TemporalType.TIMESTAMP)
     private Date fechaEstado;
-    @Size(max = 2147483647)
     @Column(name = "producto")
     private String producto;
-    @Size(max = 2147483647)
     @Column(name = "observacion")
     private String observacion;
+    @Column(name = "nro_certificado")
+    private Integer nroCertificado;
     @JoinColumn(name = "id_abogado", referencedColumnName = "id_abogado")
     @ManyToOne(optional = false)
     private Abogado idAbogado;
@@ -106,10 +101,11 @@ public class Expediente implements Serializable {
         this.idExpediente = idExpediente;
     }
 
-    public Expediente(Integer idExpediente, BigInteger nroExpediente, Date fechaSolicitud) {
+    public Expediente(Integer idExpediente, BigInteger nroExpediente, Date fechaSolicitud, Date fechaEstado) {
         this.idExpediente = idExpediente;
         this.nroExpediente = nroExpediente;
         this.fechaSolicitud = fechaSolicitud;
+        this.fechaEstado = fechaEstado;
     }
 
     public Integer getIdExpediente() {
@@ -158,6 +154,14 @@ public class Expediente implements Serializable {
 
     public void setObservacion(String observacion) {
         this.observacion = observacion;
+    }
+
+    public Integer getNroCertificado() {
+        return nroCertificado;
+    }
+
+    public void setNroCertificado(Integer nroCertificado) {
+        this.nroCertificado = nroCertificado;
     }
 
     public Abogado getIdAbogado() {
@@ -257,18 +261,7 @@ public class Expediente implements Serializable {
 
     @Override
     public String toString() {
-        return "" + nroExpediente + "\n"+
-                   idCliente + "\n"+
-                   idAbogado + "\n"+
-                   idEstado + "\n"+
-                fechaEstado + "\n"+
-                idMarca + "\n"+
-                nroClase + "\n"+
-                fechaSolicitud + "\n"+
-                tipoExpediente + "\n"+
-                producto + "\n"+
-                observacion + "\n";
-                
+        return "modelo.Expediente[ idExpediente=" + idExpediente + " ]";
     }
     
     public String getStringFechaEstado(){
@@ -280,13 +273,9 @@ public class Expediente implements Serializable {
         String fecha = new SimpleDateFormat("dd-MM-yyyy").format(this.fechaSolicitud);
         return fecha;  
     }
-
-    public Integer getNroCertificado() {
-        return nroCertificado;
-    }
-
-    public void setNroCertificado(Integer nroCertificado) {
-        this.nroCertificado = nroCertificado;
-    }
+    
+    
+    
+   
     
 }

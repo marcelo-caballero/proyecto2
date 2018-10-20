@@ -76,6 +76,7 @@ public class AbogadoServlet extends HttpServlet {
                 String direccion = request.getParameter("direccion");
                 String telefono = request.getParameter("telefono");
                 String regProf = request.getParameter("regProf");
+                String email = request.getParameter("email"); 
                 
                 Abogado abogado = new Abogado();
                 
@@ -86,6 +87,7 @@ public class AbogadoServlet extends HttpServlet {
                 abogado.setApellido(apellido);
                 abogado.setDireccion(direccion);
                 abogado.setTelefono(telefono);
+                abogado.setEmail(email);
                 abogado.setEstado("ACTIVO");
                 if(regProf.length() > 0){
                     abogado.setRegistroProfesional(regProf);
@@ -109,6 +111,7 @@ public class AbogadoServlet extends HttpServlet {
                 String direccion = request.getParameter("direccion");
                 String telefono = request.getParameter("telefono");
                 String regProf = request.getParameter("regProf");
+                String email = request.getParameter("email");
                 
                 Abogado abogado = abogadoControl.findAbogado(idAbogado);
                 
@@ -118,6 +121,7 @@ public class AbogadoServlet extends HttpServlet {
                     abogado.setApellido(apellido);
                     abogado.setDireccion(direccion);
                     abogado.setTelefono(telefono);
+                    abogado.setEmail(email);
                     
                     if(regProf.length() > 0){
                         abogado.setRegistroProfesional(regProf);
@@ -137,33 +141,28 @@ public class AbogadoServlet extends HttpServlet {
         }
         
         if(request.getParameter("eliminar") != null){
-                
-            try {
                 Integer idAbogado = Integer.parseInt(request.getParameter("idAbogado"));
                 Abogado abogado = abogadoControl.findAbogado(idAbogado);
-                boolean borrar = true;
                 
-                if(abogado.getExpedienteList().size()> 0){
+            try {
                     
-                    borrar = false;
-                }
-                
+                abogado.setEstado("INACTIVO");
+                abogadoControl.edit(abogado); 
+              
+                //Inactivar la cuenta de usuario del abogado, si posee
                 if(abogado.getIdUsuario() != null){
-                    
-                    borrar = false;
+                    Usuario usuario = usuarioControl.findUsuario(abogado.getIdUsuario().getIdUsuario());
+                    usuario.setEstado("INACTIVO");
+                    usuarioControl.edit(usuario);
                 }
+                //******************************************************************************************
                 
-                if(borrar){
-                    abogadoControl.destroy(idAbogado);
-                    
-                }else{
-                    
-                    abogado.setEstado("INACTIVO");
-                    abogadoControl.edit(abogado); 
-                }
+                abogadoControl.destroy(idAbogado);
+                 
+            }catch(IllegalOrphanException ex){    
                 
                 
-            }catch (Exception e){
+            } catch (Exception e) {
             
                  request.getSession().setAttribute("mensajeErrorABM", "No se pudo eliminar el agente");
                  

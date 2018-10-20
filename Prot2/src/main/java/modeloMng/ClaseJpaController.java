@@ -6,7 +6,6 @@
 package modeloMng;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
@@ -24,7 +23,7 @@ import modeloMng.exceptions.PreexistingEntityException;
 
 /**
  *
- * @author Acer
+ * @author User
  */
 public class ClaseJpaController implements Serializable {
 
@@ -117,7 +116,7 @@ public class ClaseJpaController implements Serializable {
         } catch (Exception ex) {
             String msg = ex.getLocalizedMessage();
             if (msg == null || msg.length() == 0) {
-                BigDecimal id = clase.getNroClase();
+                Integer id = clase.getNroClase();
                 if (findClase(id) == null) {
                     throw new NonexistentEntityException("The clase with id " + id + " no longer exists.");
                 }
@@ -130,7 +129,7 @@ public class ClaseJpaController implements Serializable {
         }
     }
 
-    public void destroy(BigDecimal id) throws IllegalOrphanException, NonexistentEntityException {
+    public void destroy(Integer id) throws IllegalOrphanException, NonexistentEntityException {
         EntityManager em = null;
         try {
             em = getEntityManager();
@@ -186,7 +185,7 @@ public class ClaseJpaController implements Serializable {
         }
     }
 
-    public Clase findClase(BigDecimal id) {
+    public Clase findClase(Integer id) {
         EntityManager em = getEntityManager();
         try {
             return em.find(Clase.class, id);

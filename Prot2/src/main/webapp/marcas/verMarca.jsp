@@ -7,8 +7,7 @@
 <%@page import="java.util.Base64"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@page import="java.util.List"%>
-<%@page import="modelo.Marca"%> 
-<%@page import="modelo.Pais"%> 
+<%@page import="modelo.Marca"%>
 <%@page import="modelo.TipoMarca"%>  
 <%@page import="modeloMng.MarcaJpaController"%> 
 <%response.setHeader("Cache-Control", "no-cache");
@@ -61,15 +60,6 @@
                 </div>
                 <div class="col-6 form-control">
                     <%=marca.getIdTipoMarca().getDescripcion()%>
-                </div> 
-            </div>
-                
-            <div class="row form-group">
-                <div class="col-3">
-                    <label>País de origen:</label>
-                </div>
-                <div class="col-6 form-control">
-                    <%=marca.getIdPais().getPais()%>
                 </div> 
             </div>
 

@@ -34,11 +34,11 @@
         <br>
         
         <div class="container">
-           <%@include file="//WEB-INF/mensajeErrorABM.jsp" %>
            <%@include file="//WEB-INF/menuExpediente.jsp" %>     
         </div>
         
         <div class="container form-control">
+            <%@include file="//WEB-INF/mensajeErrorABM.jsp" %>
             <h2 class="text-justify">Documentos</h2>
             <br>
             
@@ -49,6 +49,7 @@
                         <th>Nombre del Documento</th>
                         <th>Tipo de Documento</th>
                         <th>Fecha</th>
+                        <th>Folio</th>
                         <th>
                             <%if(permisoControlAcceso.permisoRolVentana(rolUsuarioConectado,"agregarDocumento.jsp")){%> 
                                 <i class="fa fa-plus-circle" 
@@ -69,6 +70,7 @@
                         <td id="nombre-<%=i%>"><%=listaDocumentos.get(i).getNombreDocumento()%></td>
                         <td id=""><%=listaDocumentos.get(i).getIdTipoDocumento().getDescripcion()%></td>  
                         <td id=""><%=listaDocumentos.get(i).getStringFecha()%></td> 
+                        <td id=""><%=listaDocumentos.get(i).getFolioDesde()%> - <%=listaDocumentos.get(i).getFolioHasta()%></td> 
                         <td>
                             <%if(permisoControlAcceso.permisoRolVentana(rolUsuarioConectado,"verDocumento.jsp")){%>
                                 <i class="fa fa-search" 

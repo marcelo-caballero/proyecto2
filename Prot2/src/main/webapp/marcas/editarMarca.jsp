@@ -6,13 +6,11 @@
 
 
 <%@page import="java.lang.String"%>
-<%@page import="modeloMng.PaisJpaController"%>
 <%@page import="modeloMng.TipoMarcaJpaController"%>
 <%@page import="java.util.Base64"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@page import="java.util.List"%>
-<%@page import="modelo.Marca"%> 
-<%@page import="modelo.Pais"%> 
+<%@page import="modelo.Marca"%>
 <%@page import="modelo.TipoMarca"%>  
 <%@page import="modeloMng.MarcaJpaController"%> 
 <%response.setHeader("Cache-Control", "no-cache");
@@ -25,7 +23,7 @@
         <%@include file="//WEB-INF/paginaCabecera.jsp" %>
     </head>
 
-    <body onload="actualizarSigno(); actualizarPais();">
+    <body onload="actualizarSigno();">
         <%
             Integer idMarca = Integer.parseInt(request.getParameter("idMarca"));
             MarcaJpaController marcaControl = new MarcaJpaController();
@@ -34,10 +32,6 @@
             List<TipoMarca> listaTipoMarca;
             TipoMarcaJpaController tipoMarcaControl = new TipoMarcaJpaController();
             listaTipoMarca = tipoMarcaControl.findTipoMarcaEntities();
-
-            List<Pais> listaPais;
-            PaisJpaController paisControl = new PaisJpaController();
-            listaPais = paisControl.findPaisEntities();
 
         %>
         <%@include file="//WEB-INF/menuCabecera.jsp" %>
@@ -106,38 +100,7 @@
                     </div>
                 </div>
             </div>
-                        
-            <div class="row form-group">
-                <div class="col-3">
-                    <label for="idPais">País de origen:</label>
-                </div>
-                <div class="col-6">
-                    <div class="row">
-                        <div class="col-3">
-                            <input id="codigoPais" class="form-control" disabled>
-                        </div>
-                        <div class="col">
-                            <select form="editarMarca"
-                                    name="idPais" 
-                                    id="idPais"
-                                    class="form-control"
-                                    onchange="actualizarPais()">
-                                    <option value="<%=marca.getIdPais().getIdPais()%>"> 
-                                        <%=marca.getIdPais().getPais()%>
-                                    </option>
-                                    <%for (int j = 0; j < listaPais.size(); j++) {%>
-                                        <%if (marca.getIdPais().getIdPais() != listaPais.get(j).getIdPais()) {%> 
-                                            <option value="<%=listaPais.get(j).getIdPais()%>">
-                                                <%=listaPais.get(j).getPais()%>
-                                            </option>
-                                        <%}%>
-                                    <%}%>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-            </div>
-                            
+                       
             <div class="row form-group">
                 <div class="col-3">
                     <label for="imagenMarca"> Nueva Imagen:</label>
@@ -209,11 +172,6 @@
                     document.getElementById("imagenMarca").disabled = false;
                 }
                 
-            }
-            
-            function actualizarPais(){
-                
-                document.getElementById("codigoPais").value = document.getElementById("idPais").value;          
             }
             
             function validarFormulario(){

@@ -120,6 +120,23 @@
                   
             <div class="row form-group">
                 <div class="col-3">
+                    <label for="email">Correo electrónico:</label> 
+                </div>
+                <div class="col-6">
+                    <input form="agregarAbogado"
+                           name="email"
+                           id="email"
+                           class="form-control"
+                           type="email" 
+                           placeholder="Escriba el correo electrónico del agente"
+                           maxlength=""
+                           required >
+                    <div id="email-retro"></div>
+                </div> 
+            </div>
+                  
+            <div class="row form-group">
+                <div class="col-3">
                     <label for="regProf">Registro Profesional:</label> 
                 </div>
                 <div class="col-6">
@@ -134,6 +151,7 @@
                     <div id="regProf-retro"></div>
                 </div> 
             </div>
+                   
             <div class="row form-group">
                 <div class="col-5">
                 </div>
@@ -157,8 +175,9 @@
                 var apellidoValido = validarApellido();
                 var direccionValido = validarDireccion();
                 var telefonoValido = validarTelefono();
+                var emailValido = validarEmail();
                 
-                if(ciValido && nombreValido && apellidoValido && direccionValido && telefonoValido){
+                if(ciValido && nombreValido && apellidoValido && direccionValido && telefonoValido && emailValido){
                     validarUnicidadCi();
                     
                 }
@@ -341,6 +360,28 @@
                 telefonoInput.setAttribute("class","form-control is-valid");
                 retroTelefono.setAttribute("class","valid-feedback");
                 retroTelefono.textContent = '';
+                    
+                return true;
+            }
+            
+            function validarEmail(){
+                var emailInput = document.getElementById("email");
+                var retroEmail = document.getElementById("email-retro");
+                var strEmail = emailInput.value.trim();
+                
+                emailInput.value = strEmail;
+                
+                if(!emailInput.validity.valid){ 
+                    emailInput.setAttribute("class","form-control is-invalid");
+                    retroEmail.setAttribute("class","invalid-feedback");
+                    retroEmail.textContent = 'Ingrese un correo electrónico válido';
+                    
+                    return false;
+                }
+                
+                emailInput.setAttribute("class","form-control is-valid");
+                retroEmail.setAttribute("class","valid-feedback");
+                retroEmail.textContent = '';
                     
                 return true;
             }

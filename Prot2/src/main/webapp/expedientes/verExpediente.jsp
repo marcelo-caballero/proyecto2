@@ -160,10 +160,10 @@
              
             <div class="row form-group">
                 <div class="col-3">
-                    <label>País de origen:</label>
+                    <label>País del titular:</label>
                 </div>
                 <div class="col-6 form-control">
-                    <%=expediente.getIdMarca().getIdPais().getPais()%>   
+                    <%=expediente.getIdCliente().getIdPais().getPais()%>   
                 </div>
             </div>
                 
@@ -185,7 +185,7 @@
                     <label>Observación:</label>
                 </div>
                 <div class="col-6 form-control">
-                    <%=expediente.getObservacion()%> 
+                    <%= (expediente.getObservacion() != null) ? expediente.getObservacion() : ""%>  
                 </div>
             </div>
           

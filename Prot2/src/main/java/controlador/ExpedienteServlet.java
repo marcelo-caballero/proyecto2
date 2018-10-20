@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import javax.servlet.ServletException;
@@ -18,6 +19,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import modelo.*;
 import modeloMng.*;
+import modeloMng.exceptions.IllegalOrphanException;
+import modeloMng.exceptions.NonexistentEntityException;
 
 
 /**
@@ -101,7 +104,7 @@ public class ExpedienteServlet extends HttpServlet {
                 Abogado abogado = abogadoControl.findAbogado(idAbogado);
                 EstadoMarca estadoMarca = estadoMarcaControl.findEstadoMarca(idEstadoMarca);
                 Marca marca = marcaControl.findMarca(idMarca);
-                Clase clase = claseControl.findClase(new BigDecimal(nroClase));
+                Clase clase = claseControl.findClase(nroClase);
                 TipoExpediente tipoExpediente = tipoExpControl.findTipoExpediente(idTipoExpediente);
             
                 
@@ -123,9 +126,13 @@ public class ExpedienteServlet extends HttpServlet {
                     exp.setNroCertificado(Integer.parseInt(nroCertificado)); 
                 }
             
-                expControl.create(exp);
-            }catch(Exception e){
+                if(!expControl.violaRestriccionUnicaClaseMarcaCliente(nroClase, idMarca, idCliente)){
+                    expControl.create(exp);
+                }else{
+                    request.getSession().setAttribute("mensajeErrorABM", "Ya existe un expediente con la misma combinación de clase, marca y titular");
+                }
                 
+            }catch(Exception e){
                 request.getSession().setAttribute("mensajeErrorABM", "No se pudo agregar el expediente");
             
             }finally{
@@ -139,9 +146,14 @@ public class ExpedienteServlet extends HttpServlet {
                 Integer idExp = Integer.parseInt(request.getParameter("idExpediente"));
                 expControl.destroy(idExp);
                 
-            } catch (Exception e) {
-                System.out.println(e);
+            } catch (IllegalOrphanException ex) {
+                
+                request.getSession().setAttribute("mensajeErrorABM", "Solamente se puede eliminar un expediente vacío");
+                
+            }catch (Exception e) {
+                
                 request.getSession().setAttribute("mensajeErrorABM", "No se pudo eliminar el expediente");
+                
             }finally{
            
                 response.sendRedirect("expedientes.jsp");
@@ -172,7 +184,7 @@ public class ExpedienteServlet extends HttpServlet {
                 Abogado abogado = abogadoControl.findAbogado(idAbogado);
                 EstadoMarca estadoMarca = estadoMarcaControl.findEstadoMarca(idEstadoMarca);
                 Marca marca = marcaControl.findMarca(idMarca);
-                Clase clase = claseControl.findClase(new BigDecimal(nroClase));
+                Clase clase = claseControl.findClase(nroClase);
                 TipoExpediente tipoExpediente = tipoExpControl.findTipoExpediente(idTipoExpediente);
                 
                 

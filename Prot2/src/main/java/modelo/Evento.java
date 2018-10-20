@@ -59,7 +59,7 @@ public class Evento implements Serializable {
     @Basic(optional = false)
     @NotNull
     @Column(name = "fecha")
-    @Temporal(TemporalType.DATE)
+    @Temporal(TemporalType.TIMESTAMP)
     private Date fecha;
     @JoinColumn(name = "id_expediente", referencedColumnName = "id_expediente")
     @ManyToOne(optional = false)
@@ -146,6 +146,16 @@ public class Evento implements Serializable {
     public String getStringFecha(){
         String fecha = new SimpleDateFormat("dd-MM-yyyy").format(this.fecha);
         return fecha;  
+    }
+    
+    public String getStringHora(){
+        String hora = new SimpleDateFormat("HH").format(this.fecha);
+        return hora;  
+    }
+    
+    public String getStringMinuto(){
+        String minuto = new SimpleDateFormat("mm").format(this.fecha);
+        return minuto;  
     }
 
     public String getPrioridad() {

@@ -43,6 +43,13 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Abogado.findByRegistroProfesional", query = "SELECT a FROM Abogado a WHERE a.registroProfesional = :registroProfesional")})
 public class Abogado implements Serializable {
 
+    // @Pattern(regexp="[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?", message="Invalid email")//if the field contains email address consider using this annotation to enforce field validation
+    @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 2147483647)
+    @Column(name = "email")
+    private String email;
+
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 2147483647)
@@ -229,5 +236,13 @@ public class Abogado implements Serializable {
 
     public void setEstado(String estado) {
         this.estado = estado;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 }

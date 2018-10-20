@@ -531,4 +531,75 @@ public class ExpedienteJpaController implements Serializable {
             em.close();
         }
     }
+    
+    /**
+     * Responde si el nuevo registro viola la restriccion unica de clase, marca y titular
+     * @param nroClase
+     * @param idMarca
+     * @param idCliente
+     * @return Boolean
+     */
+    public Boolean violaRestriccionUnicaClaseMarcaCliente(Integer nroClase, Integer idMarca, Integer idCliente) {
+       
+       EntityManager em = getEntityManager();
+       
+        try {
+            String consulta =   "select count(e) from Expediente e "+
+                                "where e.nroClase.nroClase = :nroClase and e.idMarca.idMarca = :idMarca "+
+                                "and e.idCliente.idCliente = :idCliente";
+                
+            Query q = em.createQuery(consulta);
+            
+            q.setParameter("nroClase", nroClase);
+            q.setParameter("idMarca", idMarca);
+            q.setParameter("idCliente", idCliente);
+           
+             
+            Integer cant = ((Long) q.getSingleResult()).intValue();
+           
+            if(cant>0){
+                return  true;
+            }else{
+                return false;
+            }
+            
+        } catch(Exception e){
+            
+            return false;
+            
+        }finally {
+            em.close();
+        }
+    }
+    
+    public Boolean esEditable(Integer idExp) {
+       
+       EntityManager em = getEntityManager();
+       
+        try {
+            String consulta =   "select d.idExpediente.idExpediente from Documento d where d.idExpediente.idExpediente = :idExp "+
+                                "union "+
+                                "select e.idExpediente.idExpediente from Evento e where e.idExpediente.idExpediente = :idExp ";
+                
+            Query q = em.createQuery(consulta);
+            
+            q.setParameter("idExp", idExp);
+           
+             
+            List<Integer> lista = q.getResultList();
+           
+            if(lista.size() > 0){
+                return  false;
+            }else{
+                return true;
+            }
+            
+        } catch(Exception e){
+            
+            return false;
+            
+        }finally {
+            em.close();
+        }
+    }
 }

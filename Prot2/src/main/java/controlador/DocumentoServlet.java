@@ -42,10 +42,11 @@ public class DocumentoServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         
-        /*Retorna un json a la consulta del ajax
-          Si ya existe un nombre porexpediente, retorna true
-          caso contrario, false
-        */
+        /*
+//        Retorna un json a la consulta del ajax
+//          Si ya existe un nombre porexpediente, retorna true
+//          caso contrario, false
+        
         DocumentoJpaController documentoControl = new DocumentoJpaController();
         Boolean existeNombre = null;
         Integer idDoc = null;
@@ -69,7 +70,7 @@ public class DocumentoServlet extends HttpServlet {
                 out.println("{\"existeNombre\":"+existeNombre+"}");
             }
         }
-        /**/
+        */
     }
 
     
@@ -95,6 +96,8 @@ public class DocumentoServlet extends HttpServlet {
                 String nombre = request.getParameter("nombreDoc");
                 Integer idTipoDoc = Integer.parseInt(request.getParameter("idTipoDoc"));
                 String descripcion = request.getParameter("descripcionDoc");
+                String folioDesde = request.getParameter("folioDesde");
+                String folioHasta = request.getParameter("folioHasta");
                 
                 
                 //Convierte string a fecha
@@ -119,11 +122,13 @@ public class DocumentoServlet extends HttpServlet {
                 documento.setDescripcion(descripcion);
                 documento.setDocumento(bFile);
                 documento.setFecha(fecha);
+                documento.setFolioDesde(Integer.parseInt(folioDesde));
+                documento.setFolioHasta(Integer.parseInt(folioHasta));
 
                 
                 documentoControl.create(documento);
             }catch (Exception e) {
-                
+                System.out.println(e);
                 request.getSession().setAttribute("mensajeErrorABM", "No se pudo agregar el documento");
             
             }finally{
@@ -136,7 +141,20 @@ public class DocumentoServlet extends HttpServlet {
         if(request.getParameter("eliminar") != null){
             try {
                 Integer idDoc = Integer.parseInt(request.getParameter("idDocumento"));
-                documentoControl.destroy(idDoc);
+                
+                //El id del expediente en donde se encuentra
+                Integer idExp = (Integer) request.getSession().getAttribute("idExpediente");
+                
+                Documento ultimoDocumento = documentoControl.getUltimoDocumento(idExp);
+                
+                //Si el documento a eliminar es el ultimo documento guardado en el expediente, 
+                if(idDoc == ultimoDocumento.getIdDocumento()){
+                    //lo eliminamos
+                     documentoControl.destroy(idDoc);
+                }else{
+                    //si no informamos que no se puede eliminar
+                    request.getSession().setAttribute("mensajeErrorABM", "Solamente se puede eliminar el último documento del expediente");
+                }
                 
             } catch (Exception e) {
                 
@@ -153,9 +171,12 @@ public class DocumentoServlet extends HttpServlet {
                 Integer idDoc = Integer.parseInt(request.getParameter("idDocumento")); 
 
                 Documento documento = documentoControl.findDocumento(idDoc);
+                
                 String nombre = request.getParameter("nombreDoc");
                 Integer idTipoDoc = Integer.parseInt(request.getParameter("idTipoDoc"));
                 String descripcion = request.getParameter("descripcionDoc");
+                String folioDesde = request.getParameter("folioDesde");
+                String folioHasta = request.getParameter("folioHasta");
                 
                 Date fecha = formatoFecha.parse(request.getParameter("fechaDoc"));
                 
@@ -174,6 +195,7 @@ public class DocumentoServlet extends HttpServlet {
                 documento.setNombreDocumento(nombre);
                 documento.setIdTipoDocumento(tipoDocControl.findTipoDocumento(idTipoDoc));
                 documento.setDescripcion(descripcion);
+                documento.setFolioHasta(Integer.parseInt(folioHasta)); 
                 documento.setFecha(fecha);
                 //Si se selecciona un nuevo archivo, se actualiza
                 if(bFile != null){

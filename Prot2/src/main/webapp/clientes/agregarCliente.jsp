@@ -7,6 +7,8 @@
 <%@page import="modeloMng.UsuarioJpaController"%>
 <%@page import="java.util.List"%>
 <%@page import="modelo.Usuario"%> 
+<%@page import="modelo.Pais"%> 
+<%@page import="modeloMng.PaisJpaController"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%response.setHeader("Cache-Control", "no-cache");
 %>
@@ -17,9 +19,13 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <%@include file="//WEB-INF/paginaCabecera.jsp" %>
     </head>
-    <body onload="verificarSelectNoVacios();mostrarCamposSegunTipoPersona()">
+    <body onload="mostrarCamposSegunTipoPersona(),actualizarPais()">
         <%
             List<Usuario> listaUsuario = new UsuarioJpaController().getNuevosUsuariosRolCliente();
+            
+            List<Pais> listaPais;
+            PaisJpaController paisControl = new PaisJpaController();
+            listaPais = paisControl.findPaisEntities();
             
         %>
         <%@include file="//WEB-INF/menuCabecera.jsp" %>
@@ -177,6 +183,49 @@
                     <div id="telefono-retro"></div>
                 </div> 
             </div>
+            
+            <div class="row form-group">
+                <div class="col-3">
+                    <label for="email">Correo electrónico:</label> 
+                </div>
+                <div class="col-6">
+                    <input form="agregarCliente"
+                           name="email"
+                           id="email"
+                           class="form-control"
+                           type="email" 
+                           placeholder="Escriba el correo electrónico del titular"
+                           maxlength=""
+                           required >
+                    <div id="email-retro"></div>
+                </div> 
+            </div>
+                  
+            <div class="row form-group">
+                <div class="col-3">
+                    <label for="idPais">País del titular:</label>
+                </div>
+                <div class="col-6">
+                    <div class="row">
+                        <div class="col-3">
+                            <input id="codigoPais" class="form-control" disabled>
+                        </div>
+                        <div class="col">
+                            <select form="agregarCliente"
+                                    name="idPais" 
+                                    id="idPais"
+                                    class="form-control"
+                                    onchange="actualizarPais()">
+                                    <%for (int j = 0; j < listaPais.size(); j++) {%>
+                                        <option value="<%=listaPais.get(j).getIdPais()%>">
+                                            <%=listaPais.get(j).getPais()%>
+                                        </option>
+                                    <%}%>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
                   
             <div class="row form-group">
                 <div class="col-5">
@@ -192,6 +241,11 @@
         </div>
         <br>
         <script>
+            function actualizarPais(){
+                
+                document.getElementById("codigoPais").value = document.getElementById("idPais").value;   
+            }
+            
             function mostrarCamposSegunTipoPersona(){
                 
                 var tipoPersona = document.getElementById("tipoCliente").value;
@@ -248,8 +302,9 @@
                     var direccionValido = validarDireccion();
                     var telefonoValido = validarTelefono();
                     var rucValido = validarRuc();
+                    var emailValido = validarEmail();
                     
-                    if(ciValido && nombreValido && apellidoValido && direccionValido && telefonoValido && rucValido){
+                    if(ciValido && nombreValido && apellidoValido && direccionValido && telefonoValido && rucValido && emailValido){
                         validarUnicidadCi();
                     
                     }
@@ -258,8 +313,9 @@
                     var razonSocialValido = validarRazonSocial();
                     var direccionValido = validarDireccion();
                     var telefonoValido = validarTelefono();
+                    var emailValido = validarEmail();
                     
-                    if(rucValido && razonSocialValido  && direccionValido && telefonoValido){
+                    if(rucValido && razonSocialValido  && direccionValido && telefonoValido && emailValido){
                         validarUnicidadRuc();
                     
                     }
@@ -435,6 +491,8 @@
                 var retroNombre = document.getElementById("nombre-retro");
                 var strNombre = nombreInput.value.trim();
                 
+                nombreInput.value = strNombre;
+                
                 if(strNombre.length == 0){ 
                     nombreInput.setAttribute("class","form-control is-invalid");
                     retroNombre.setAttribute("class","invalid-feedback");
@@ -454,6 +512,8 @@
                 var apellidoInput = document.getElementById("apellido");
                 var retroApellido = document.getElementById("apellido-retro");
                 var strApellido = apellidoInput.value.trim();
+                
+                apellidoInput.value = strApellido;
                 
                 if(strApellido.length == 0){ 
                     apellidoInput.setAttribute("class","form-control is-invalid");
@@ -475,6 +535,8 @@
                 var retroDireccion = document.getElementById("direccion-retro");
                 var strDireccion = direccionInput.value.trim();
                 
+                direccionInput.value = strDireccion;
+                
                 if(strDireccion.length == 0){ 
                     direccionInput.setAttribute("class","form-control is-invalid");
                     retroDireccion.setAttribute("class","invalid-feedback");
@@ -490,30 +552,13 @@
                 return true;
             }
             
-            function validarDireccion(){
-                var direccionInput = document.getElementById("direccion");
-                var retroDireccion = document.getElementById("direccion-retro");
-                var strDireccion = direccionInput.value.trim();
-                
-                if(strDireccion.length == 0){ 
-                    direccionInput.setAttribute("class","form-control is-invalid");
-                    retroDireccion.setAttribute("class","invalid-feedback");
-                    retroDireccion.textContent = 'El campo esta vacío';
-                    
-                    return false;
-                }
-                
-                direccionInput.setAttribute("class","form-control is-valid");
-                retroDireccion.setAttribute("class","valid-feedback");
-                retroDireccion.textContent = '';
-                    
-                return true;
-            }
             
             function validarTelefono(){
                 var telefonoInput = document.getElementById("telefono");
                 var retroTelefono = document.getElementById("telefono-retro");
                 var strTelefono = telefonoInput.value.trim();
+                
+                telefonoInput.value = strTelefono;
                 
                 if(strTelefono.length == 0){ 
                     telefonoInput.setAttribute("class","form-control is-invalid");
@@ -543,6 +588,8 @@
                 var retroRazonSocial = document.getElementById("razonSocial-retro");
                 var strRazonSocial = razonSocialInput.value.trim();
                 
+                razonSocialInput.value = strRazonSocial;
+                
                 if(strRazonSocial.length == 0){ 
                     razonSocialInput.setAttribute("class","form-control is-invalid");
                     retroRazonSocial.setAttribute("class","invalid-feedback");
@@ -565,9 +612,10 @@
                 
                 rucInput.value = strRuc;
                 
-                var tipoPersona = document.getElementById("tipoCliente").value;
+                //var tipoPersona = document.getElementById("tipoCliente").value;
                 
-                if(strRuc.length == 0 && tipoPersona == "J"){ 
+                //if(strRuc.length == 0 && tipoPersona == "J"){
+                if(strRuc.length == 0){
                     rucInput.setAttribute("class","form-control is-invalid");
                     retroRuc.setAttribute("class","invalid-feedback");
                     retroRuc.textContent = 'El campo esta vacío';
@@ -590,21 +638,29 @@
                 return true;
             }
             
-            //Verificar que los select no esten vacíos
-            function verificarSelectNoVacios(){
-                var idUsuarioInput = document.getElementById("idUsuario");
-                var retroIdUsuario = document.getElementById("idUsuario-retro");
-                var strIdUsuario = idUsuarioInput.value.trim();
+            function validarEmail(){
+                var emailInput = document.getElementById("email");
+                var retroEmail = document.getElementById("email-retro");
+                var strEmail = emailInput.value.trim();
                 
-                if(strIdUsuario.length == 0){ 
-                    idUsuarioInput.setAttribute("class","form-control is-invalid");
-                    retroIdUsuario.setAttribute("class","invalid-feedback");
-                    retroIdUsuario.textContent = 'Debe cargar primero la cuenta de usuario del nuevo titular';
+                emailInput.value = strEmail;
+                
+                if(!emailInput.validity.valid){ 
+                    emailInput.setAttribute("class","form-control is-invalid");
+                    retroEmail.setAttribute("class","invalid-feedback");
+                    retroEmail.textContent = 'Ingrese un correo electrónico válido';
                     
-                    document.getElementById("agregar").setAttribute("disabled","");
+                    return false;
                 }
                 
+                emailInput.setAttribute("class","form-control is-valid");
+                retroEmail.setAttribute("class","valid-feedback");
+                retroEmail.textContent = '';
+                    
+                return true;
             }
+            
+            
         </script>
     </body>
 </html>

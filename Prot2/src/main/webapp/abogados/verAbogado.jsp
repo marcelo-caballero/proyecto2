@@ -77,6 +77,15 @@
                     <%=abogado.getTelefono()%>
                 </div> 
             </div>
+            
+            <div class="row form-group">
+                <div class="col-3">
+                    <label>Email:</label>
+                </div>
+                <div class="col-6 form-control">
+                    <%=abogado.getEmail()%>  
+                </div> 
+            </div>
                 
             <div class="row form-group">
                 <div class="col-3">

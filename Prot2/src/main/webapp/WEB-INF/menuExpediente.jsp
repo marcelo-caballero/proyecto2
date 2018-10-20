@@ -27,4 +27,11 @@
             Eventos</a>
     </li>
     <%}%>
+    
+    <%if (permisoControlAccesoExp.permisoRolVentana(rolUsuarioConectadoExp,"oposicionRecibida.jsp")){%>
+    <li class="nav-item">
+        <a class="nav-link" href="<%=request.getContextPath()%>/oposicionRecibida.jsp">
+            Oposición</a>
+    </li>
+    <%}%>
 </ul> 

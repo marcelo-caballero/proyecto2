@@ -6,8 +6,6 @@
 package modelo;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
@@ -25,7 +23,7 @@ import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
- * @author Acer
+ * @author User
  */
 @Entity
 @Table(name = "clase")
@@ -38,12 +36,11 @@ import javax.xml.bind.annotation.XmlTransient;
 public class Clase implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
     @Id
     @Basic(optional = false)
     @NotNull
     @Column(name = "nro_clase")
-    private BigDecimal nroClase;
+    private Integer nroClase;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 2147483647)
@@ -52,28 +49,28 @@ public class Clase implements Serializable {
     @Basic(optional = false)
     @NotNull
     @Column(name = "version")
-    private BigInteger version;
+    private int version;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "nroClase")
     private List<Expediente> expedienteList;
 
     public Clase() {
     }
 
-    public Clase(BigDecimal nroClase) {
+    public Clase(Integer nroClase) {
         this.nroClase = nroClase;
     }
 
-    public Clase(BigDecimal nroClase, String descripcion, BigInteger version) {
+    public Clase(Integer nroClase, String descripcion, int version) {
         this.nroClase = nroClase;
         this.descripcion = descripcion;
         this.version = version;
     }
 
-    public BigDecimal getNroClase() {
+    public Integer getNroClase() {
         return nroClase;
     }
 
-    public void setNroClase(BigDecimal nroClase) {
+    public void setNroClase(Integer nroClase) {
         this.nroClase = nroClase;
     }
 
@@ -85,11 +82,11 @@ public class Clase implements Serializable {
         this.descripcion = descripcion;
     }
 
-    public BigInteger getVersion() {
+    public int getVersion() {
         return version;
     }
 
-    public void setVersion(BigInteger version) {
+    public void setVersion(int version) {
         this.version = version;
     }
 

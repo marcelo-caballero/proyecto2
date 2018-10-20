@@ -97,7 +97,24 @@
                 </div> 
             </div>
                 
-           
+            <div class="row form-group">
+                <div class="col-3">
+                    <label>Correo electrónico:</label>
+                </div>
+                <div class="col-6 form-control">
+                    <%=cliente.getEmail()%> 
+                </div> 
+            </div>
+                
+            <div class="row form-group">
+                <div class="col-3">
+                    <label>País del titular:</label>
+                </div>
+                <div class="col-6 form-control">
+                    <%=cliente.getIdPais().getPais()%>  
+                </div> 
+            </div>
+            
             <div class="row form-group">
                 <div class="col-3">
                     <label>Estado:</label>
@@ -106,8 +123,7 @@
                     <%=cliente.getEstado()%> 
                 </div> 
             </div>
-            
-            
+                
             <%if(cliente.getIdUsuario() != null){%> 
                 <div class="row form-group">
                     <div class="col-3">

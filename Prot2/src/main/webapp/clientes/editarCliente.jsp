@@ -8,7 +8,8 @@
 <%@page import="modeloMng.ClienteJpaController"%>
 <%@page import="modelo.Cliente"%>
 <%@page import="java.util.List"%>
-
+<%@page import="modelo.Pais"%> 
+<%@page import="modeloMng.PaisJpaController"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%response.setHeader("Cache-Control", "no-cache");
 %>
@@ -19,17 +20,30 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <%@include file="//WEB-INF/paginaCabecera.jsp" %>
     </head>
-    <body onload="mostrarCamposSegunTipoPersona()">
+    <body onload="mostrarCamposSegunTipoPersona(),actualizarPais()">
         <%
             Integer idCliente = Integer.parseInt(request.getParameter("idCliente"));
-            Cliente cliente = new ClienteJpaController().findCliente(idCliente); 
+            ClienteJpaController clienteControl = new ClienteJpaController();
+            Cliente cliente = clienteControl.findCliente(idCliente);    
+
+            List<Pais> listaPais;
+            PaisJpaController paisControl = new PaisJpaController();
+            listaPais = paisControl.findPaisEntities();
+            
+
+            boolean editable = clienteControl.esEditable(idCliente);
             
         %>
         <%@include file="//WEB-INF/menuCabecera.jsp" %>
         <br>
          
         <div class ="container form-control">
-        
+            <%if(cliente.getEstado().equals("INACTIVO")){%> 
+                <div class="alert alert-info alert-dismissible">
+                    <button type="button" class="close" data-dismiss="alert">&times;</button>
+                    <strong>¡Información! </strong> No se puede editar un titular con estado inactivo
+                </div>
+            <%}%>
             <h2 class="text-justify"> Editar Titular</h2>
             <br> 
         
@@ -51,20 +65,32 @@
                             id="tipoCliente" 
                             class="form-control"
                             onchange="mostrarCamposSegunTipoPersona()">
-                            <%if(cliente.getTipoCliente().equals("F")){%>
-                                <option selected value="F">  
-                                    Física 
-                                </option>
-                                <option value="J">  
-                                    Jurídica 
-                                </option>
+                            <%if(!editable){%> 
+                                <%if(cliente.getTipoCliente().equals("F")){%>
+                                    <option selected value="F">  
+                                        Física 
+                                    </option>
+                                <%}else{%>
+                                    <option selected value="J">  
+                                        Jurídica 
+                                    </option>
+                                <%}%> 
                             <%}else{%>
-                                <option  value="F">  
-                                    Física 
-                                </option>
-                                <option selected value="J">  
-                                    Jurídica 
-                                </option>
+                                <%if(cliente.getTipoCliente().equals("F")){%>
+                                    <option selected value="F">  
+                                        Física 
+                                    </option>
+                                    <option value="J">  
+                                        Jurídica 
+                                    </option>
+                                <%}else{%>
+                                    <option  value="F">  
+                                        Física 
+                                    </option>
+                                    <option selected value="J">  
+                                        Jurídica 
+                                    </option>
+                                <%}%>
                             <%}%>
                     </select>
                    
@@ -212,29 +238,93 @@
                     <div id="telefono-retro"></div>
                 </div> 
             </div>
-                  
+            
             <div class="row form-group">
-                <div class="col-5">
+                <div class="col-3">
+                    <label for="email">Correo electrónico:</label> 
                 </div>
-                <div class="col-2">
-                    <input id="editar"
-                           type="button"
-                           value="Editar"
-                           onclick="validarFormulario()">
-                </div>    
+                <div class="col-6">
+                    <input form="editarCliente"
+                           name="email"
+                           id="email"
+                           class="form-control"
+                           type="email" 
+                           placeholder="Escriba el correo electrónico del agente"
+                           maxlength=""
+                           value="<%=cliente.getEmail()%>" 
+                           required >
+                    <div id="email-retro"></div>
+                </div> 
             </div>
+                           
+            <div class="row form-group">
+                <div class="col-3">
+                    <label for="idPais">País del titular:</label>
+                </div>
+                <div class="col-6">
+                    <div class="row">
+                        <div class="col-3">
+                            <input id="codigoPais" class="form-control" disabled>
+                        </div>
+                        <div class="col">
+                            <select form="editarCliente"
+                                    name="idPais" 
+                                    id="idPais"
+                                    class="form-control"
+                                    onchange="actualizarPais()">
+                                    <option value="<%=cliente.getIdPais().getIdPais()%>"> 
+                                        <%=cliente.getIdPais().getPais()%>
+                                    </option>
+                                    <%for (int j = 0; j < listaPais.size(); j++) {%>
+                                        <%if (cliente.getIdPais().getIdPais() != listaPais.get(j).getIdPais()) {%> 
+                                            <option value="<%=listaPais.get(j).getIdPais()%>">
+                                                <%=listaPais.get(j).getPais()%>
+                                            </option>
+                                        <%}%>
+                                    <%}%>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+              
+            <%if(cliente.getEstado().equals("ACTIVO")){%>
+                <div class="row form-group">
+                    <div class="col-5">
+                    </div>
+                    <div class="col-2">
+                        <input id="editar"
+                               type="button"
+                               value="Editar"
+                               onclick="validarFormulario()">
+                    </div>    
+                </div>
+            <%}%>
        
         </div>
         <br>
         <script>
+            function actualizarPais(){
+                
+                document.getElementById("codigoPais").value = document.getElementById("idPais").value;   
+            }
+            
             function mostrarCamposSegunTipoPersona(){
                 
                 var tipoPersona = document.getElementById("tipoCliente").value;
                 
                 if(tipoPersona == "F"){
-                   
+                    
+                    <%if(!editable){%> 
+                       document.getElementById("ci").setAttribute("readonly","");
+                       document.getElementById("nombre").setAttribute("readonly","");
+                       document.getElementById("apellido").setAttribute("readonly","");
+                       document.getElementById("ruc").setAttribute("readonly","");
+                       
+                    <%}%>
                     document.getElementById("ci").removeAttribute("disabled","");
                     document.getElementById("ci").setAttribute("class","form-control");
+                    
                     
                     document.getElementById("nombre").removeAttribute("disabled","");
                     document.getElementById("nombre").setAttribute("class","form-control");
@@ -243,24 +333,31 @@
                     document.getElementById("apellido").setAttribute("class","form-control");
                     
                     
-                    document.getElementById("razonSocial").value = "";
+                    //document.getElementById("razonSocial").value = "";
                     document.getElementById("razonSocial").setAttribute("disabled","");
                     document.getElementById("razonSocial").setAttribute("class","form-control");
                     document.getElementById("razonSocial-retro").textContent="";
                     
                     
                 }else{
-                    document.getElementById("ci").value = "";
+                    //document.getElementById("ci").value = "";
+                    
+                    <%if(!editable){%> 
+                        
+                       document.getElementById("razonSocial").setAttribute("readonly","");
+                       document.getElementById("ruc").setAttribute("readonly","");
+                       
+                    <%}%>
                     document.getElementById("ci").setAttribute("disabled","");
                     document.getElementById("ci").setAttribute("class","form-control");
                     document.getElementById("ci-retro").textContent="";
                     
-                    document.getElementById("nombre").value = "";
+                    //document.getElementById("nombre").value = "";
                     document.getElementById("nombre").setAttribute("disabled","");
                     document.getElementById("nombre").setAttribute("class","form-control");
                     document.getElementById("nombre-retro").textContent="";
                     
-                    document.getElementById("apellido").value = "";
+                    //document.getElementById("apellido").value = "";
                     document.getElementById("apellido").setAttribute("disabled","");
                     document.getElementById("apellido").setAttribute("class","form-control");
                     document.getElementById("apellido-retro").textContent="";
@@ -283,8 +380,9 @@
                     var direccionValido = validarDireccion();
                     var telefonoValido = validarTelefono();
                     var rucValido = validarRuc();
+                    var emailValido = validarEmail();
                     
-                    if(ciValido && nombreValido && apellidoValido && direccionValido && telefonoValido && rucValido){
+                    if(ciValido && nombreValido && apellidoValido && direccionValido && telefonoValido && rucValido && emailValido){
                         validarUnicidadCi();
                     
                     }
@@ -293,8 +391,9 @@
                     var razonSocialValido = validarRazonSocial();
                     var direccionValido = validarDireccion();
                     var telefonoValido = validarTelefono();
+                    var emailValido = validarEmail();
                     
-                    if(rucValido && razonSocialValido  && direccionValido && telefonoValido){
+                    if(rucValido && razonSocialValido  && direccionValido && telefonoValido && emailValido){
                         validarUnicidadRuc();
                     
                     }
@@ -600,9 +699,9 @@
                 
                 rucInput.value = strRuc;
                 
-                var tipoPersona = document.getElementById("tipoCliente").value;
+               
                 
-                if(strRuc.length == 0 && tipoPersona == "J"){ 
+                if(strRuc.length == 0){ 
                     rucInput.setAttribute("class","form-control is-invalid");
                     retroRuc.setAttribute("class","invalid-feedback");
                     retroRuc.textContent = 'El campo esta vacío';
@@ -621,6 +720,28 @@
                 rucInput.setAttribute("class","form-control is-valid");
                 retroRuc.setAttribute("class","valid-feedback");
                 retroRuc.textContent = '';
+                    
+                return true;
+            }
+            
+            function validarEmail(){
+                var emailInput = document.getElementById("email");
+                var retroEmail = document.getElementById("email-retro");
+                var strEmail = emailInput.value.trim();
+                
+                emailInput.value = strEmail;
+                
+                if(!emailInput.validity.valid){ 
+                    emailInput.setAttribute("class","form-control is-invalid");
+                    retroEmail.setAttribute("class","invalid-feedback");
+                    retroEmail.textContent = 'Ingrese un correo electrónico válido';
+                    
+                    return false;
+                }
+                
+                emailInput.setAttribute("class","form-control is-valid");
+                retroEmail.setAttribute("class","valid-feedback");
+                retroEmail.textContent = '';
                     
                 return true;
             }

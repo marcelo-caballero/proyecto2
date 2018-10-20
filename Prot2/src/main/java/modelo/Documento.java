@@ -6,7 +6,6 @@
 package modelo;
 
 import java.io.Serializable;
-import java.math.BigInteger;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import javax.persistence.Basic;
@@ -23,13 +22,11 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
- * @author Acer
+ * @author User
  */
 @Entity
 @Table(name = "documento")
@@ -39,19 +36,10 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "Documento.findByIdDocumento", query = "SELECT d FROM Documento d WHERE d.idDocumento = :idDocumento"),
     @NamedQuery(name = "Documento.findByDescripcion", query = "SELECT d FROM Documento d WHERE d.descripcion = :descripcion"),
     @NamedQuery(name = "Documento.findByFecha", query = "SELECT d FROM Documento d WHERE d.fecha = :fecha"),
-    @NamedQuery(name = "Documento.findByOrden", query = "SELECT d FROM Documento d WHERE d.orden = :orden")})
+    @NamedQuery(name = "Documento.findByFolioDesde", query = "SELECT d FROM Documento d WHERE d.folioDesde = :folioDesde"),
+    @NamedQuery(name = "Documento.findByNombreDocumento", query = "SELECT d FROM Documento d WHERE d.nombreDocumento = :nombreDocumento"),
+    @NamedQuery(name = "Documento.findByFolioHasta", query = "SELECT d FROM Documento d WHERE d.folioHasta = :folioHasta")})
 public class Documento implements Serializable {
-
-    @Basic(optional = false)
-    @NotNull
-    @Lob
-    @Column(name = "documento")
-    private byte[] documento;
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 2147483647)
-    @Column(name = "nombre_documento")
-    private String nombreDocumento;
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -60,19 +48,23 @@ public class Documento implements Serializable {
     @Column(name = "id_documento")
     private Integer idDocumento;
     @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 2147483647)
     @Column(name = "descripcion")
     private String descripcion;
     @Basic(optional = false)
-    @NotNull
     @Column(name = "fecha")
-    @Temporal(TemporalType.DATE)
+    @Temporal(TemporalType.TIMESTAMP)
     private Date fecha;
     @Basic(optional = false)
-    @NotNull
-    @Column(name = "orden")
-    private BigInteger orden;
+    @Lob
+    @Column(name = "documento")
+    private byte[] documento;
+    @Column(name = "folio_desde")
+    private Integer folioDesde;
+    @Basic(optional = false)
+    @Column(name = "nombre_documento")
+    private String nombreDocumento;
+    @Column(name = "folio_hasta")
+    private Integer folioHasta;
     @JoinColumn(name = "id_expediente", referencedColumnName = "id_expediente")
     @ManyToOne(optional = false)
     private Expediente idExpediente;
@@ -87,12 +79,12 @@ public class Documento implements Serializable {
         this.idDocumento = idDocumento;
     }
 
-    public Documento(Integer idDocumento, String descripcion, Date fecha, byte[] documento, BigInteger orden) {
+    public Documento(Integer idDocumento, String descripcion, Date fecha, byte[] documento, String nombreDocumento) {
         this.idDocumento = idDocumento;
         this.descripcion = descripcion;
         this.fecha = fecha;
         this.documento = documento;
-        this.orden = orden;
+        this.nombreDocumento = nombreDocumento;
     }
 
     public Integer getIdDocumento() {
@@ -119,13 +111,36 @@ public class Documento implements Serializable {
         this.fecha = fecha;
     }
 
-
-    public BigInteger getOrden() {
-        return orden;
+    public byte[] getDocumento() {
+        return documento;
     }
 
-    public void setOrden(BigInteger orden) {
-        this.orden = orden;
+    public void setDocumento(byte[] documento) {
+        this.documento = documento;
+    }
+
+    public Integer getFolioDesde() {
+        return folioDesde;
+    }
+
+    public void setFolioDesde(Integer folioDesde) {
+        this.folioDesde = folioDesde;
+    }
+
+    public String getNombreDocumento() {
+        return nombreDocumento;
+    }
+
+    public void setNombreDocumento(String nombreDocumento) {
+        this.nombreDocumento = nombreDocumento;
+    }
+
+    public Integer getFolioHasta() {
+        return folioHasta;
+    }
+
+    public void setFolioHasta(Integer folioHasta) {
+        this.folioHasta = folioHasta;
     }
 
     public Expediente getIdExpediente() {
@@ -168,26 +183,10 @@ public class Documento implements Serializable {
     public String toString() {
         return "modelo.Documento[ idDocumento=" + idDocumento + " ]";
     }
-
-
-    public String getNombreDocumento() {
-        return nombreDocumento;
-    }
-
-    public void setNombreDocumento(String nombreDocumento) {
-        this.nombreDocumento = nombreDocumento;
-    }
     
     public String getStringFecha(){
         String fecha = new SimpleDateFormat("dd-MM-yyyy").format(this.fecha);
         return fecha;  
     }
 
-    public byte[] getDocumento() {
-        return documento;
-    }
-
-    public void setDocumento(byte[] documento) {
-        this.documento = documento;
-    }
 }

@@ -37,13 +37,15 @@
     <body onload="cambiarDescripcionClase()">
         <%
             Integer idExp = Integer.parseInt(request.getParameter("idExpediente"));
-            Expediente  expediente = new ExpedienteJpaController().findExpediente(idExp);
+            
+            ExpedienteJpaController expControl = new ExpedienteJpaController();
+            Expediente  expediente = expControl.findExpediente(idExp);
             
             List<Cliente> listaCliente;
-            listaCliente = new ClienteJpaController().findClienteEntities(); 
+            listaCliente = new ClienteJpaController().getListaClienteActivo(); 
             
             List<Abogado> listaAbogado;
-            listaAbogado= new AbogadoJpaController().findAbogadoEntities(); 
+            listaAbogado= new AbogadoJpaController().getListaAbogadoActivo();  
 
             List<EstadoMarca> listaEstadoMarca;
             listaEstadoMarca = new EstadoMarcaJpaController().findEstadoMarcaEntities(); 
@@ -57,10 +59,16 @@
             List<TipoExpediente> listaTipoExpediente;
             listaTipoExpediente = new TipoExpedienteJpaController().findTipoExpedienteEntities();  
 
+            //Fecha correspondiente hace 10 años a partir de hoy
             Calendar cal = Calendar.getInstance();
             cal.setTime(new Date());
             cal.add(Calendar.YEAR, -10);
             Date fechaLimiteInferior = cal.getTime(); 
+
+            String fechaHaceDiezAños = new SimpleDateFormat("yyyy-MM-dd").format(fechaLimiteInferior);
+            String hoy = new SimpleDateFormat("yyyy-MM-dd").format(new Date()); 
+
+            boolean editable = expControl.esEditable(idExp);
 
         %>
         
@@ -99,7 +107,10 @@
                            type="text"
                            placeholder="Escriba el número de expediente"
                            required
-                           value="<%=expediente.getNroExpediente()%>" 
+                           value="<%=expediente.getNroExpediente()%>"
+                           <%if(!editable){%> 
+                                readonly
+                           <%}%>
                            onkeypress="return isNumberKey(event)">
                     <div id="nroExpediente-retro"></div> 
                 </div>
@@ -114,18 +125,27 @@
                            id="nroClase"
                            class="form-control"
                            onchange="cambiarDescripcionClase()"
-                           required>
-                           <%for (int j = 0; j < listaClase.size(); j++) {
-                                if(listaClase.get(j).getNroClase() == expediente.getNroClase().getNroClase()){%> 
-                                    <option selected value="<%=listaClase.get(j).getNroClase()%>"> 
-                                        <%=listaClase.get(j).getNroClase()%>  
-                                    </option>
-                                <%}else{%>
-                                    <option value="<%=listaClase.get(j).getNroClase()%>"> 
-                                        <%=listaClase.get(j).getNroClase()%>  
-                                    </option>
-                                <%}%>
+                           <%if(!editable){%>
+                                readonly
                            <%}%>
+                           required>
+                            <%if(editable){%>
+                                <%for (int j = 0; j < listaClase.size(); j++) {
+                                    if(listaClase.get(j).getNroClase() == expediente.getNroClase().getNroClase()){%> 
+                                        <option selected value="<%=listaClase.get(j).getNroClase()%>"> 
+                                            <%=listaClase.get(j).getNroClase()%>  
+                                        </option>
+                                     <%}else{%>
+                                         <option value="<%=listaClase.get(j).getNroClase()%>"> 
+                                             <%=listaClase.get(j).getNroClase()%>  
+                                         </option>
+                                     <%}%>
+                                <%}%>
+                            <%}else{%>
+                                <option selected value="<%=expediente.getNroClase().getNroClase()%>">  
+                                    <%=expediente.getNroClase().getNroClase()%>  
+                                </option>
+                            <%}%>
                     </select>
                     <div id="nroClase-retro"></div>
                 </div>
@@ -157,6 +177,9 @@
                                 rows="8"
                                 maxlength="700"
                                 placeholder="Escriba una breve descripción del producto"
+                                <%if(!editable){%>
+                                    readonly
+                                <%}%>
                                 required
                                 ><%=expediente.getProducto()%></textarea> 
                     <div id="producto-retro"></div>
@@ -174,8 +197,11 @@
                            type="date" 
                            class="form-control"
                            value="<%=new SimpleDateFormat("yyyy-MM-dd").format(expediente.getFechaSolicitud())%>"
-                           min="<%=new SimpleDateFormat("yyyy-MM-dd").format(fechaLimiteInferior)%>"
-                           max="<%=new SimpleDateFormat("yyyy-MM-dd").format(new Date())%>"
+                           min="<%=fechaHaceDiezAños%>"
+                           max="<%=hoy%>"
+                           <%if(!editable){%>
+                                readonly
+                           <%}%>
                            required>
                     <div id="fechaSolicitud-retro"></div>
                 </div>               
@@ -216,6 +242,7 @@
                            type="date" 
                            class="form-control"
                            value="<%=new SimpleDateFormat("yyyy-MM-dd").format(expediente.getFechaEstado())%>"
+                           max="<%=hoy%>"
                            required>
                     <div id="fechaEstado-retro"></div>
                 </div>
@@ -229,18 +256,27 @@
                     <select form="editarExpediente"
                             name="idAbogado" 
                             id="idAbogado"
+                            <%if(!editable){%>
+                                readonly
+                            <%}%>
                             class="form-control">
-                            <%for (int j = 0; j < listaAbogado.size(); j++) { 
-                                if(listaAbogado.get(j).getIdAbogado() == expediente.getIdAbogado().getIdAbogado()){
-                            %> 
-                                    <option selected value="<%=listaAbogado.get(j).getIdAbogado()%>">  
-                                        <%=listaAbogado.get(j).getNombreApellido()%>  
-                                    </option>
-                                <%}else{%>
-                                    <option value="<%=listaAbogado.get(j).getIdAbogado()%>">  
-                                        <%=listaAbogado.get(j).getNombreApellido()%>  
-                                    </option>
+                            <%if(editable){%>
+                                <%for (int j = 0; j < listaAbogado.size(); j++) { 
+                                    if(listaAbogado.get(j).getIdAbogado() == expediente.getIdAbogado().getIdAbogado()){
+                                %> 
+                                        <option selected value="<%=listaAbogado.get(j).getIdAbogado()%>">  
+                                            <%=listaAbogado.get(j).getNombreApellido()%>  
+                                        </option>
+                                    <%}else{%>
+                                        <option value="<%=listaAbogado.get(j).getIdAbogado()%>">  
+                                            <%=listaAbogado.get(j).getNombreApellido()%>  
+                                        </option>
+                                    <%}%>
                                 <%}%>
+                            <%}else{%>
+                                <option selected value="<%=expediente.getIdAbogado().getIdAbogado()%>">   
+                                    <%=expediente.getIdAbogado().getNombreApellido()%>   
+                                </option>
                             <%}%>
                     </select>
                 </div>
@@ -254,19 +290,29 @@
                     <select form="editarExpediente"
                             name="idCliente" 
                             id="idCliente"
-                            class="form-control">
-                            <%for (int j = 0; j < listaCliente.size(); j++) {
-                                if(listaCliente.get(j).getIdCliente() == expediente.getIdCliente().getIdCliente()){
-                            %> 
-                                    <option selected value="<%=listaCliente.get(j).getIdCliente()%>"> 
-                                        <%=listaCliente.get(j).getNombreCliente()%> 
-                                    </option>
-                                <%}else{%>
-                                    <option value="<%=listaCliente.get(j).getIdCliente()%>"> 
-                                        <%=listaCliente.get(j).getNombreCliente()%> 
-                                    </option>
-                                <%}%>
+                            <%if(!editable){%>
+                                readonly
                             <%}%>
+                            class="form-control">
+                            <%if(editable){%>
+                                <%for (int j = 0; j < listaCliente.size(); j++) {
+                                    if(listaCliente.get(j).getIdCliente() == expediente.getIdCliente().getIdCliente()){
+                                    %> 
+                                        <option selected value="<%=listaCliente.get(j).getIdCliente()%>"> 
+                                            <%=listaCliente.get(j).getNombreCliente()%> 
+                                        </option>
+                                    <%}else{%>
+                                        <option value="<%=listaCliente.get(j).getIdCliente()%>"> 
+                                            <%=listaCliente.get(j).getNombreCliente()%> 
+                                        </option>
+                                    <%}%>
+                                <%}%>
+                            <%}else{%>
+                                <option selected value="<%=expediente.getIdCliente().getIdCliente()%>"> 
+                                    <%=expediente.getIdCliente().getNombreCliente()%>  
+                                </option>
+                            <%}%>
+                            
                     </select>
                 </div>
             </div> 
@@ -279,7 +325,11 @@
                     <select form="editarExpediente"
                             name="idMarca" 
                             id="idMarca" 
+                            <%if(!editable){%>
+                                readonly
+                            <%}%>
                             class="form-control">
+                            <%if(editable){%> 
                                 <%for (int j = 0; j < listaMarca.size(); j++) {
                                     if(listaMarca.get(j).getIdMarca() == expediente.getIdMarca().getIdMarca()){
                                 %> 
@@ -292,6 +342,11 @@
                                         </option>
                                     <%}%>
                                 <%}%>
+                            <%}else{%>
+                                <option value="<%=expediente.getIdMarca().getIdMarca()%>">  
+                                    <%=expediente.getIdMarca().getDenominacion()%>  
+                                </option>
+                            <%}%>
                     </select>
                 </div>
             </div>
@@ -305,18 +360,27 @@
                             name="idTipoExpediente" 
                             id="idTipoExpediente"
                             class="form-control"
+                            <%if(!editable){%>
+                                readonly
+                            <%}%>
                             onchange="habilitarNroCertificado()">
-                            <%for (int j = 0; j < listaTipoExpediente.size(); j++) {
-                                if(listaTipoExpediente.get(j).getIdTipoExpediente() == expediente.getTipoExpediente().getIdTipoExpediente()){
-                            %> 
-                                <option selected value="<%=listaTipoExpediente.get(j).getIdTipoExpediente()%>"> 
-                                        <%=listaTipoExpediente.get(j).getDescripcion()%>  
-                                    </option>
-                                <%}else{%>
-                                    <option value="<%=listaTipoExpediente.get(j).getIdTipoExpediente()%>"> 
-                                        <%=listaTipoExpediente.get(j).getDescripcion()%>  
-                                    </option>
+                            <%if(!editable){%>
+                                <%for (int j = 0; j < listaTipoExpediente.size(); j++) {
+                                    if(listaTipoExpediente.get(j).getIdTipoExpediente() == expediente.getTipoExpediente().getIdTipoExpediente()){
+                                    %> 
+                                        <option selected value="<%=listaTipoExpediente.get(j).getIdTipoExpediente()%>"> 
+                                            <%=listaTipoExpediente.get(j).getDescripcion()%>  
+                                        </option>
+                                    <%}else{%>
+                                        <option value="<%=listaTipoExpediente.get(j).getIdTipoExpediente()%>"> 
+                                            <%=listaTipoExpediente.get(j).getDescripcion()%>  
+                                        </option>
+                                    <%}%>
                                 <%}%>
+                            <%}else{%>
+                                <option value="<%=expediente.getTipoExpediente().getIdTipoExpediente()%>">    
+                                    <%=expediente.getTipoExpediente().getDescripcion()%>  
+                                </option>
                             <%}%>
                     </select>
                 </div>
@@ -334,6 +398,9 @@
                             onkeypress="return isNumberKey(event)"
                             <%if(expediente.getNroCertificado() != null){%>
                                 value="<%=expediente.getNroCertificado()%>" 
+                                <%if(!editable){%>
+                                    readonly
+                                <%}%>
                             <%}else{%> 
                                 disabled
                             <%}%> >

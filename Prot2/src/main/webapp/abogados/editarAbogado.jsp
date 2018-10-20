@@ -20,14 +20,23 @@
     <body>
         <%
             Integer idAbogado = Integer.parseInt(request.getParameter("idAbogado")); 
-            Abogado abogado = new AbogadoJpaController().findAbogado(idAbogado); 
+            AbogadoJpaController abogadoControl = new AbogadoJpaController();
+            Abogado abogado = abogadoControl.findAbogado(idAbogado); 
             
+            boolean editable = abogadoControl.esEditable(idAbogado);
+           
         %>
         <%@include file="//WEB-INF/menuCabecera.jsp" %>
         <br>
          
         <div class ="container form-control">
-        
+            <%if(abogado.getEstado().equals("INACTIVO")){%> 
+                <div class="alert alert-info alert-dismissible">
+                    <button type="button" class="close" data-dismiss="alert">&times;</button>
+                    <strong>¡Información! </strong> No se puede editar un agente con estado inactivo
+                </div>
+            <%}%>
+            
             <h2 class="text-justify"> Editar Agente</h2>
             <br> 
         
@@ -52,7 +61,7 @@
                            type="number" 
                            placeholder="Escriba el número de cédula del agente"
                            required 
-                           <%if(abogado.getExpedienteList().size() > 0){%>
+                           <%if(!editable){%> 
                                 readonly
                            <%}%>
                            value="<%=abogado.getCi()%>"
@@ -73,7 +82,7 @@
                            type="text" 
                            placeholder="Escriba el nombre del agente"
                            maxlength=""
-                           <%if(abogado.getExpedienteList().size() > 0){%>
+                           <%if(!editable){%> 
                                 readonly
                            <%}%>
                            value="<%=abogado.getNombre()%>" 
@@ -94,7 +103,7 @@
                            type="text" 
                            placeholder="Escriba el apellido del agente"
                            maxlength=""
-                           <%if(abogado.getExpedienteList().size()> 0){%>
+                           <%if(!editable){%>
                                 readonly
                            <%}%>
                            value="<%=abogado.getApellido()%>" 
@@ -141,6 +150,24 @@
                   
             <div class="row form-group">
                 <div class="col-3">
+                    <label for="email">Correo electrónico:</label> 
+                </div>
+                <div class="col-6">
+                    <input form="editarAbogado"
+                           name="email"
+                           id="email"
+                           class="form-control"
+                           type="email" 
+                           placeholder="Escriba el correo electrónico del agente"
+                           maxlength=""
+                           value="<%=abogado.getEmail()%>" 
+                           required >
+                    <div id="email-retro"></div>
+                </div> 
+            </div>
+                           
+            <div class="row form-group">
+                <div class="col-3">
                     <label for="regProf">Registro Profesional:</label> 
                 </div>
                 <div class="col-6">
@@ -156,16 +183,20 @@
                     <div id="regProf-retro"></div>
                 </div> 
             </div>
-            <div class="row form-group">
-                <div class="col-5">
-                </div>
-                <div class="col-2">
-                    <input id="editar" 
-                           type="button"
-                           value="Editar"
-                           onclick="validarFormulario()">
-                </div>    
-            </div> 
+            
+            <%if(abogado.getEstado().equals("ACTIVO")){%>
+                <div class="row form-group">
+                    <div class="col-5">
+                    </div>
+                    <div class="col-2">
+                        <input id="editar" 
+                               type="button"
+                               value="Editar"
+                               onclick="validarFormulario()">
+                    </div>    
+                </div> 
+            <%}%>
+        
         </div>
         <br>
         <script>
@@ -178,8 +209,9 @@
                 var apellidoValido = validarApellido();
                 var direccionValido = validarDireccion();
                 var telefonoValido = validarTelefono();
+                var emailValido = validarEmail();
                 
-                if(ciValido && nombreValido && apellidoValido && direccionValido && telefonoValido){
+                if(ciValido && nombreValido && apellidoValido && direccionValido && telefonoValido && emailValido){
                     validarUnicidadCi();
                     
                 }
@@ -366,6 +398,27 @@
                 return true;
             }
             
+            function validarEmail(){
+                var emailInput = document.getElementById("email");
+                var retroEmail = document.getElementById("email-retro");
+                var strEmail = emailInput.value.trim();
+                
+                emailInput.value = strEmail;
+                
+                if(!emailInput.validity.valid){ 
+                    emailInput.setAttribute("class","form-control is-invalid");
+                    retroEmail.setAttribute("class","invalid-feedback");
+                    retroEmail.textContent = 'Ingrese un correo electrónico válido';
+                    
+                    return false;
+                }
+                
+                emailInput.setAttribute("class","form-control is-valid");
+                retroEmail.setAttribute("class","valid-feedback");
+                retroEmail.textContent = '';
+                    
+                return true;
+            }
             //Permite unicamente la insercion de numeros
             function isNumberKey(evt){
                 var charCode = (evt.which) ? evt.which : event.keyCode;

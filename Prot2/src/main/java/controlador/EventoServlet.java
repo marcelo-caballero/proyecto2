@@ -44,7 +44,7 @@ public class EventoServlet extends HttpServlet {
         EventoJpaController eventoControl = new EventoJpaController();
         ExpedienteJpaController expControl= new ExpedienteJpaController();
         
-        SimpleDateFormat formatoFecha = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat formatoFecha = new SimpleDateFormat("yyyy-MM-ddHHmm");
         
         //Eliminar
         if(request.getParameter("eliminar")!= null){
@@ -65,23 +65,30 @@ public class EventoServlet extends HttpServlet {
             
             try{
                 
+                
                 Integer idExp = (Integer)(request.getSession().getAttribute("idExpediente"));
                 String nombre = request.getParameter("nombre");
                 String descripcion = request.getParameter("descripcion");
-                Date fecha = formatoFecha.parse(request.getParameter("fecha"));
+                String fecha = request.getParameter("fecha");
+                String hora = request.getParameter("hora");
+                String minuto = request.getParameter("minuto");
                 String prioridad = request.getParameter("prioridad");
+                
+                Date fechaDate = formatoFecha.parse(fecha+hora+minuto);  
+                
                 Evento evento = new Evento();
                 
                 evento.setIdExpediente(expControl.findExpediente(idExp));
                 evento.setNombre(nombre);
                 evento.setDescripcion(descripcion);
-                evento.setFecha(fecha);
+                evento.setFecha(fechaDate);
                 evento.setPrioridad(prioridad);
                 eventoControl.create(evento);
                 
+                
             } 
             catch (Exception e) {
-                
+                System.out.println(e);
                 request.getSession().setAttribute("mensajeErrorABM", "No se pudo agregar el evento");
             
             }finally{
@@ -97,23 +104,24 @@ public class EventoServlet extends HttpServlet {
                 
                 String nombre = request.getParameter("nombre");
                 String descripcion = request.getParameter("descripcion");
-                
-                      
-                Date fecha = formatoFecha.parse(request.getParameter("fecha"));
                 String prioridad = request.getParameter("prioridad");
-                System.out.println("prioridad "+prioridad);
+                String fecha = request.getParameter("fecha");
+                String hora = request.getParameter("hora");
+                String minuto = request.getParameter("minuto");
+                
+                Date fechaDate = formatoFecha.parse(fecha+hora+minuto); 
                 Evento evento = eventoControl.findEvento(idEvento);
                 
                 evento.setNombre(nombre);
                 evento.setDescripcion(descripcion);
-                evento.setFecha(fecha);
+                evento.setFecha(fechaDate);
                 evento.setPrioridad(prioridad);
                 
                 eventoControl.edit(evento); 
                 
             } 
             catch (Exception e) {
-                
+                System.out.println(e);
                 request.getSession().setAttribute("mensajeErrorABM", "No se pudo editar el evento");
             
             }finally{

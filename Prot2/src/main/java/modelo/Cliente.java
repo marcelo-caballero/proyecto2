@@ -46,6 +46,15 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Cliente.findByTipoCliente", query = "SELECT c FROM Cliente c WHERE c.tipoCliente = :tipoCliente")})
 public class Cliente implements Serializable {
 
+    // @Pattern(regexp="[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?", message="Invalid email")//if the field contains email address consider using this annotation to enforce field validation
+    @Size(max = 2147483647)
+    @Column(name = "email")
+    private String email;
+
+    @JoinColumn(name = "id_pais", referencedColumnName = "id_pais")
+    @ManyToOne(optional = false)
+    private Pais idPais;
+
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -246,5 +255,21 @@ public class Cliente implements Serializable {
         } else {
             return this.ruc;
         }
+    }
+
+    public Pais getIdPais() {
+        return idPais;
+    }
+
+    public void setIdPais(Pais idPais) {
+        this.idPais = idPais;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 }

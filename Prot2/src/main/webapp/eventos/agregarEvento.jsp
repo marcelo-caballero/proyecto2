@@ -76,25 +76,7 @@
                     <div id="nombre-retro"></div>
                 </div>
             </div>
-
-            <div class="row form-group">    
-                <div class="col-3">
-                    <label for="fecha">Programar para:</label>
-                </div>
-                <div class="col-6">
-                    <input form="agregarEvento"
-                           name="fecha"
-                           id="fecha"
-                           class="form-control"
-                           type="date"
-
-                           min="<%=new SimpleDateFormat("yyyy-MM-dd").format(fechaMinima)%>"  
-                           required
-                           >
-                    <div id="fecha-retro"></div>
-                </div>
-            </div>
-
+                
             <div class="row form-group">    
                 <div class="col-3">
                     <label for="prioridad">Prioridad:</label>
@@ -119,6 +101,57 @@
                             </option>
                     </select>
                     <div id="prioridad-retro"></div>
+                </div>
+            </div>
+                
+            
+                           
+            <div class="row form-group">    
+                <div class="col-3">
+                    <label for="">Programar para:</label>
+                </div>
+                <div class="col-6">
+                    <div class="row">
+                        <div class="col-6">
+                            <input form="agregarEvento"
+                                   name="fecha"
+                                   id="fecha"
+                                   class="form-control"
+                                   type="date"
+
+                                   min="<%=new SimpleDateFormat("yyyy-MM-dd").format(fechaMinima)%>"  
+                                   required
+                                   >
+                            <div id="fecha-retro"></div>
+                        </div>
+                        <div class="col">
+                            <select form="agregarEvento"
+                                   name="hora"
+                                   id="hora"
+                                   class="form-control"
+                                   type="number"
+                                   required
+                                   >
+                                   <%for(int i=0;i<24;i++){%> 
+                                        <option value="<%= (i<10) ? "0"+i : i%>"><%= (i<10) ? "0"+i : i%></option>
+                                   <%}%>
+                            </select>
+                        </div>
+                        <div>:</div>
+                        <div class="col">
+                            <select form="agregarEvento"
+                                   name="minuto"
+                                   id="minuto"
+                                   class="form-control"
+                                   type="number"
+                                   required
+                                   >
+                                   <%for(int i=0;i<60;i++){%>
+                                        <option value="<%= (i<10) ? "0"+i : i%>"><%= (i<10) ? "0"+i : i%></option>
+                                   <%}%>
+                            </select>
+                        </div>
+                    </div>
                 </div>
             </div>
 

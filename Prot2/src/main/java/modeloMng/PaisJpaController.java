@@ -6,25 +6,21 @@
 package modeloMng;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
-import javax.persistence.Query;
-import javax.persistence.EntityNotFoundException;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
-import modelo.Marca;
-import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.Query;
+import javax.persistence.EntityNotFoundException;
 import javax.persistence.Persistence;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 import modelo.Pais;
-import modeloMng.exceptions.IllegalOrphanException;
 import modeloMng.exceptions.NonexistentEntityException;
 import modeloMng.exceptions.PreexistingEntityException;
 
 /**
  *
- * @author Acer
+ * @author User
  */
 public class PaisJpaController implements Serializable {
 
@@ -38,29 +34,11 @@ public class PaisJpaController implements Serializable {
     }
 
     public void create(Pais pais) throws PreexistingEntityException, Exception {
-        if (pais.getMarcaList() == null) {
-            pais.setMarcaList(new ArrayList<Marca>());
-        }
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            List<Marca> attachedMarcaList = new ArrayList<Marca>();
-            for (Marca marcaListMarcaToAttach : pais.getMarcaList()) {
-                marcaListMarcaToAttach = em.getReference(marcaListMarcaToAttach.getClass(), marcaListMarcaToAttach.getIdMarca());
-                attachedMarcaList.add(marcaListMarcaToAttach);
-            }
-            pais.setMarcaList(attachedMarcaList);
             em.persist(pais);
-            for (Marca marcaListMarca : pais.getMarcaList()) {
-                Pais oldIdPaisOfMarcaListMarca = marcaListMarca.getIdPais();
-                marcaListMarca.setIdPais(pais);
-                marcaListMarca = em.merge(marcaListMarca);
-                if (oldIdPaisOfMarcaListMarca != null) {
-                    oldIdPaisOfMarcaListMarca.getMarcaList().remove(marcaListMarca);
-                    oldIdPaisOfMarcaListMarca = em.merge(oldIdPaisOfMarcaListMarca);
-                }
-            }
             em.getTransaction().commit();
         } catch (Exception ex) {
             if (findPais(pais.getIdPais()) != null) {
@@ -74,50 +52,17 @@ public class PaisJpaController implements Serializable {
         }
     }
 
-    public void edit(Pais pais) throws IllegalOrphanException, NonexistentEntityException, Exception {
+    public void edit(Pais pais) throws NonexistentEntityException, Exception {
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            Pais persistentPais = em.find(Pais.class, pais.getIdPais());
-            List<Marca> marcaListOld = persistentPais.getMarcaList();
-            List<Marca> marcaListNew = pais.getMarcaList();
-            List<String> illegalOrphanMessages = null;
-            for (Marca marcaListOldMarca : marcaListOld) {
-                if (!marcaListNew.contains(marcaListOldMarca)) {
-                    if (illegalOrphanMessages == null) {
-                        illegalOrphanMessages = new ArrayList<String>();
-                    }
-                    illegalOrphanMessages.add("You must retain Marca " + marcaListOldMarca + " since its idPais field is not nullable.");
-                }
-            }
-            if (illegalOrphanMessages != null) {
-                throw new IllegalOrphanException(illegalOrphanMessages);
-            }
-            List<Marca> attachedMarcaListNew = new ArrayList<Marca>();
-            for (Marca marcaListNewMarcaToAttach : marcaListNew) {
-                marcaListNewMarcaToAttach = em.getReference(marcaListNewMarcaToAttach.getClass(), marcaListNewMarcaToAttach.getIdMarca());
-                attachedMarcaListNew.add(marcaListNewMarcaToAttach);
-            }
-            marcaListNew = attachedMarcaListNew;
-            pais.setMarcaList(marcaListNew);
             pais = em.merge(pais);
-            for (Marca marcaListNewMarca : marcaListNew) {
-                if (!marcaListOld.contains(marcaListNewMarca)) {
-                    Pais oldIdPaisOfMarcaListNewMarca = marcaListNewMarca.getIdPais();
-                    marcaListNewMarca.setIdPais(pais);
-                    marcaListNewMarca = em.merge(marcaListNewMarca);
-                    if (oldIdPaisOfMarcaListNewMarca != null && !oldIdPaisOfMarcaListNewMarca.equals(pais)) {
-                        oldIdPaisOfMarcaListNewMarca.getMarcaList().remove(marcaListNewMarca);
-                        oldIdPaisOfMarcaListNewMarca = em.merge(oldIdPaisOfMarcaListNewMarca);
-                    }
-                }
-            }
             em.getTransaction().commit();
         } catch (Exception ex) {
             String msg = ex.getLocalizedMessage();
             if (msg == null || msg.length() == 0) {
-                BigDecimal id = pais.getIdPais();
+                Integer id = pais.getIdPais();
                 if (findPais(id) == null) {
                     throw new NonexistentEntityException("The pais with id " + id + " no longer exists.");
                 }
@@ -130,7 +75,7 @@ public class PaisJpaController implements Serializable {
         }
     }
 
-    public void destroy(BigDecimal id) throws IllegalOrphanException, NonexistentEntityException {
+    public void destroy(Integer id) throws NonexistentEntityException {
         EntityManager em = null;
         try {
             em = getEntityManager();
@@ -141,17 +86,6 @@ public class PaisJpaController implements Serializable {
                 pais.getIdPais();
             } catch (EntityNotFoundException enfe) {
                 throw new NonexistentEntityException("The pais with id " + id + " no longer exists.", enfe);
-            }
-            List<String> illegalOrphanMessages = null;
-            List<Marca> marcaListOrphanCheck = pais.getMarcaList();
-            for (Marca marcaListOrphanCheckMarca : marcaListOrphanCheck) {
-                if (illegalOrphanMessages == null) {
-                    illegalOrphanMessages = new ArrayList<String>();
-                }
-                illegalOrphanMessages.add("This Pais (" + pais + ") cannot be destroyed since the Marca " + marcaListOrphanCheckMarca + " in its marcaList field has a non-nullable idPais field.");
-            }
-            if (illegalOrphanMessages != null) {
-                throw new IllegalOrphanException(illegalOrphanMessages);
             }
             em.remove(pais);
             em.getTransaction().commit();
@@ -186,7 +120,7 @@ public class PaisJpaController implements Serializable {
         }
     }
 
-    public Pais findPais(BigDecimal id) {
+    public Pais findPais(Integer id) {
         EntityManager em = getEntityManager();
         try {
             return em.find(Pais.class, id);

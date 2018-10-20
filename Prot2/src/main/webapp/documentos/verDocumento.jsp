@@ -95,6 +95,15 @@
 
             <div class="row form-group">
                 <div class="col-3">
+                    <label>Folio: </label>
+                </div>
+                <div class="col-6 form-control">
+                    <%=documento.getFolioDesde()%> - <%=documento.getFolioHasta()%>
+                </div>
+            </div>
+                
+            <div class="row form-group">
+                <div class="col-3">
                     <label>Descripción: </label>
                 </div>
                 <div class="col-6 form-control">

@@ -23,7 +23,7 @@ import modeloMng.exceptions.NonexistentEntityException;
 
 /**
  *
- * @author Acer
+ * @author User
  */
 public class ClienteJpaController implements Serializable {
 
@@ -230,7 +230,7 @@ public class ClienteJpaController implements Serializable {
         }
     }
     
-    /*Responde si existe una duplicacion de la cedula del cliente 
+     /*Responde si existe una duplicacion de la cedula del cliente 
     
       Si idCliente es nulo:(GUARDAR)
         Considera si la cedula esta o no duplicado
@@ -326,17 +326,70 @@ public class ClienteJpaController implements Serializable {
     
     /**
      * Retorna una lista de clientes que no tengan cuenta de usuario
+     * y que tengan estado activo
      * @return List<Cliente>
      */
-    
-    public List<Cliente> getListaClienteSinUsuario() {
+    public List<Cliente> getListaClienteActivoSinUsuario() {
         EntityManager em = getEntityManager();
         
         try {
            
-            String consulta = "select c from Cliente c where c.idUsuario is null";
+            String consulta = "select c from Cliente c where c.idUsuario is null and c.estado like 'ACTIVO' order by c.nombre,c.razonSocial ";
             Query q = em.createQuery(consulta); 
             return q.getResultList();
+            
+        }finally {
+            em.close();
+        }
+    }
+    
+    /**
+     * Retorna la lista de clientes con estado "ACTIVO"
+     * @return List<Cliente> 
+     */
+    public List<Cliente> getListaClienteActivo() {
+        EntityManager em = getEntityManager();
+        
+        try {
+           
+            String consulta = "select c from Cliente c where c.estado like 'ACTIVO' order by c.nombre,c.razonSocial ";
+            Query q = em.createQuery(consulta); 
+            return q.getResultList();
+            
+        }finally {
+            em.close();
+        }
+    }
+    
+    /**
+     * Retorna un true si el cliente es editable, falso caso contrario
+     * @param idCliente
+     * @return Boolean
+     */
+    public Boolean esEditable(Integer idCliente) {
+       
+       EntityManager em = getEntityManager();
+       
+        try {
+            String consulta =   "select e.idCliente.idCliente from Expediente e where e.idCliente.idCliente = :idCliente ";
+                              
+                
+            Query q = em.createQuery(consulta);
+            
+            q.setParameter("idCliente", idCliente);
+           
+             
+            List<Integer> lista = q.getResultList();
+           
+            if(lista.size() > 0){
+                return  false;
+            }else{
+                return true;
+            }
+            
+        } catch(Exception e){
+            
+            return false;
             
         }finally {
             em.close();
