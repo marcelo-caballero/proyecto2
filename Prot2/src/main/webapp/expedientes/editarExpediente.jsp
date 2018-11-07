@@ -67,9 +67,24 @@
 
             String fechaHaceDiezAños = new SimpleDateFormat("yyyy-MM-dd").format(fechaLimiteInferior);
             String hoy = new SimpleDateFormat("yyyy-MM-dd").format(new Date()); 
-
-            boolean editable = expControl.esEditable(idExp);
-
+            
+            //¿El expediente esta Vacio ?
+            boolean expedienteVacio = expControl.expedienteVacio(idExp);
+            
+            //Verificamos si el expediente tiene estado final
+            boolean expedienteCerrado = false;
+            if(expediente.getIdEstado().getTipo() == null){
+                expedienteCerrado = false;
+            }else if(expediente.getIdEstado().getTipo().equals("F")){
+                expedienteCerrado = true; 
+            }
+            
+            
+            //Lista de estados finales de marca
+            List<EstadoMarca> listaEstadoMarcaFinales = new EstadoMarcaJpaController().getListaEstadoMarcaFinales();
+            
+            //Verificamos que el expediente este asociado a una oposicion hecha por el estudio juridico
+            Boolean expConOposicion = expControl.expedienteConOposicionesHechas(idExp);
         %>
         
         <%--> Input tipo hidden para cambiar el contenido producto 
@@ -87,7 +102,20 @@
         <div class ="container form-control">
             <h2 class="text-justify">Editar Expediente</h2> 
             <br>
+            <%if(expConOposicion){%>   
+                <div class="alert alert-info alert-dismissible">
+                    <button type="button" class="close" data-dismiss="alert">&times;</button>
+                    <strong>¡Información! </strong>El expediente se encuentra asociado con oposiciones hechas por el estudio jurídico
+                </div>
+            <%}%>
+            <%if(expedienteCerrado){%>   
+                <div class="alert alert-info alert-dismissible">
+                    <button type="button" class="close" data-dismiss="alert">&times;</button>
+                    <strong>¡Información! </strong>El expediente se encuentra cerrado, no se puede editar
+                </div>
+            <%}%>
             
+            <br>
             <form id="editarExpediente" 
                   action="<%=request.getContextPath()%>/ExpedienteServlet?editar=true" 
                   method="post" 
@@ -108,7 +136,10 @@
                            placeholder="Escriba el número de expediente"
                            required
                            value="<%=expediente.getNroExpediente()%>"
-                           <%if(!editable){%> 
+                           <%if(!expedienteVacio){%> 
+                                readonly
+                           <%}%>
+                           <%if(expConOposicion){%> 
                                 readonly
                            <%}%>
                            onkeypress="return isNumberKey(event)">
@@ -125,26 +156,22 @@
                            id="nroClase"
                            class="form-control"
                            onchange="cambiarDescripcionClase()"
-                           <%if(!editable){%>
+                           <%if(!expedienteVacio){%>
                                 readonly
                            <%}%>
                            required>
-                            <%if(editable){%>
+                           <option selected value="<%=expediente.getNroClase().getNroClase()%>"> 
+                                <%=expediente.getNroClase().getNroClase()%>  
+                           </option>
+                                        
+                            <%if(expedienteVacio){%>
                                 <%for (int j = 0; j < listaClase.size(); j++) {
-                                    if(listaClase.get(j).getNroClase() == expediente.getNroClase().getNroClase()){%> 
-                                        <option selected value="<%=listaClase.get(j).getNroClase()%>"> 
-                                            <%=listaClase.get(j).getNroClase()%>  
-                                        </option>
-                                     <%}else{%>
+                                    if(listaClase.get(j).getNroClase() != expediente.getNroClase().getNroClase()){%> 
                                          <option value="<%=listaClase.get(j).getNroClase()%>"> 
                                              <%=listaClase.get(j).getNroClase()%>  
                                          </option>
                                      <%}%>
                                 <%}%>
-                            <%}else{%>
-                                <option selected value="<%=expediente.getNroClase().getNroClase()%>">  
-                                    <%=expediente.getNroClase().getNroClase()%>  
-                                </option>
                             <%}%>
                     </select>
                     <div id="nroClase-retro"></div>
@@ -177,7 +204,7 @@
                                 rows="8"
                                 maxlength="700"
                                 placeholder="Escriba una breve descripción del producto"
-                                <%if(!editable){%>
+                                <%if(!expedienteVacio){%> 
                                     readonly
                                 <%}%>
                                 required
@@ -199,7 +226,7 @@
                            value="<%=new SimpleDateFormat("yyyy-MM-dd").format(expediente.getFechaSolicitud())%>"
                            min="<%=fechaHaceDiezAños%>"
                            max="<%=hoy%>"
-                           <%if(!editable){%>
+                           <%if(!expedienteVacio){%> 
                                 readonly
                            <%}%>
                            required>
@@ -215,13 +242,14 @@
                     <select form="editarExpediente" 
                             name="idEstadoMarca" 
                             id="idEstadoMarca" 
-                            class="form-control">
+                            class="form-control"
+                            onchange="mostrarComentarioCierre()"
+                            >
+                            <option selected value="<%=expediente.getIdEstado().getIdEstado()%>"> 
+                                <%=expediente.getIdEstado().getDescripcion()%>   
+                            </option>
                             <%for (int j = 0; j < listaEstadoMarca.size(); j++) {
-                                if(listaEstadoMarca.get(j).getIdEstado() == expediente.getIdEstado().getIdEstado()){%> 
-                                    <option selected value="<%=listaEstadoMarca.get(j).getIdEstado()%>"> 
-                                        <%=listaEstadoMarca.get(j).getDescripcion()%>  
-                                    </option>
-                                <%}else{%>
+                                if(listaEstadoMarca.get(j).getIdEstado() != expediente.getIdEstado().getIdEstado()){%> 
                                     <option value="<%=listaEstadoMarca.get(j).getIdEstado()%>"> 
                                         <%=listaEstadoMarca.get(j).getDescripcion()%>  
                                     </option>
@@ -256,29 +284,20 @@
                     <select form="editarExpediente"
                             name="idAbogado" 
                             id="idAbogado"
-                            <%if(!editable){%>
-                                readonly
-                            <%}%>
                             class="form-control">
-                            <%if(editable){%>
-                                <%for (int j = 0; j < listaAbogado.size(); j++) { 
-                                    if(listaAbogado.get(j).getIdAbogado() == expediente.getIdAbogado().getIdAbogado()){
-                                %> 
-                                        <option selected value="<%=listaAbogado.get(j).getIdAbogado()%>">  
-                                            <%=listaAbogado.get(j).getNombreApellido()%>  
-                                        </option>
-                                    <%}else{%>
-                                        <option value="<%=listaAbogado.get(j).getIdAbogado()%>">  
-                                            <%=listaAbogado.get(j).getNombreApellido()%>  
-                                        </option>
-                                    <%}%>
+                            <option selected value="<%= expediente.getIdAbogado().getIdAbogado()%>">  
+                                <%= expediente.getIdAbogado().getNombreApellido()%>  
+                            </option>
+                            <%for (int j = 0; j < listaAbogado.size(); j++) { 
+                                if(listaAbogado.get(j).getIdAbogado() != expediente.getIdAbogado().getIdAbogado()){ 
+                            %> 
+                                    <option value="<%=listaAbogado.get(j).getIdAbogado()%>">  
+                                        <%=listaAbogado.get(j).getNombreApellido()%>  
+                                    </option>
                                 <%}%>
-                            <%}else{%>
-                                <option selected value="<%=expediente.getIdAbogado().getIdAbogado()%>">   
-                                    <%=expediente.getIdAbogado().getNombreApellido()%>   
-                                </option>
                             <%}%>
                     </select>
+                    <div id="idAbogado-retro"></div>
                 </div>
             </div>
                   
@@ -290,30 +309,30 @@
                     <select form="editarExpediente"
                             name="idCliente" 
                             id="idCliente"
-                            <%if(!editable){%>
+                            <%if(!expedienteVacio){%> 
+                                readonly
+                            <%}%>
+                            <%if(expConOposicion){%> 
                                 readonly
                             <%}%>
                             class="form-control">
-                            <%if(editable){%>
-                                <%for (int j = 0; j < listaCliente.size(); j++) {
-                                    if(listaCliente.get(j).getIdCliente() == expediente.getIdCliente().getIdCliente()){
-                                    %> 
-                                        <option selected value="<%=listaCliente.get(j).getIdCliente()%>"> 
-                                            <%=listaCliente.get(j).getNombreCliente()%> 
-                                        </option>
-                                    <%}else{%>
-                                        <option value="<%=listaCliente.get(j).getIdCliente()%>"> 
-                                            <%=listaCliente.get(j).getNombreCliente()%> 
-                                        </option>
+                            <option selected value="<%=expediente.getIdCliente().getIdCliente()%>"> 
+                                <%=expediente.getIdCliente().getNombreCliente()%>  
+                            </option>
+                            <%if(expedienteVacio){%>
+                                <%if(!expConOposicion){%>
+                                    <%for (int j = 0; j < listaCliente.size(); j++) {
+                                        if(listaCliente.get(j).getIdCliente() != expediente.getIdCliente().getIdCliente()){
+                                        %> 
+                                            <option value="<%=listaCliente.get(j).getIdCliente()%>"> 
+                                                <%=listaCliente.get(j).getNombreCliente()%> 
+                                            </option>
+                                        <%}%>
                                     <%}%>
                                 <%}%>
-                            <%}else{%>
-                                <option selected value="<%=expediente.getIdCliente().getIdCliente()%>"> 
-                                    <%=expediente.getIdCliente().getNombreCliente()%>  
-                                </option>
                             <%}%>
-                            
                     </select>
+                    <div id="idCliente-retro"></div>
                 </div>
             </div> 
                     
@@ -325,29 +344,30 @@
                     <select form="editarExpediente"
                             name="idMarca" 
                             id="idMarca" 
-                            <%if(!editable){%>
+                            <%if(!expedienteVacio){%> 
+                                readonly
+                            <%}%>
+                            <%if(expConOposicion){%>
                                 readonly
                             <%}%>
                             class="form-control">
-                            <%if(editable){%> 
-                                <%for (int j = 0; j < listaMarca.size(); j++) {
-                                    if(listaMarca.get(j).getIdMarca() == expediente.getIdMarca().getIdMarca()){
-                                %> 
-                                        <option selected value="<%=listaMarca.get(j).getIdMarca()%>"> 
-                                            <%=listaMarca.get(j).getDenominacion()%>  
-                                        </option>
-                                    <%}else{%>
-                                        <option value="<%=listaMarca.get(j).getIdMarca()%>"> 
-                                            <%=listaMarca.get(j).getDenominacion()%>  
-                                        </option>
+                            <option selected value="<%=expediente.getIdMarca().getIdMarca()%>"> 
+                                <%=expediente.getIdMarca().getDenominacion()%>  
+                            </option>
+                            <%if(expedienteVacio){%> 
+                                <%if(!expConOposicion){%>
+                                    <%for (int j = 0; j < listaMarca.size(); j++) {
+                                        if(listaMarca.get(j).getIdMarca() != expediente.getIdMarca().getIdMarca()){
+                                    %> 
+                                            <option value="<%=listaMarca.get(j).getIdMarca()%>"> 
+                                                <%=listaMarca.get(j).getDenominacion()%>  
+                                            </option>
+                                        <%}%>
                                     <%}%>
                                 <%}%>
-                            <%}else{%>
-                                <option value="<%=expediente.getIdMarca().getIdMarca()%>">  
-                                    <%=expediente.getIdMarca().getDenominacion()%>  
-                                </option>
                             <%}%>
                     </select>
+                    <div id="idMarca-retro"></div>
                 </div>
             </div>
                     
@@ -360,27 +380,22 @@
                             name="idTipoExpediente" 
                             id="idTipoExpediente"
                             class="form-control"
-                            <%if(!editable){%>
+                            <%if(!expedienteVacio){%>
                                 readonly
                             <%}%>
                             onchange="habilitarNroCertificado()">
-                            <%if(!editable){%>
+                            <option selected value="<%=expediente.getTipoExpediente().getIdTipoExpediente()%>"> 
+                                <%=expediente.getTipoExpediente().getDescripcion()%>  
+                            </option>
+                            <%if(expedienteVacio){%>
                                 <%for (int j = 0; j < listaTipoExpediente.size(); j++) {
-                                    if(listaTipoExpediente.get(j).getIdTipoExpediente() == expediente.getTipoExpediente().getIdTipoExpediente()){
-                                    %> 
-                                        <option selected value="<%=listaTipoExpediente.get(j).getIdTipoExpediente()%>"> 
-                                            <%=listaTipoExpediente.get(j).getDescripcion()%>  
-                                        </option>
-                                    <%}else{%>
+                                    if(listaTipoExpediente.get(j).getIdTipoExpediente() != expediente.getTipoExpediente().getIdTipoExpediente()){
+                                    %>
                                         <option value="<%=listaTipoExpediente.get(j).getIdTipoExpediente()%>"> 
                                             <%=listaTipoExpediente.get(j).getDescripcion()%>  
                                         </option>
                                     <%}%>
                                 <%}%>
-                            <%}else{%>
-                                <option value="<%=expediente.getTipoExpediente().getIdTipoExpediente()%>">    
-                                    <%=expediente.getTipoExpediente().getDescripcion()%>  
-                                </option>
                             <%}%>
                     </select>
                 </div>
@@ -398,7 +413,7 @@
                             onkeypress="return isNumberKey(event)"
                             <%if(expediente.getNroCertificado() != null){%>
                                 value="<%=expediente.getNroCertificado()%>" 
-                                <%if(!editable){%>
+                                <%if(!expedienteVacio){%>
                                     readonly
                                 <%}%>
                             <%}else{%> 
@@ -418,14 +433,32 @@
                                 id="obs"
                                 class="form-control"
                                 rows="6"
-                                maxlength="250"
+                                maxlength=""
                                 placeholder="Escriba una breve observacion"
-                                ><%if(expediente.getObservacion() != null){%><%=expediente.getObservacion()%><%}%>
-                                </textarea>  
+                                ><%if(expediente.getObservacion() != null){%><%=expediente.getObservacion()%><%}%></textarea>  
                     <div id="obs-retro"></div>
                 </div>
             </div>
-                        
+                    
+            <div class="row form-group">
+                <div class="col-3">
+                    <label for="comentario">Comentario de cierre</label>
+                </div>
+                <div class="col-6">
+                    <textarea   form="editarExpediente"
+                                name="comentario"
+                                id="comentario"
+                                class="form-control"
+                                rows="6"
+                                maxlength=""
+                                disabled
+                                placeholder="Escriba un comentario de cierre"
+                                ></textarea>  
+                    <div id="comentario-retro"></div>
+                </div>
+            </div>
+            
+             
             <div class="row form-group">
                 <div class="col-5">
                 </div>
@@ -433,18 +466,33 @@
                     <input id="editar"
                            type="button"
                            value="Editar"
-                           onclick="validarFormulario()">
+                           <%if(!expedienteCerrado){%> 
+                                onclick="validarFormulario()"
+                           <%}%>
+                    >
                 </div>    
             </div>   
+            
+            
         </div>
         <br>
         <script>
-            
-            function cambiarDescripcionClase() {
-                var nroClase = document.getElementById("nroClase").value;
-                var descripcion = document.getElementById("descripcion-"+nroClase).value;
+            function mostrarComentarioCierre(){
+                var comentarioInput = document.getElementById("comentario");
+                var idEstadoMarcaInput = document.getElementById("idEstadoMarca");
                 
-                document.getElementById("descripcionClase").value = descripcion;
+                if(<%for(int i=0;i<listaEstadoMarcaFinales.size();i++){%>
+                        idEstadoMarcaInput.value == <%=listaEstadoMarcaFinales.get(i).getIdEstado()%>
+                        <%if(i+1<listaEstadoMarcaFinales.size()){%>
+                            ||
+                        <%}%>
+                    <%}%>)
+                {
+                    comentarioInput.disabled = false;
+                }else{
+                    comentarioInput.disabled = true;
+                    
+                }
             }
             
             function habilitarNroCertificado(){
@@ -491,29 +539,74 @@
                 
             }
             
+            
+            function cambiarDescripcionClase() {
+                var nroClase = document.getElementById("nroClase").value;
+                var descripcion = document.getElementById("descripcion-"+nroClase).value;
+                
+                document.getElementById("descripcionClase").textContent = descripcion;
+            }
+            
             function validarFormulario(){
+                var obsInput = document.getElementById("obs");
+                obsInput.value = obsInput.value.trim();
+                
                 var nroExpedienteValido = validarNroExpediente();
                 var nroClase = validarNroClase();
                 var productoValido = validarProducto();
                 var fechaSolicitudValido = validarFechaSolicitud();
                 var fechaEstadoValido = validarFechaEstado(fechaSolicitudValido);
-                //var marcaValido = validarMarca();
-                //var abogadoValido = validarAbogado();
-                //var clienteValido = validarCliente();
+                var marcaValido = validarMarca();
+                var abogadoValido = validarAbogado();
+                var clienteValido = validarCliente();
                 var nroCertificadoValido = validarNroCertificado();
+                       
+                var comentarioValido = true;
+                
+                if(!document.getElementById("comentario").disabled){
+                    
+                    comentarioValido = validarComentario();
+                }
                 
                 if(nroExpedienteValido && 
                     nroClase && 
                     productoValido && 
                     fechaEstadoValido && 
                     fechaSolicitudValido &&
-                    nroCertificadoValido){
+                    marcaValido &&
+                    abogadoValido &&
+                    clienteValido &&
+                    nroCertificadoValido && comentarioValido){
                     
                     validarUnicidadNroExpediente();
                     
                 }
             }
                 
+            function validarComentario(){
+                
+                var comentarioInput = document.getElementById("comentario");
+                var retroComentario = document.getElementById("comentario-retro");
+                var strComentario= comentarioInput.value.trim();
+                comentarioInput.value = strComentario;
+                
+                if(strComentario.length == 0){
+
+                    comentarioInput.setAttribute("class","form-control is-invalid");
+                    retroComentario.setAttribute("class","invalid-feedback");
+                    retroComentario.textContent = 'Escriba el comentario de cierre';
+                    
+                    return false;
+                }
+                
+                comentarioInput.setAttribute("class","form-control is-valid");
+                retroComentario.setAttribute("class","valid-feedback");
+                retroComentario.textContent = '';
+                    
+                 
+                return true;
+            }
+            
             //Llamada al ajax para validar que el numero de expediente
             //sea unico
             //Si no es unico, informa al cliente
@@ -663,6 +756,17 @@
                 var retroFechaEstado = document.getElementById("fechaEstado-retro");
                 var strFechaEstado = fechaEstadoInput.value.trim(); 
                 
+                if(!fechaSolicitudValido){
+                    fechaEstadoInput.setAttribute("class","form-control is-invalid");
+                    retroFechaEstado.setAttribute("class","invalid-feedback");
+                    retroFechaEstado.textContent = 'Escriba una fecha de solicitud válida';
+                    
+                    return false;
+                }
+                
+                fechaEstadoInput.setAttribute("min",document.getElementById("fechaSolicitud").value);
+
+
                 if(strFechaEstado.length == 0){ 
                     fechaEstadoInput.setAttribute("class","form-control is-invalid");
                     retroFechaEstado.setAttribute("class","invalid-feedback");
@@ -671,18 +775,22 @@
                     return false;
                 }
                 
-                if(fechaSolicitudValido){
-                    fechaEstadoInput.setAttribute("min",document.getElementById("fechaSolicitud").value);
-                
-                    if(fechaEstadoInput.validity.rangeUnderflow){
-                        fechaEstadoInput.setAttribute("class","form-control is-invalid");
-                        retroFechaEstado.setAttribute("class","invalid-feedback");
-                        retroFechaEstado.textContent = 'La fecha del estado debe ser mayor o igual que la fecha de solicitud';
+                if(fechaEstadoInput.validity.rangeUnderflow){
+                    fechaEstadoInput.setAttribute("class","form-control is-invalid");
+                    retroFechaEstado.setAttribute("class","invalid-feedback");
+                    retroFechaEstado.textContent = 'La fecha del estado no debe ser anterior a la fecha de solicitud';
 
-                        return false;
-                    }
+                    return false;
                 }
                 
+                if(fechaEstadoInput.validity.rangeOverflow){
+                    fechaEstadoInput.setAttribute("class","form-control is-invalid");
+                    retroFechaEstado.setAttribute("class","invalid-feedback");
+                    retroFechaEstado.textContent = 'La fecha del estado no debe ser posterior a la fecha de hoy';
+
+                    return false;
+                }
+                    
                 fechaEstadoInput.setAttribute("class","form-control is-valid");
                 retroFechaEstado.setAttribute("class","valid-feedback");
                 retroFechaEstado.textContent = '';
@@ -709,7 +817,8 @@
                     fechaSolicitudInput.setAttribute("class","form-control is-invalid");
                     retroFechaSolicitud.setAttribute("class","invalid-feedback");
                     
-                    retroFechaSolicitud.textContent = 'La fecha debe estar entre 10 años atrás hasta hoy';
+                    retroFechaSolicitud.textContent = 
+                        'La fecha debe estar entre <%=new SimpleDateFormat("dd/MM/yyyy").format(fechaLimiteInferior)%> y <%=new SimpleDateFormat("dd/MM/yyyy").format(new Date())%>';
                     
                     return false;
                     
@@ -732,7 +841,8 @@
                 return true;
             }
             
-            /*function validarAbogado(){
+            
+            function validarAbogado(){
                 var idAbogadoSelect = document.getElementById("idAbogado");
                 var retroIdAbogado = document.getElementById("idAbogado-retro");
                 var strIdAbogado = idAbogadoSelect.value;
@@ -789,7 +899,7 @@
                 retroIdMarca.setAttribute("class","valid-feedback");
                 retroIdMarca.textContent = '';
                 return true;
-            }*/
+            }
         </script>
     </body>
 </html>

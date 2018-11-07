@@ -16,7 +16,9 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import javax.persistence.criteria.CriteriaBuilder;
 import modelo.EstadoOposicion;
+import modelo.EstadoOposicion_;
 import modelo.OposicionRecibida;
 import modeloMng.exceptions.IllegalOrphanException;
 import modeloMng.exceptions.NonexistentEntityException;
@@ -220,8 +222,10 @@ public class EstadoOposicionJpaController implements Serializable {
     private List<EstadoOposicion> findEstadoOposicionEntities(boolean all, int maxResults, int firstResult) {
         EntityManager em = getEntityManager();
         try {
-            CriteriaQuery cq = em.getCriteriaBuilder().createQuery();
+            CriteriaBuilder cb = em.getCriteriaBuilder();
+            CriteriaQuery cq = cb.createQuery();
             cq.select(cq.from(EstadoOposicion.class));
+            cq.orderBy(cb.asc(cq.from(EstadoOposicion.class).get(EstadoOposicion_.descripcion)));
             Query q = em.createQuery(cq);
             if (!all) {
                 q.setMaxResults(maxResults);
@@ -264,7 +268,25 @@ public class EstadoOposicionJpaController implements Serializable {
         
         try {
            
-            String consulta = "select e from EstadoOposicion e where e.tipo like 'I' ";
+            String consulta = "select e from EstadoOposicion e where e.tipo like 'I' order by e.descripcion";
+            Query q = em.createQuery(consulta); 
+            return q.getResultList();
+            
+        }finally {
+            em.close();
+        }
+    }
+    
+    /**
+     * Retorna la lista de estados de oposicion finales
+     * @return List<EstadoOposicion> 
+     */
+    public List<EstadoOposicion> getEstadoOposicionFinales() {
+        EntityManager em = getEntityManager();
+        
+        try {
+           
+            String consulta = "select e from EstadoOposicion e where e.tipo like 'F' ";
             Query q = em.createQuery(consulta); 
             return q.getResultList();
             

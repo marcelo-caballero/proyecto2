@@ -18,8 +18,6 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
@@ -33,12 +31,9 @@ import javax.xml.bind.annotation.XmlTransient;
 @NamedQueries({
     @NamedQuery(name = "EstadoOposicion.findAll", query = "SELECT e FROM EstadoOposicion e"),
     @NamedQuery(name = "EstadoOposicion.findByIdEstado", query = "SELECT e FROM EstadoOposicion e WHERE e.idEstado = :idEstado"),
-    @NamedQuery(name = "EstadoOposicion.findByDescripcion", query = "SELECT e FROM EstadoOposicion e WHERE e.descripcion = :descripcion")})
+    @NamedQuery(name = "EstadoOposicion.findByDescripcion", query = "SELECT e FROM EstadoOposicion e WHERE e.descripcion = :descripcion"),
+    @NamedQuery(name = "EstadoOposicion.findByTipo", query = "SELECT e FROM EstadoOposicion e WHERE e.tipo = :tipo")})
 public class EstadoOposicion implements Serializable {
-
-    @Size(max = 2147483647)
-    @Column(name = "tipo")
-    private String tipo;
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -47,14 +42,18 @@ public class EstadoOposicion implements Serializable {
     @Column(name = "id_estado")
     private Integer idEstado;
     @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 2147483647)
     @Column(name = "descripcion")
     private String descripcion;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idEstadoOposicion")
-    private List<HistorialEstadoOposicionRecibida> historialEstadoOposicionRecibidaList;
+    @Column(name = "tipo")
+    private String tipo;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idEstado")
     private List<OposicionRecibida> oposicionRecibidaList;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idEstadoOposicion")
+    private List<HistorialEstadoOposicionHecha> historialEstadoOposicionHechaList;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idEstadoOposicion")
+    private List<OposicionHecha> oposicionHechaList;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idEstadoOposicion")
+    private List<HistorialEstadoOposicionRecibida> historialEstadoOposicionRecibidaList;
 
     public EstadoOposicion() {
     }
@@ -84,13 +83,12 @@ public class EstadoOposicion implements Serializable {
         this.descripcion = descripcion;
     }
 
-    @XmlTransient
-    public List<HistorialEstadoOposicionRecibida> getHistorialEstadoOposicionRecibidaList() {
-        return historialEstadoOposicionRecibidaList;
+    public String getTipo() {
+        return tipo;
     }
 
-    public void setHistorialEstadoOposicionRecibidaList(List<HistorialEstadoOposicionRecibida> historialEstadoOposicionRecibidaList) {
-        this.historialEstadoOposicionRecibidaList = historialEstadoOposicionRecibidaList;
+    public void setTipo(String tipo) {
+        this.tipo = tipo;
     }
 
     @XmlTransient
@@ -100,6 +98,33 @@ public class EstadoOposicion implements Serializable {
 
     public void setOposicionRecibidaList(List<OposicionRecibida> oposicionRecibidaList) {
         this.oposicionRecibidaList = oposicionRecibidaList;
+    }
+
+    @XmlTransient
+    public List<HistorialEstadoOposicionHecha> getHistorialEstadoOposicionHechaList() {
+        return historialEstadoOposicionHechaList;
+    }
+
+    public void setHistorialEstadoOposicionHechaList(List<HistorialEstadoOposicionHecha> historialEstadoOposicionHechaList) {
+        this.historialEstadoOposicionHechaList = historialEstadoOposicionHechaList;
+    }
+
+    @XmlTransient
+    public List<OposicionHecha> getOposicionHechaList() {
+        return oposicionHechaList;
+    }
+
+    public void setOposicionHechaList(List<OposicionHecha> oposicionHechaList) {
+        this.oposicionHechaList = oposicionHechaList;
+    }
+
+    @XmlTransient
+    public List<HistorialEstadoOposicionRecibida> getHistorialEstadoOposicionRecibidaList() {
+        return historialEstadoOposicionRecibidaList;
+    }
+
+    public void setHistorialEstadoOposicionRecibidaList(List<HistorialEstadoOposicionRecibida> historialEstadoOposicionRecibidaList) {
+        this.historialEstadoOposicionRecibidaList = historialEstadoOposicionRecibidaList;
     }
 
     @Override
@@ -125,14 +150,6 @@ public class EstadoOposicion implements Serializable {
     @Override
     public String toString() {
         return "modelo.EstadoOposicion[ idEstado=" + idEstado + " ]";
-    }
-
-    public String getTipo() {
-        return tipo;
-    }
-
-    public void setTipo(String tipo) {
-        this.tipo = tipo;
     }
     
 }

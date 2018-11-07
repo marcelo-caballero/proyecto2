@@ -20,6 +20,7 @@ import javax.persistence.Persistence;
 import javax.persistence.criteria.CriteriaBuilder;
 import modelo.Marca;
 import modelo.Marca_;
+import modelo.OposicionHecha;
 import modeloMng.exceptions.IllegalOrphanException;
 import modeloMng.exceptions.NonexistentEntityException;
 
@@ -38,7 +39,7 @@ public class MarcaJpaController implements Serializable {
         return emf.createEntityManager();
     }
 
-    public void create(Marca marca) {
+     public void create(Marca marca) {
         if (marca.getExpedienteList() == null) {
             marca.setExpedienteList(new ArrayList<Expediente>());
         }

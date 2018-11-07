@@ -105,6 +105,7 @@ public class UsuarioServlet extends HttpServlet {
                 
             }catch(IllegalOrphanException ex){    
                 
+                request.getSession().setAttribute("mensajeErrorABM", "No se pudo eliminar el usuario, se cambió el estado del usuario a inactivo");
                 
             } catch (Exception e) {
                 

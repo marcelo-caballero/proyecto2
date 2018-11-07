@@ -143,6 +143,8 @@ public class ClienteServlet extends HttpServlet {
                  
             }catch(IllegalOrphanException ex){    
                 
+                request.getSession().setAttribute("mensajeErrorABM", "No se pudo eliminar el titular, se cambió su estado a Inactivo");
+                
             } catch (Exception e) {
                 
                 request.getSession().setAttribute("mensajeErrorABM", "No se pudo eliminar el titular");

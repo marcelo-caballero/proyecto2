@@ -25,20 +25,32 @@
             
             boolean editable = abogadoControl.esEditable(idAbogado);
            
+            boolean tieneOposicion = true;
+            if(abogado.getOposicionHechaList().isEmpty()){
+                tieneOposicion = false;
+            }
         %>
         <%@include file="//WEB-INF/menuCabecera.jsp" %>
         <br>
          
         <div class ="container form-control">
+            
+            <h2 class="text-justify"> Editar Agente</h2>
+            <br> 
             <%if(abogado.getEstado().equals("INACTIVO")){%> 
                 <div class="alert alert-info alert-dismissible">
                     <button type="button" class="close" data-dismiss="alert">&times;</button>
                     <strong>¡Información! </strong> No se puede editar un agente con estado inactivo
                 </div>
             <%}%>
-            
-            <h2 class="text-justify"> Editar Agente</h2>
-            <br> 
+            <%if(tieneOposicion){%>  
+                <div class="alert alert-info alert-dismissible">
+                    <button type="button" class="close" data-dismiss="alert">&times;</button>
+                    <strong>¡Información! </strong> El abogado tiene a cargo una o más oposiciones hechas por el estudio jurídico
+                </div>
+            <%}%>
+            <br>
+           
         
             <form id="editarAbogado" 
                   action="<%=request.getContextPath()%>/AbogadoServlet?editar=true" 
@@ -64,6 +76,9 @@
                            <%if(!editable){%> 
                                 readonly
                            <%}%>
+                           <%if(tieneOposicion){%> 
+                                readonly
+                           <%}%>
                            value="<%=abogado.getCi()%>"
                            onkeypress="return isNumberKey(event)">
                     <div id="ci-retro"></div>
@@ -85,6 +100,9 @@
                            <%if(!editable){%> 
                                 readonly
                            <%}%>
+                           <%if(tieneOposicion){%> 
+                                readonly
+                           <%}%>
                            value="<%=abogado.getNombre()%>" 
                            required >
                     <div id="nombre-retro"></div>
@@ -104,6 +122,9 @@
                            placeholder="Escriba el apellido del agente"
                            maxlength=""
                            <%if(!editable){%>
+                                readonly
+                           <%}%>
+                           <%if(tieneOposicion){%> 
                                 readonly
                            <%}%>
                            value="<%=abogado.getApellido()%>" 
@@ -184,18 +205,21 @@
                 </div> 
             </div>
             
-            <%if(abogado.getEstado().equals("ACTIVO")){%>
-                <div class="row form-group">
-                    <div class="col-5">
-                    </div>
-                    <div class="col-2">
-                        <input id="editar" 
-                               type="button"
-                               value="Editar"
-                               onclick="validarFormulario()">
-                    </div>    
-                </div> 
-            <%}%>
+            
+            <div class="row form-group">
+                <div class="col-5">
+                </div>
+                <div class="col-2">
+                    <input id="editar" 
+                           type="button"
+                           value="Editar"
+                           <%if(abogado.getEstado().equals("ACTIVO")){%>
+                                onclick="validarFormulario()"
+                           <%}%>
+                    >
+                </div>    
+            </div> 
+            
         
         </div>
         <br>

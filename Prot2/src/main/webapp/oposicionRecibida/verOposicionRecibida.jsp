@@ -5,6 +5,9 @@
 --%>
 
 
+<%@page import="java.util.List"%>
+<%@page import="modeloMng.HistorialEstadoOposicionRecibidaJpaController"%>
+<%@page import="modelo.HistorialEstadoOposicionRecibida"%>
 <%@page import="java.text.SimpleDateFormat"%>
 <%@page import="modelo.OposicionRecibida"%>
 <%@page import="modeloMng.OposicionRecibidaJpaController"%>
@@ -26,7 +29,7 @@
             OposicionRecibida oposicion = oposicionRecibidaControl.findOposicionRecibida(idOposicion);  
             
             //Expediente exp = new ExpedienteJpaController().findExpediente(idExp);
-           
+           List<HistorialEstadoOposicionRecibida> listaHistorial = new HistorialEstadoOposicionRecibidaJpaController().getHistorialEstadoOposicionPorIdOposicion(idOposicion);
             
         %>
 
@@ -110,7 +113,81 @@
                     <%=oposicion.getIdEstado().getDescripcion()%>  
                 </div>
             </div>
+                
+            <%if(oposicion.getComentarioCierre() != null){%>
+                <div class="row form-group">
+                    <div class="col-3">
+                        <label>Comentario de cierre:</label>
+                    </div>
+                    <div class="col-6 form-control">
+                        <%=oposicion.getComentarioCierre()%> 
+                    </div>
+                </div>
+            <%}%>
+                
+            <div class="row form-group">
+                <div class="col-3">
+                    <label>Historial:</label>
+                </div>
+                <div class="col-6 ">
+                    <button class="btn btn-primary "
+                            onclick="mostrarModal()"> 
+                            Ver Historial
+                    </button>  
+                </div>
+            </div>
         </div>  
         <br>
+        
+        <%-- Modal Historial Oposicion --%>
+        <div class="modal fade" id="modal-historial" role="dialog">
+            <div class="modal-dialog ">
+                <div class="modal-content">
+
+                    <div class="modal-header">
+                        <h4 class="modal-title">Historial</h4>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+
+                    </div>
+                    <div class="modal-body">
+                       <div class="container form-control">
+                           <div class="row">
+                                <div class="col-4">
+                                    <p class="font-weight-bold">Fecha</p>
+                                </div>
+                                <div class="col">
+                                   <p class="font-weight-bold">Estado</p>
+                                </div>
+                            </div>
+                            <hr>
+                           <%for(int i=0;i<listaHistorial.size();i++){%>
+                                <div class="row">
+                                    <div class="col-4">
+                                        <p><%=listaHistorial.get(i).getStringFecha()%></p>
+                                    </div>
+                                    <div class="col">
+                                        <p><%=listaHistorial.get(i).getIdEstadoOposicion().getDescripcion()%></p>
+                                    </div>
+                                </div>
+                                <hr>
+                           <%}%>
+                       </div>
+                        
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" data-dismiss="modal" class="btn btn-default" >Cerrar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <script>
+            function mostrarModal() {
+                $(document).ready(function () {
+                    $("#modal-historial").modal();
+
+                });
+            }
+        </script>
     </body>
 </html>

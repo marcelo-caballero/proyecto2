@@ -4,6 +4,9 @@
     Author     : Acer
 --%>
 
+<%@page import="modeloMng.HistorialEstadoMarcaJpaController"%>
+<%@page import="modelo.HistorialEstadoMarca"%>
+<%@page import="java.util.List"%>
 <%@page import="java.util.Base64"%>
 <%@page import="modelo.Expediente"%>
 
@@ -36,7 +39,7 @@
             ExpedienteJpaController expControl = new ExpedienteJpaController();
             Expediente expediente = expControl.findExpediente(idExp);
             
-        
+            List<HistorialEstadoMarca> listaEstadoMarca = new HistorialEstadoMarcaJpaController().getHistorialEstadoMarcaPorIdExpediente(idExp);        
             %> 
 
         <%@include file="//WEB-INF/menuCabecera.jsp" %>
@@ -180,17 +183,163 @@
                 </div>
             <%}%>
             
+            <% if(expediente.getObservacion() != null){%>  
+                <div class="row form-group">
+                    <div class="col-3">
+                        <label>Observación:</label>
+                    </div>
+                    <div class="col-6 form-control">
+                        <%=expediente.getObservacion()%>  
+                    </div>
+                </div>
+            <%}%>
+            
+            <%if(expediente.getComentarioCierre() != null){%> 
+                <div class="row form-group">
+                    <div class="col-3">
+                        <label>Comentario de cierre:</label>
+                    </div>
+                    <div class="col-6 form-control">
+                        <%=expediente.getComentarioCierre()%> 
+                    </div>
+                </div>
+            <%}%>
+            
+            <%if(!expediente.getDocumentoList().isEmpty()){%>
+                <div class="row form-group">
+                    <div class="col-3">
+                        <label>Historial Administrativo:</label>
+                    </div>
+                    <div class="col-6 ">
+                        <button class="btn btn-primary "
+                                onclick="mostrarModalHistorialAdm()"> 
+                                Ver Historial Administrativo
+                        </button>  
+                    </div>
+                </div>
+            <%}%>
+            
             <div class="row form-group">
                 <div class="col-3">
-                    <label>Observación:</label>
+                    <label>Historial de Estado:</label>
                 </div>
-                <div class="col-6 form-control">
-                    <%= (expediente.getObservacion() != null) ? expediente.getObservacion() : ""%>  
+                <div class="col-6 ">
+                    <button class="btn btn-primary "
+                            onclick="mostrarModalHistorialEstado()"> 
+                            Ver Historial de Estado
+                    </button>  
                 </div>
             </div>
-          
+                
         </div>
+        
+                
+        <%-- Modal Historial Administrativo --%>
+        <div class="modal fade" id="modal-administrativo" role="dialog">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+
+                    <div class="modal-header">
+                        <h4 class="modal-title">Historial Administrativo</h4>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+
+                    </div>
+                    <div class="modal-body">
+                       <div class="container form-control">
+                           <div class="row">
+                                <div class="col">
+                                    <p class="font-weight-bold">Fecha</p>
+                                </div>
+                                <div class="col">
+                                   <p class="font-weight-bold">Tipo</p>
+                                </div>
+                                <div class="col">
+                                   <p class="font-weight-bold">Descripción</p>
+                                </div>
+                            </div>
+                            <hr>
+                           <%for(int i=0;i<expediente.getDocumentoList().size();i++){%>
+                                <div class="row">
+                                    <div class="col">
+                                        <p><%=expediente.getDocumentoList().get(i).getStringFecha()%></p>
+                                    </div>
+                                    <div class="col">
+                                        <p><%= expediente.getDocumentoList().get(i).getIdTipoDocumento().getDescripcion()%></p>  
+                                    </div>
+                                    <div class="col">
+                                        <p><%= expediente.getDocumentoList().get(i).getDescripcion()%></p>  
+                                    </div>
+                                </div>
+                                <hr>
+                           <%}%>
+                       </div>
+                        
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" data-dismiss="modal" class="btn btn-default" >Cerrar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+                    
+        <%-- Modal Historial Estado --%>
+        <div class="modal fade" id="modal-estado" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+
+                    <div class="modal-header">
+                        <h4 class="modal-title">Historial de Estado</h4>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+
+                    </div>
+                    <div class="modal-body">
+                       <div class="container form-control">
+                           <div class="row">
+                                <div class="col-4">
+                                    <p class="font-weight-bold">Fecha</p>
+                                </div>
+                                <div class="col">
+                                   <p class="font-weight-bold">Estado</p>
+                                </div>
+                            </div>
+                            <hr>
+                           <%for(int i=0;i<listaEstadoMarca.size();i++){%> 
+                                <div class="row">
+                                    <div class="col-4">
+                                        <p><%=listaEstadoMarca.get(i).getStringFecha()%></p> 
+                                    </div>
+                                    <div class="col">
+                                        <p><%=listaEstadoMarca.get(i).getIdEstadoMarca().getDescripcion()%></p>   
+                                    </div>
+                                </div>
+                                <hr>
+                           <%}%>
+                       </div>
+                        
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" data-dismiss="modal" class="btn btn-default" >Cerrar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+                       
         <br>
+        <script>
+            function mostrarModalHistorialAdm() {
+                $(document).ready(function () {
+                    $("#modal-administrativo").modal();
+
+                });
+            }
+            
+            function mostrarModalHistorialEstado() {
+                $(document).ready(function () {
+                    $("#modal-estado").modal();
+
+                });
+            }
+        </script>
         <style>
             img {
                 position: static;

@@ -185,7 +185,7 @@ public class Documento implements Serializable {
     }
     
     public String getStringFecha(){
-        String fecha = new SimpleDateFormat("dd-MM-yyyy").format(this.fecha);
+        String fecha = new SimpleDateFormat("dd/MM/yyyy").format(this.fecha);
         return fecha;  
     }
 

@@ -99,6 +99,7 @@ public class Cliente implements Serializable {
     private String tipoCliente;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idCliente")
     private List<Expediente> expedienteList;
+    
     @JoinColumn(name = "id_usuario", referencedColumnName = "id_usuario")
     @ManyToOne(optional = false)
     private Usuario idUsuario;
@@ -215,6 +216,7 @@ public class Cliente implements Serializable {
     public void setIdUsuario(Usuario idUsuario) {
         this.idUsuario = idUsuario;
     }
+
 
     @Override
     public int hashCode() {

@@ -12,6 +12,7 @@ import java.math.BigInteger;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -83,10 +84,13 @@ public class ExpedienteServlet extends HttpServlet {
         
         SimpleDateFormat formatoFecha = new SimpleDateFormat("yyyy-MM-dd");
         
+        OposicionRecibidaJpaController opoRecibidaControl = new OposicionRecibidaJpaController();
+        HistorialEstadoMarcaJpaController historialEstadoMarca = new HistorialEstadoMarcaJpaController();
+        
         //agregar
         if(request.getParameter("agregar") != null){
             try{
-                Integer nroExp = Integer.parseInt(request.getParameter("nroExpediente"));
+                BigInteger nroExp = new BigInteger(request.getParameter("nroExpediente"));
                 Integer idCliente = Integer.parseInt(request.getParameter("idCliente"));
                 Integer idAbogado = Integer.parseInt(request.getParameter("idAbogado"));
                 Integer idEstadoMarca = Integer.parseInt(request.getParameter("idEstadoMarca"));
@@ -109,7 +113,7 @@ public class ExpedienteServlet extends HttpServlet {
             
                 
                 Expediente exp = new Expediente();
-                exp.setNroExpediente(BigInteger.valueOf(nroExp));
+                exp.setNroExpediente(nroExp);
                 exp.setIdCliente(cliente);
                 exp.setIdAbogado(abogado);
                 exp.setIdEstado(estadoMarca);
@@ -127,12 +131,24 @@ public class ExpedienteServlet extends HttpServlet {
                 }
             
                 if(!expControl.violaRestriccionUnicaClaseMarcaCliente(nroClase, idMarca, idCliente)){
+                    
                     expControl.create(exp);
+                    //Agregamos en el historial de estado 
+                    HistorialEstadoMarca historial = new HistorialEstadoMarca();
+                    historial.setIdExpediente(exp);
+                    historial.setIdEstadoMarca(exp.getIdEstado());
+                    historial.setFecha(exp.getFechaEstado());
+                    historial.setFechaRegistro(new Date());
+                    historialEstadoMarca.create(historial);
+                    //------------------------------------------------------------
                 }else{
+                    
                     request.getSession().setAttribute("mensajeErrorABM", "Ya existe un expediente con la misma combinación de clase, marca y titular");
+                
                 }
                 
             }catch(Exception e){
+                System.out.println(e);
                 request.getSession().setAttribute("mensajeErrorABM", "No se pudo agregar el expediente");
             
             }finally{
@@ -142,16 +158,39 @@ public class ExpedienteServlet extends HttpServlet {
         
          //Eliminar
         if(request.getParameter("eliminar") != null){
+            
             try {
                 Integer idExp = Integer.parseInt(request.getParameter("idExpediente"));
-                expControl.destroy(idExp);
                 
-            } catch (IllegalOrphanException ex) {
+                //Verificamos que el expediente no tenga asociadas oposiciones hechas por el estudio juridico
+                if(!expControl.expedienteConOposicionesHechas(idExp)){
+                    
+                    //Si el expediente se encuentra vacio, borramos el historial de estado
+                    if(expControl.expedienteVacio(idExp)){
+                        //Vaciamos el historial de estados de la oposicion
+                        List<HistorialEstadoMarca> listaHistorial = historialEstadoMarca.getHistorialEstadoMarcaPorIdExpediente(idExp);
+
+                        for(int i=0;i<listaHistorial.size();i++){ 
+                            historialEstadoMarca.destroy(listaHistorial.get(i).getIdHistorial());
+                        }
+
+                         expControl.destroy(idExp);
+                         
+                    }else{
+                        
+                        request.getSession().setAttribute("mensajeErrorABM", "Solamente se puede eliminar un expediente vacío");
+                    }
+                    
+                }else{
+                    
+                    request.getSession().setAttribute("mensajeErrorABM", "El expediente esta asociado a una oposición realizada por el Estudio Jurídico");
+                }
+                //-------------------------------------------------------------------------------------------------------
                 
-                request.getSession().setAttribute("mensajeErrorABM", "Solamente se puede eliminar un expediente vacío");
+               
                 
             }catch (Exception e) {
-                
+                System.out.println(e);
                 request.getSession().setAttribute("mensajeErrorABM", "No se pudo eliminar el expediente");
                 
             }finally{
@@ -166,7 +205,7 @@ public class ExpedienteServlet extends HttpServlet {
                 Integer idExpediente = Integer.parseInt(request.getParameter("idExpediente"));
                 Expediente exp = expControl.findExpediente(idExpediente);
                         
-                Integer nroExp = Integer.parseInt(request.getParameter("nroExpediente"));
+                BigInteger nroExp = new BigInteger(request.getParameter("nroExpediente"));
                 Integer idCliente = Integer.parseInt(request.getParameter("idCliente"));
                 Integer idAbogado = Integer.parseInt(request.getParameter("idAbogado"));
                 Integer idEstadoMarca = Integer.parseInt(request.getParameter("idEstadoMarca"));
@@ -178,6 +217,7 @@ public class ExpedienteServlet extends HttpServlet {
                 Date fechaEstado = formatoFecha.parse(request.getParameter("fechaEstado")); 
                 Date fechaSolicitud = formatoFecha.parse(request.getParameter("fechaSolicitud"));
                 String nroCertificado = request.getParameter("nroCertificado");
+                String comentario = request.getParameter("comentario");
             
             
                 Cliente cliente = clienteControl.findCliente(idCliente);
@@ -187,17 +227,70 @@ public class ExpedienteServlet extends HttpServlet {
                 Clase clase = claseControl.findClase(nroClase);
                 TipoExpediente tipoExpediente = tipoExpControl.findTipoExpediente(idTipoExpediente);
                 
+                boolean registrarHistorial = false;
                 
-                exp.setNroExpediente(BigInteger.valueOf(nroExp));
+                //Verificamos si el expediente esta en estado oposicion(Asuntos Litigiosos) y cambia a otro que no sea estado oposicion
+                boolean editarEstado = true;
+                List<OposicionRecibida> lista = opoRecibidaControl.getListaOposicionPorIdExpediente(idExpediente);
+                
+                if(exp.getIdEstado().getTipo() != null){
+                    if(!exp.getIdEstado().getTipo().equals("O")){
+                        editarEstado = true;
+                    }else{
+                        if(estadoMarca.getTipo() != null){
+                            if(estadoMarca.getTipo().equals("O")){
+                                editarEstado = true;
+                            }else{
+                                //verificar que todas las oposiciones esten cerradas
+                                for(int i=0;i<lista.size();i++){ 
+                                    if(lista.get(i).getIdEstado().getTipo() != null){
+                                        if(!lista.get(i).getIdEstado().getTipo().equals("F")){
+                                            editarEstado=false;
+                                            i = i + lista.size();
+                                        }
+                                    }else{
+                                        editarEstado=false;
+                                        i = i + lista.size();
+                                    }
+                                }
+                            }
+                        }else{
+                            //verificar que todas las oposiciones esten cerradas
+                            for(int i=0;i<lista.size();i++){ 
+                                if(lista.get(i).getIdEstado().getTipo() != null){
+                                    if(!lista.get(i).getIdEstado().getTipo().equals("F")){
+                                        editarEstado=false;
+                                        i = i + lista.size();
+                                    }
+                                }else{
+                                    editarEstado=false;
+                                    i = i + lista.size();
+                                }
+                            }
+                        }
+                    }
+                }else{
+                    editarEstado=true;
+                }
+               //---------------------------------------------------------------
+               
+               
+               //Verificamos si hay cambios en la fecha y estado de oposicion
+                if(!exp.getFechaEstado().equals(fechaEstado)){
+                    registrarHistorial = true;
+                }
+                if(!exp.getIdEstado().equals(estadoMarca)){
+                    registrarHistorial = true;
+                }
+                //---------------------------------------------------------------
+                
+                exp.setNroExpediente(nroExp);
                 exp.setIdCliente(cliente);
                 exp.setIdAbogado(abogado);
-                exp.setIdEstado(estadoMarca);
                 exp.setIdMarca(marca);
                 exp.setNroClase(clase);
                 exp.setTipoExpediente(tipoExpediente);
                 exp.setProducto(producto);
-                
-                exp.setFechaEstado(fechaEstado);
                 exp.setFechaSolicitud(fechaSolicitud);
                 if(observacion.length() > 0){
                    exp.setObservacion(observacion); 
@@ -207,10 +300,35 @@ public class ExpedienteServlet extends HttpServlet {
                 }else{
                     exp.setNroCertificado(null);
                 }
+
+                if(comentario != null){
+                    exp.setComentarioCierre(comentario);
+                }
                 
-                expControl.edit(exp);
+               //Si el estado es de Asuntos Litigiosos y pasa a otro estado, las oposiciones deben estar cerradas
+               //para modificar la fecha de estado y el estado del expediente
+               if(editarEstado){
+                    exp.setIdEstado(estadoMarca);
+                    exp.setFechaEstado(fechaEstado);
+               }else{
+                    request.getSession().setAttribute("mensajeErrorABM","No se puede editar el estado actual del expediente porque posee oposiciones sin cerrar");
+               }
+               
+               expControl.edit(exp);
+               
+               //Creamos HistorialEstadoMarca si así es requerida
+                if(registrarHistorial){
+                    HistorialEstadoMarca historial = new HistorialEstadoMarca();
+                    historial.setIdExpediente(exp);
+                    historial.setIdEstadoMarca(exp.getIdEstado());
+                    historial.setFecha(exp.getFechaEstado());
+                    historial.setFechaRegistro(new Date());
+                    historialEstadoMarca.create(historial); 
+                }
+                //---------------------------------------------------------------------------------------------------
+               
             }catch(Exception e){
-                
+                System.out.println(e);
                 request.getSession().setAttribute("mensajeErrorABM", "No se pudo editar el expediente");
             
             }finally{

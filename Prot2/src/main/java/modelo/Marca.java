@@ -56,6 +56,7 @@ public class Marca implements Serializable {
     @JoinColumn(name = "id_tipo_marca", referencedColumnName = "id_tipo_marca")
     @ManyToOne(optional = false)
     private TipoMarca idTipoMarca;
+  
 
     public Marca() {
     }
@@ -104,7 +105,8 @@ public class Marca implements Serializable {
     public void setIdTipoMarca(TipoMarca idTipoMarca) {
         this.idTipoMarca = idTipoMarca;
     }
-
+    
+   
     @Override
     public int hashCode() {
         int hash = 0;
@@ -129,5 +131,8 @@ public class Marca implements Serializable {
     public String toString() {
         return "modelo.Marca[ idMarca=" + idMarca + " ]";
     }
+
+
+   
 
 }

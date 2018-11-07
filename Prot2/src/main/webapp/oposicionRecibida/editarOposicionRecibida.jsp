@@ -36,6 +36,16 @@
             Date fechaMin = oposicion.getIdExpediente().getFechaSolicitud();
             Date fechaMax = new Date();
             
+            //Lista de estados finales
+            List<EstadoOposicion> listaEstadoOposicionFinales = estadoOposicionControl.getEstadoOposicionFinales();
+            
+            Boolean editable = true;
+            //Verificamos que la oposicion es editable
+            for(int i=0;i<listaEstadoOposicionFinales.size();i++){
+                if(oposicion.getIdEstado().getIdEstado() == listaEstadoOposicionFinales.get(i).getIdEstado()){
+                    editable = false;
+                } 
+            }
         %>
 
         <%@include file="//WEB-INF/menuCabecera.jsp" %>
@@ -46,7 +56,13 @@
         <div class="container form-control">
             <h2 class="text-justify">Editar Oposición</h2> 
             <br>
-            
+            <%if(!editable){%> 
+                <div class="alert alert-info alert-dismissible">
+                    <button type="button" class="close" data-dismiss="alert">&times;</button>
+                    <strong>¡Información! </strong>La oposición se ha cerrado
+                </div>
+            <%}%>
+            <br>
             <form id="editarOposicion" 
                   action="<%=request.getContextPath()%>/OposicionRecibidaServlet?editar=true"
                   method="post"
@@ -177,7 +193,8 @@
                     <select form="editarOposicion"
                             name="idEstado" 
                             class="form-control"
-                            id="idEstado">
+                            id="idEstado"
+                            onchange="mostrarComentarioCierre()">
                         <option selected value="<%=oposicion.getIdEstado().getIdEstado()%>"><%= oposicion.getIdEstado().getDescripcion() %></option>
                         <%for (int j = 0; j < listaEstadoOposicion.size(); j++) {%>
                             <% if(listaEstadoOposicion.get(j).getIdEstado() != oposicion.getIdEstado().getIdEstado()){ %> 
@@ -190,20 +207,60 @@
                     <div id="idEstado-retro"></div>
                 </div>
             </div>
+                    
+            <div class="row form-group">    
+                <div class="col-3">
+                    <label for="comentario">Comentario de cierre:</label></div>
+                <div class="col-6">
+                        <textarea form="editarOposicion"
+                               name="comentario"
+                               id="comentario"
+                               class="form-control"
+                               type="text"
+                               placeholder="Escriba el comentario de cierre de la oposición"
+                               rows="6"
+                               maxlength="250"
+                               disabled  
+                               required></textarea> 
+                    <div id="comentario-retro"></div>
+                </div>
+            </div>
 
+            
             <div class="row form-group">
                 <div class="col-5">
                 </div>
                 <div class="col-2">
-                    <input id="agregar"
+                    <input id="editar"
                            type="button"
                            value="Editar"
-                           onclick="validarFormulario()">
+                           <%if(editable){%>
+                                onclick="validarFormulario()"
+                           <%}%>
+                    >
                 </div>    
             </div>
+            
         </div>  
         <br>
         <script>
+            function mostrarComentarioCierre(){
+                var comentarioInput = document.getElementById("comentario");
+                var idEstadoInput = document.getElementById("idEstado");
+                
+                if(<%for(int i=0;i<listaEstadoOposicionFinales.size();i++){%>
+                        idEstadoInput.value == <%=listaEstadoOposicionFinales.get(i).getIdEstado()%>
+                        <%if(i+1<listaEstadoOposicionFinales.size()){%>
+                            ||
+                        <%}%>
+                    <%}%>)
+                {
+                    comentarioInput.disabled = false;
+                }else{
+                    comentarioInput.disabled = true;
+                    
+                }
+            }
             //Permite unicamente la insercion de numeros
             function isNumberKey(evt){
                 var charCode = (evt.which) ? evt.which : event.keyCode;
@@ -220,10 +277,41 @@
                 var claseValido = validarClase();
                 var titularValido = validarTitular();
                 var fechaValido = validarFecha();
+                
+                var comentarioValido = true;
+                
+                if(!document.getElementById("comentario").disabled){
+                    
+                    comentarioValido = validarComentario();
+                }
                
-                if(nroExpValido && agenteValido  && marcaValido && claseValido && titularValido && fechaValido){
+                if(nroExpValido && agenteValido  && marcaValido && claseValido && titularValido && fechaValido && comentarioValido){
                     document.getElementById("editarOposicion").submit();
                 }
+            }
+            
+            function validarComentario(){
+                
+                var comentarioInput = document.getElementById("comentario");
+                var retroComentario = document.getElementById("comentario-retro");
+                var strComentario= comentarioInput.value.trim();
+                comentarioInput.value = strComentario;
+                
+                if(strComentario.length == 0){
+
+                    comentarioInput.setAttribute("class","form-control is-invalid");
+                    retroComentario.setAttribute("class","invalid-feedback");
+                    retroComentario.textContent = 'Escriba el comentario de cierre';
+                    
+                    return false;
+                }
+                
+                comentarioInput.setAttribute("class","form-control is-valid");
+                retroComentario.setAttribute("class","valid-feedback");
+                retroComentario.textContent = '';
+                    
+                 
+                return true;
             }
             
             function validarFecha(){

@@ -96,6 +96,8 @@ public class Abogado implements Serializable {
     @JoinColumn(name = "id_usuario", referencedColumnName = "id_usuario")
     @ManyToOne(optional = false)
     private Usuario idUsuario;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idAbogadoOpositante")
+    private List<OposicionHecha> oposicionHechaList;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idAbogado")
     private List<Historial> historialList;
 
@@ -184,6 +186,15 @@ public class Abogado implements Serializable {
         this.idUsuario = idUsuario;
     }
 
+    @XmlTransient
+    public List<OposicionHecha> getOposicionHechaList() {
+        return oposicionHechaList;
+    }
+
+    public void setOposicionHechaList(List<OposicionHecha> oposicionHechaList) {
+        this.oposicionHechaList = oposicionHechaList;
+    }
+    
     @XmlTransient
     public List<Historial> getHistorialList() {
         return historialList;

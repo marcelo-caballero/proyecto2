@@ -26,15 +26,21 @@
         <%@include file="//WEB-INF/menuCabecera.jsp" %>
         <br>
          
+        <div class="container">
+           <%@include file="//WEB-INF/menuConfiguraciones.jsp" %>     
+        </div>
+        
         <div class ="container form-control">
+            
+            <h2 class="text-justify">Editar Rol</h2>
+            <br> 
             <%if(rol.getEstado().equals("ASIGNADO")){%>
                 <div class="alert alert-info alert-dismissible">
                     <button type="button" class="close" data-dismiss="alert">&times;</button>
                     <strong>¡Información! </strong> No se puede editar un rol ya asignado a una cuenta de usuario
                 </div>
             <%}%>
-            <h2 class="text-justify">Editar Rol</h2>
-            <br> 
+            <br>
         
             <form id="editarRol" 
                   action="<%=request.getContextPath()%>/RolServlet?editar=true" 
@@ -83,19 +89,21 @@
             </div>
             
   
-            <%if(rol.getEstado().equals("NO ASIGNADO")){%>
-                <div class="row form-group">
-                    <div class="col-5">
-                    </div>
-                    <div class="col-2">
-                        <input id="editar"
-                               type="button"
-                               value="Editar"
-                               onclick="validarFormulario()"
-                              >
-                    </div>    
+            
+            <div class="row form-group">
+                <div class="col-5">
                 </div>
-            <%}%>
+                <div class="col-2">
+                    <input id="editar"
+                           type="button"
+                           value="Editar"
+                           <%if(rol.getEstado().equals("NO ASIGNADO")){%>
+                                onclick="validarFormulario()"
+                           <%}%>
+                    >
+                </div>    
+            </div>
+           
         </div>
         <br>
         <script>

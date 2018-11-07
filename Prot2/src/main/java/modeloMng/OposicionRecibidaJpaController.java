@@ -201,4 +201,28 @@ public class OposicionRecibidaJpaController implements Serializable {
         }
     }
     
+    
+            
+    /**
+     * Retorna la lista de oposiciones registradas por expedientes
+     * @param idExp
+     * @return List<OposicionRecibida>
+     */
+    public List<OposicionRecibida> getListaOposicionPorIdExpediente(Integer idExp) {
+        EntityManager em = getEntityManager();
+        
+        try {
+           
+            String consulta = "select o from OposicionRecibida o where o.idExpediente.idExpediente = :idExp";
+            
+            Query q = em.createQuery(consulta); 
+            
+            q.setParameter("idExp", idExp);
+            
+            return q.getResultList();
+            
+        }finally {
+            em.close();
+        }
+    }
 }

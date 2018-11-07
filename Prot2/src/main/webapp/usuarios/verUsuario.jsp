@@ -27,6 +27,10 @@
         <%@include file="//WEB-INF/menuCabecera.jsp" %>
         <br>
         
+        <div class="container">
+           <%@include file="//WEB-INF/menuConfiguraciones.jsp" %>     
+        </div>
+        
         <div class ="container form-control">
             
             <h2 class="text-justify">Usuario</h2>

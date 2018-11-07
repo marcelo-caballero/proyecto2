@@ -23,6 +23,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
@@ -44,6 +46,18 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "OposicionRecibida.findByTitular", query = "SELECT o FROM OposicionRecibida o WHERE o.titular = :titular")})
 public class OposicionRecibida implements Serializable {
 
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "clase")
+    private Integer clase;
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "nro_expediente")
+    private Integer nroExpediente;
+    @Size(max = 2147483647)
+    @Column(name = "comentario_cierre")
+    private String comentarioCierre;
+
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -52,15 +66,11 @@ public class OposicionRecibida implements Serializable {
     private Integer idOposicion;
     @Column(name = "agente")
     private String agente;
-    @Column(name = "clase")
-    private Integer clase;
     @Column(name = "fecha_estado")
     @Temporal(TemporalType.TIMESTAMP)
     private Date fechaEstado;
     @Column(name = "marca")
     private String marca;
-    @Column(name = "nro_expediente")
-    private Integer nroExpediente;
     @Column(name = "titular")
     private String titular;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idOposicionRecibida")
@@ -95,13 +105,6 @@ public class OposicionRecibida implements Serializable {
         this.agente = agente;
     }
 
-    public Integer getClase() {
-        return clase;
-    }
-
-    public void setClase(Integer clase) {
-        this.clase = clase;
-    }
 
     public Date getFechaEstado() {
         return fechaEstado;
@@ -183,6 +186,30 @@ public class OposicionRecibida implements Serializable {
     @Override
     public String toString() {
         return "modelo.OposicionRecibida[ idOposicion=" + idOposicion + " ]";
+    }
+
+    public Integer getClase() {
+        return clase;
+    }
+
+    public void setClase(Integer clase) {
+        this.clase = clase;
+    }
+
+    /*public int getNroExpediente() {
+        return nroExpediente;
+    }
+
+    public void setNroExpediente(int nroExpediente) {
+        this.nroExpediente = nroExpediente;
+    }*/
+
+    public String getComentarioCierre() {
+        return comentarioCierre;
+    }
+
+    public void setComentarioCierre(String comentarioCierre) {
+        this.comentarioCierre = comentarioCierre;
     }
     
 }

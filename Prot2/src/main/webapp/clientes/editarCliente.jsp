@@ -38,14 +38,16 @@
         <br>
          
         <div class ="container form-control">
+            
+            <h2 class="text-justify"> Editar Titular</h2>
+            <br> 
             <%if(cliente.getEstado().equals("INACTIVO")){%> 
                 <div class="alert alert-info alert-dismissible">
                     <button type="button" class="close" data-dismiss="alert">&times;</button>
                     <strong>¡Información! </strong> No se puede editar un titular con estado inactivo
                 </div>
             <%}%>
-            <h2 class="text-justify"> Editar Titular</h2>
-            <br> 
+            <br>
         
             <form id="editarCliente" 
                   action="<%=request.getContextPath()%>/ClienteServlet?editar=true" 
@@ -288,18 +290,21 @@
                 </div>
             </div>
               
-            <%if(cliente.getEstado().equals("ACTIVO")){%>
-                <div class="row form-group">
-                    <div class="col-5">
-                    </div>
-                    <div class="col-2">
-                        <input id="editar"
-                               type="button"
-                               value="Editar"
-                               onclick="validarFormulario()">
-                    </div>    
+            
+            <div class="row form-group">
+                <div class="col-5">
                 </div>
-            <%}%>
+                <div class="col-2">
+                    <input id="editar"
+                           type="button"
+                           value="Editar"
+                           <%if(cliente.getEstado().equals("ACTIVO")){%>
+                                onclick="validarFormulario()"
+                           <%}%>
+                    >
+                </div>    
+            </div>
+
        
         </div>
         <br>

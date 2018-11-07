@@ -68,15 +68,15 @@
         </div>
         
         <div class="container form-control">
+            <h2 class="text-justify">Editar Documento</h2> 
+            <br>
             <%if(documento.getIdDocumento() != ultimoDocumento.getIdDocumento()){%> 
                 <div class="alert alert-info alert-dismissible">
                     <button type="button" class="close" data-dismiss="alert">&times;</button>
                     <strong>¡Información! </strong>Solamente se permite editar el último documento del expediente
                 </div>
             <%}%>
-            <h2 class="text-justify">Editar Documento</h2> 
             <br>
-            
             <form id="editarDocumento" 
                   action="<%=request.getContextPath()%>/DocumentoServlet?editar=true"
                   method="post"
@@ -110,6 +110,7 @@
                            class="form-control"
                            type="date"
                            min="<%=new SimpleDateFormat("yyyy-MM-dd").format(fechaLimiteInferior)%>"
+                           max="<%=new SimpleDateFormat("yyyy-MM-dd").format(new Date())%>"
                            value="<%=new SimpleDateFormat("yyyy-MM-dd").format(documento.getFecha())%>"
                            required>
                      <div id="fecha-retro"></div>
@@ -149,21 +150,18 @@
                                     class="form-control"
                                     id="idTipoDoc"
                                     onchange="cambiarIdTipo()">
-
-                                <%for (int j = 0; j < listaTipoDoc.size(); j++) {
-                                    if(documento.getIdTipoDocumento().getIdTipoDocumento() 
-                                            == listaTipoDoc.get(j).getIdTipoDocumento()){
-                                    %>    
-                                        <option selected value="<%=listaTipoDoc.get(j).getIdTipoDocumento()%>" >
-                                            <%=listaTipoDoc.get(j).getDescripcion()%>
-                                        </option>
-                                    <%
-                                    }else{%>
-                                        <option value="<%=listaTipoDoc.get(j).getIdTipoDocumento()%>" >
-                                            <%=listaTipoDoc.get(j).getDescripcion()%>
-                                        </option>
+                                    <option selected value="<%=documento.getIdTipoDocumento().getIdTipoDocumento() %>" >
+                                            <%=documento.getIdTipoDocumento().getDescripcion()%>
+                                    </option>
+                                    <%for (int j = 0; j < listaTipoDoc.size(); j++) {
+                                        if(documento.getIdTipoDocumento().getIdTipoDocumento() 
+                                                != listaTipoDoc.get(j).getIdTipoDocumento()){
+                                        %>  
+                                            <option value="<%=listaTipoDoc.get(j).getIdTipoDocumento()%>" >
+                                                <%=listaTipoDoc.get(j).getDescripcion()%>
+                                            </option>
+                                        <%}%>
                                     <%}%>
-                                <%}%>
                             </select>
                         </div>
                     </div>
@@ -244,18 +242,22 @@
                 </div>
             </div>
 
-            <%if(documento.getIdDocumento() == ultimoDocumento.getIdDocumento()){%> 
-                <div class="row form-group">
-                    <div class="col-5">
-                    </div>
-                    <div class="col-2"><input form="editarDocumento"
-                               id="editar"
-                               type="button"
-                               value="Editar"
-                               onclick="validarFormulario()">
-                    </div>
+             
+            <div class="row form-group">
+                <div class="col-5">
                 </div>
-            <%}%>
+                <div class="col-2">
+                    <input form="editarDocumento"
+                       id="editar"
+                       type="button"
+                       value="Editar"
+                       <%if(documento.getIdDocumento() == ultimoDocumento.getIdDocumento()){%>
+                            onclick="validarFormulario()"
+                       <%}%>
+                    >
+                </div>
+            </div>
+            
 
         </div>
         <br>
@@ -410,7 +412,7 @@
                 if(!fechaInput.validity.valid){ 
                     fechaInput.setAttribute("class","form-control is-invalid");
                     retroFecha.setAttribute("class","invalid-feedback");
-                    retroFecha.textContent = 'La fecha no debe ser anterior a <%=new SimpleDateFormat("dd/MM/yyyy").format(fechaLimiteInferior)%>';
+                    retroFecha.textContent = 'La fecha no debe ser entre <%=new SimpleDateFormat("dd/MM/yyyy").format(fechaLimiteInferior)%> a <%=new SimpleDateFormat("dd/MM/yyyy").format(new Date())%>'; 
                     
                     return false;
                 } 

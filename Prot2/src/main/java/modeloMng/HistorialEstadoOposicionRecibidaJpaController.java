@@ -177,7 +177,7 @@ public class HistorialEstadoOposicionRecibidaJpaController implements Serializab
         
         try {
            
-            String consulta = "select h from HistorialEstadoOposicionRecibida h where h.idOposicionRecibida.idOposicion = :idOposicion";
+            String consulta = "select h from HistorialEstadoOposicionRecibida h where h.idOposicionRecibida.idOposicion = :idOposicion order by h.fechaRegistro";
             
             Query q = em.createQuery(consulta); 
             

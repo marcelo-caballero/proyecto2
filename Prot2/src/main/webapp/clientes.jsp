@@ -40,8 +40,8 @@
                     <tr>
                         <th>C.I.Nº/R.U.C.</th>
                         <th>Titular</th>
-                        <th>Dirección</th>
                         <th>Teléfono</th>
+                        <th>Estado</th>
                         <th>
                             <%if(permisoControlAcceso.permisoRolVentana(rolUsuarioConectado,"agregarCliente.jsp" )){%>
                                 <i class="fa fa-plus-circle" 
@@ -61,8 +61,8 @@
                         <input id="idCliente-<%=i%>" type="hidden"  value="<%=lista.get(i).getIdCliente()%>"/>   
                         <td><%=lista.get(i).getCiRUC()%></td>
                         <td id="cliente-<%=i%>"><%=lista.get(i).getNombreCliente()%></td> 
-                        <td><%=lista.get(i).getDireccion()%></td>  
                         <td><%=lista.get(i).getTelefono()%></td>
+                        <td><%=lista.get(i).getEstado()%></td>
                         <td>
                             <%if(permisoControlAcceso.permisoRolVentana(rolUsuarioConectado,"verCliente.jsp")){%> 
                                 <i class="fa fa-search" 

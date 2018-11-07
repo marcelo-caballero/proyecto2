@@ -31,7 +31,7 @@
     <%if (permisoControlAccesoExp.permisoRolVentana(rolUsuarioConectadoExp,"oposicionesRecibidas.jsp")){%>
     <li class="nav-item">
         <a class="nav-link" href="<%=request.getContextPath()%>/oposicionesRecibidas.jsp">
-            Oposición</a>
+            Oposiciones</a>
     </li>
     <%}%>
 </ul> 

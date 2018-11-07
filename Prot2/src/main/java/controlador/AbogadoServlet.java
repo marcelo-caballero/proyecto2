@@ -161,7 +161,7 @@ public class AbogadoServlet extends HttpServlet {
                  
             }catch(IllegalOrphanException ex){    
                 
-                
+                request.getSession().setAttribute("mensajeErrorABM", "No se pudo eliminar el agente, se cambió su estado a Inactivo"); 
             } catch (Exception e) {
             
                  request.getSession().setAttribute("mensajeErrorABM", "No se pudo eliminar el agente");

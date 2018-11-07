@@ -19,6 +19,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import modelo.Abogado;
 import modelo.Historial;
+import modelo.OposicionHecha;
 import modeloMng.exceptions.IllegalOrphanException;
 import modeloMng.exceptions.NonexistentEntityException;
 
@@ -41,6 +42,9 @@ public class AbogadoJpaController implements Serializable {
         if (abogado.getExpedienteList() == null) {
             abogado.setExpedienteList(new ArrayList<Expediente>());
         }
+        if (abogado.getOposicionHechaList() == null) {
+            abogado.setOposicionHechaList(new ArrayList<OposicionHecha>());
+        }
         if (abogado.getHistorialList() == null) {
             abogado.setHistorialList(new ArrayList<Historial>());
         }
@@ -59,6 +63,12 @@ public class AbogadoJpaController implements Serializable {
                 attachedExpedienteList.add(expedienteListExpedienteToAttach);
             }
             abogado.setExpedienteList(attachedExpedienteList);
+            List<OposicionHecha> attachedOposicionHechaList = new ArrayList<OposicionHecha>();
+            for (OposicionHecha oposicionHechaListOposicionHechaToAttach : abogado.getOposicionHechaList()) {
+                oposicionHechaListOposicionHechaToAttach = em.getReference(oposicionHechaListOposicionHechaToAttach.getClass(), oposicionHechaListOposicionHechaToAttach.getIdOposicion());
+                attachedOposicionHechaList.add(oposicionHechaListOposicionHechaToAttach);
+            }
+            abogado.setOposicionHechaList(attachedOposicionHechaList);
             List<Historial> attachedHistorialList = new ArrayList<Historial>();
             for (Historial historialListHistorialToAttach : abogado.getHistorialList()) {
                 historialListHistorialToAttach = em.getReference(historialListHistorialToAttach.getClass(), historialListHistorialToAttach.getIdHistorial());
@@ -77,6 +87,15 @@ public class AbogadoJpaController implements Serializable {
                 if (oldIdAbogadoOfExpedienteListExpediente != null) {
                     oldIdAbogadoOfExpedienteListExpediente.getExpedienteList().remove(expedienteListExpediente);
                     oldIdAbogadoOfExpedienteListExpediente = em.merge(oldIdAbogadoOfExpedienteListExpediente);
+                }
+            }
+            for (OposicionHecha oposicionHechaListOposicionHecha : abogado.getOposicionHechaList()) {
+                Abogado oldIdAbogadoOpositanteOfOposicionHechaListOposicionHecha = oposicionHechaListOposicionHecha.getIdAbogadoOpositante();
+                oposicionHechaListOposicionHecha.setIdAbogadoOpositante(abogado);
+                oposicionHechaListOposicionHecha = em.merge(oposicionHechaListOposicionHecha);
+                if (oldIdAbogadoOpositanteOfOposicionHechaListOposicionHecha != null) {
+                    oldIdAbogadoOpositanteOfOposicionHechaListOposicionHecha.getOposicionHechaList().remove(oposicionHechaListOposicionHecha);
+                    oldIdAbogadoOpositanteOfOposicionHechaListOposicionHecha = em.merge(oldIdAbogadoOpositanteOfOposicionHechaListOposicionHecha);
                 }
             }
             for (Historial historialListHistorial : abogado.getHistorialList()) {
@@ -106,6 +125,8 @@ public class AbogadoJpaController implements Serializable {
             Usuario idUsuarioNew = abogado.getIdUsuario();
             List<Expediente> expedienteListOld = persistentAbogado.getExpedienteList();
             List<Expediente> expedienteListNew = abogado.getExpedienteList();
+            List<OposicionHecha> oposicionHechaListOld = persistentAbogado.getOposicionHechaList();
+            List<OposicionHecha> oposicionHechaListNew = abogado.getOposicionHechaList();
             List<Historial> historialListOld = persistentAbogado.getHistorialList();
             List<Historial> historialListNew = abogado.getHistorialList();
             List<String> illegalOrphanMessages = null;
@@ -115,6 +136,14 @@ public class AbogadoJpaController implements Serializable {
                         illegalOrphanMessages = new ArrayList<String>();
                     }
                     illegalOrphanMessages.add("You must retain Expediente " + expedienteListOldExpediente + " since its idAbogado field is not nullable.");
+                }
+            }
+            for (OposicionHecha oposicionHechaListOldOposicionHecha : oposicionHechaListOld) {
+                if (!oposicionHechaListNew.contains(oposicionHechaListOldOposicionHecha)) {
+                    if (illegalOrphanMessages == null) {
+                        illegalOrphanMessages = new ArrayList<String>();
+                    }
+                    illegalOrphanMessages.add("You must retain OposicionHecha " + oposicionHechaListOldOposicionHecha + " since its idAbogadoOpositante field is not nullable.");
                 }
             }
             for (Historial historialListOldHistorial : historialListOld) {
@@ -139,6 +168,13 @@ public class AbogadoJpaController implements Serializable {
             }
             expedienteListNew = attachedExpedienteListNew;
             abogado.setExpedienteList(expedienteListNew);
+            List<OposicionHecha> attachedOposicionHechaListNew = new ArrayList<OposicionHecha>();
+            for (OposicionHecha oposicionHechaListNewOposicionHechaToAttach : oposicionHechaListNew) {
+                oposicionHechaListNewOposicionHechaToAttach = em.getReference(oposicionHechaListNewOposicionHechaToAttach.getClass(), oposicionHechaListNewOposicionHechaToAttach.getIdOposicion());
+                attachedOposicionHechaListNew.add(oposicionHechaListNewOposicionHechaToAttach);
+            }
+            oposicionHechaListNew = attachedOposicionHechaListNew;
+            abogado.setOposicionHechaList(oposicionHechaListNew);
             List<Historial> attachedHistorialListNew = new ArrayList<Historial>();
             for (Historial historialListNewHistorialToAttach : historialListNew) {
                 historialListNewHistorialToAttach = em.getReference(historialListNewHistorialToAttach.getClass(), historialListNewHistorialToAttach.getIdHistorial());
@@ -163,6 +199,17 @@ public class AbogadoJpaController implements Serializable {
                     if (oldIdAbogadoOfExpedienteListNewExpediente != null && !oldIdAbogadoOfExpedienteListNewExpediente.equals(abogado)) {
                         oldIdAbogadoOfExpedienteListNewExpediente.getExpedienteList().remove(expedienteListNewExpediente);
                         oldIdAbogadoOfExpedienteListNewExpediente = em.merge(oldIdAbogadoOfExpedienteListNewExpediente);
+                    }
+                }
+            }
+            for (OposicionHecha oposicionHechaListNewOposicionHecha : oposicionHechaListNew) {
+                if (!oposicionHechaListOld.contains(oposicionHechaListNewOposicionHecha)) {
+                    Abogado oldIdAbogadoOpositanteOfOposicionHechaListNewOposicionHecha = oposicionHechaListNewOposicionHecha.getIdAbogadoOpositante();
+                    oposicionHechaListNewOposicionHecha.setIdAbogadoOpositante(abogado);
+                    oposicionHechaListNewOposicionHecha = em.merge(oposicionHechaListNewOposicionHecha);
+                    if (oldIdAbogadoOpositanteOfOposicionHechaListNewOposicionHecha != null && !oldIdAbogadoOpositanteOfOposicionHechaListNewOposicionHecha.equals(abogado)) {
+                        oldIdAbogadoOpositanteOfOposicionHechaListNewOposicionHecha.getOposicionHechaList().remove(oposicionHechaListNewOposicionHecha);
+                        oldIdAbogadoOpositanteOfOposicionHechaListNewOposicionHecha = em.merge(oldIdAbogadoOpositanteOfOposicionHechaListNewOposicionHecha);
                     }
                 }
             }
@@ -213,6 +260,13 @@ public class AbogadoJpaController implements Serializable {
                     illegalOrphanMessages = new ArrayList<String>();
                 }
                 illegalOrphanMessages.add("This Abogado (" + abogado + ") cannot be destroyed since the Expediente " + expedienteListOrphanCheckExpediente + " in its expedienteList field has a non-nullable idAbogado field.");
+            }
+            List<OposicionHecha> oposicionHechaListOrphanCheck = abogado.getOposicionHechaList();
+            for (OposicionHecha oposicionHechaListOrphanCheckOposicionHecha : oposicionHechaListOrphanCheck) {
+                if (illegalOrphanMessages == null) {
+                    illegalOrphanMessages = new ArrayList<String>();
+                }
+                illegalOrphanMessages.add("This Abogado (" + abogado + ") cannot be destroyed since the OposicionHecha " + oposicionHechaListOrphanCheckOposicionHecha + " in its oposicionHechaList field has a non-nullable idAbogadoOpositante field.");
             }
             List<Historial> historialListOrphanCheck = abogado.getHistorialList();
             for (Historial historialListOrphanCheckHistorial : historialListOrphanCheck) {

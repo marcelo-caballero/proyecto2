@@ -87,6 +87,17 @@ public class OposicionRecibidaServlet extends HttpServlet {
                 
                 oposicionRecibidaControl.create(oposicion);
                 
+               
+                //Procedimiento para guardar el historial de oposicion
+                HistorialEstadoOposicionRecibida historialOposicion = new HistorialEstadoOposicionRecibida();
+                historialOposicion.setFecha(oposicion.getFechaEstado());
+                historialOposicion.setIdOposicionRecibida(oposicion);
+                historialOposicion.setIdEstadoOposicion(oposicion.getIdEstado());
+                historialOposicion.setFechaRegistro(new Date());
+                
+                historialOposicionControl.create(historialOposicion);
+                //-----------------------------------------------------------------------------------------------
+                
             }catch(Exception e){
                 System.out.println(e);
                 request.getSession().setAttribute("mensajeErrorABM", "No se pudo agregar la oposición");
@@ -106,7 +117,8 @@ public class OposicionRecibidaServlet extends HttpServlet {
                 for(int i=0;i<listaHistorial.size();i++){ 
                     historialOposicionControl.destroy(listaHistorial.get(i).getIdHistorial());
                 }
-            //
+                
+            //-------------------------------------------------------------------------------------------------------
 
                 oposicionRecibidaControl.destroy(idOposicion);
             } catch (Exception e) {
@@ -131,12 +143,22 @@ public class OposicionRecibidaServlet extends HttpServlet {
                 String titular = request.getParameter("titular");
                 Date fecha = formatoFecha.parse(request.getParameter("fecha"));
                 Integer idEstado = Integer.parseInt(request.getParameter("idEstado"));
-
+                String comentario = request.getParameter("comentario");
+                
+                boolean registrarHistorial = false;
+                
                 EstadoOposicion estado = estadoOposicionControl.findEstadoOposicion(idEstado);
 
                 OposicionRecibida oposicion = oposicionRecibidaControl.findOposicionRecibida(idOposicion);
+                
+                //Verificamos si hay cambios en la fecha y estado de oposicion
+                if(!oposicion.getFechaEstado().equals(fecha)){
+                    registrarHistorial = true;
+                }
+                if(!oposicion.getIdEstado().equals(estado)){
+                    registrarHistorial = true;
+                }
 
-               
                 oposicion.setMarca(marca);
                 oposicion.setClase(clase);
                 oposicion.setNroExpediente(nroExp);
@@ -144,8 +166,22 @@ public class OposicionRecibidaServlet extends HttpServlet {
                 oposicion.setAgente(agente);
                 oposicion.setFechaEstado(fecha);
                 oposicion.setTitular(titular);
-                
+                if(comentario != null){
+                    oposicion.setComentarioCierre(comentario);
+                }
                 oposicionRecibidaControl.edit(oposicion);
+                
+                //Creamos HistorialEstadoOposicionRecibida si así es requerida
+                if(registrarHistorial){
+                    HistorialEstadoOposicionRecibida historialOposicion = new HistorialEstadoOposicionRecibida();
+                    historialOposicion.setFecha(oposicion.getFechaEstado());
+                    historialOposicion.setIdOposicionRecibida(oposicion);
+                    historialOposicion.setIdEstadoOposicion(oposicion.getIdEstado());
+                    historialOposicion.setFechaRegistro(new Date());
+                    
+                    historialOposicionControl.create(historialOposicion);
+                }
+                //---------------------------------------------------------------------------------------------------
                 
             }catch(Exception e){
                 System.out.println(e);

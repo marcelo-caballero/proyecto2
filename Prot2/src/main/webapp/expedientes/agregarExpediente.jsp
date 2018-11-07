@@ -45,7 +45,7 @@
 
             List<EstadoMarca> listaEstadoMarca;
             EstadoMarcaJpaController estadoMarcaControl = new EstadoMarcaJpaController();
-            listaEstadoMarca = estadoMarcaControl.findEstadoMarcaPrimarias(false,3,16);   
+            listaEstadoMarca = estadoMarcaControl.getListaEstadoMarcaIniciales();   
 
             List<Marca> listaMarca;
             MarcaJpaController marcaControl = new MarcaJpaController();
@@ -318,7 +318,7 @@
                                 id="obs"
                                 class="form-control"
                                 rows="6"
-                                maxlength="250"
+                                maxlength=""
                                 placeholder="Escriba una breve observación"
                                 ></textarea>
                     <div id="obs-retro"></div>

@@ -42,7 +42,7 @@
                         <th>Agente</th>
                         <th>Dirección</th>
                         <th>Teléfono</th>
-                        <th>Registro Profesional</th>
+                        <th>Estado</th>
                         <th>
                             <%if(permisoControlAcceso.permisoRolVentana(rolUsuarioConectado,"agregarAbogado.jsp")){%> 
                                 <i class="fa fa-plus-circle" 
@@ -64,7 +64,7 @@
                         <td id="abogado-<%=i%>"><%=lista.get(i).getNombreApellido()%></td> 
                         <td><%=lista.get(i).getDireccion()%></td>  
                         <td><%=lista.get(i).getTelefono()%></td> 
-                        <td><%=lista.get(i).getRegistroProfesional()%></td> 
+                        <td><%=lista.get(i).getEstado()%></td> 
                         <td>
                             <%if(permisoControlAcceso.permisoRolVentana(rolUsuarioConectado,"verAbogado.jsp" )){%>
                                 <i class="fa fa-search" 

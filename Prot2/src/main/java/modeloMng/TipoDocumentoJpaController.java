@@ -16,7 +16,9 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import javax.persistence.criteria.CriteriaBuilder;
 import modelo.TipoDocumento;
+import modelo.TipoDocumento_;
 import modeloMng.exceptions.IllegalOrphanException;
 import modeloMng.exceptions.NonexistentEntityException;
 
@@ -166,8 +168,10 @@ public class TipoDocumentoJpaController implements Serializable {
     private List<TipoDocumento> findTipoDocumentoEntities(boolean all, int maxResults, int firstResult) {
         EntityManager em = getEntityManager();
         try {
-            CriteriaQuery cq = em.getCriteriaBuilder().createQuery();
+            CriteriaBuilder cb = em.getCriteriaBuilder();
+            CriteriaQuery cq = cb.createQuery();
             cq.select(cq.from(TipoDocumento.class));
+            cq.orderBy(cb.asc(cq.from(TipoDocumento.class).get(TipoDocumento_.descripcion)));
             Query q = em.createQuery(cq);
             if (!all) {
                 q.setMaxResults(maxResults);

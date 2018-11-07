@@ -18,6 +18,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import modelo.Cliente;
+import modelo.Pais;
 import modeloMng.exceptions.IllegalOrphanException;
 import modeloMng.exceptions.NonexistentEntityException;
 
@@ -36,7 +37,7 @@ public class ClienteJpaController implements Serializable {
         return emf.createEntityManager();
     }
 
-    public void create(Cliente cliente) {
+   public void create(Cliente cliente) {
         if (cliente.getExpedienteList() == null) {
             cliente.setExpedienteList(new ArrayList<Expediente>());
         }
@@ -44,6 +45,11 @@ public class ClienteJpaController implements Serializable {
         try {
             em = getEntityManager();
             em.getTransaction().begin();
+            Pais idPais = cliente.getIdPais();
+            if (idPais != null) {
+                idPais = em.getReference(idPais.getClass(), idPais.getIdPais());
+                cliente.setIdPais(idPais);
+            }
             Usuario idUsuario = cliente.getIdUsuario();
             if (idUsuario != null) {
                 idUsuario = em.getReference(idUsuario.getClass(), idUsuario.getIdUsuario());
@@ -56,6 +62,10 @@ public class ClienteJpaController implements Serializable {
             }
             cliente.setExpedienteList(attachedExpedienteList);
             em.persist(cliente);
+            if (idPais != null) {
+                idPais.getClienteList().add(cliente);
+                idPais = em.merge(idPais);
+            }
             if (idUsuario != null) {
                 idUsuario.getClienteList().add(cliente);
                 idUsuario = em.merge(idUsuario);
@@ -83,6 +93,8 @@ public class ClienteJpaController implements Serializable {
             em = getEntityManager();
             em.getTransaction().begin();
             Cliente persistentCliente = em.find(Cliente.class, cliente.getIdCliente());
+            Pais idPaisOld = persistentCliente.getIdPais();
+            Pais idPaisNew = cliente.getIdPais();
             Usuario idUsuarioOld = persistentCliente.getIdUsuario();
             Usuario idUsuarioNew = cliente.getIdUsuario();
             List<Expediente> expedienteListOld = persistentCliente.getExpedienteList();
@@ -99,6 +111,10 @@ public class ClienteJpaController implements Serializable {
             if (illegalOrphanMessages != null) {
                 throw new IllegalOrphanException(illegalOrphanMessages);
             }
+            if (idPaisNew != null) {
+                idPaisNew = em.getReference(idPaisNew.getClass(), idPaisNew.getIdPais());
+                cliente.setIdPais(idPaisNew);
+            }
             if (idUsuarioNew != null) {
                 idUsuarioNew = em.getReference(idUsuarioNew.getClass(), idUsuarioNew.getIdUsuario());
                 cliente.setIdUsuario(idUsuarioNew);
@@ -111,6 +127,14 @@ public class ClienteJpaController implements Serializable {
             expedienteListNew = attachedExpedienteListNew;
             cliente.setExpedienteList(expedienteListNew);
             cliente = em.merge(cliente);
+            if (idPaisOld != null && !idPaisOld.equals(idPaisNew)) {
+                idPaisOld.getClienteList().remove(cliente);
+                idPaisOld = em.merge(idPaisOld);
+            }
+            if (idPaisNew != null && !idPaisNew.equals(idPaisOld)) {
+                idPaisNew.getClienteList().add(cliente);
+                idPaisNew = em.merge(idPaisNew);
+            }
             if (idUsuarioOld != null && !idUsuarioOld.equals(idUsuarioNew)) {
                 idUsuarioOld.getClienteList().remove(cliente);
                 idUsuarioOld = em.merge(idUsuarioOld);
@@ -169,6 +193,11 @@ public class ClienteJpaController implements Serializable {
             }
             if (illegalOrphanMessages != null) {
                 throw new IllegalOrphanException(illegalOrphanMessages);
+            }
+            Pais idPais = cliente.getIdPais();
+            if (idPais != null) {
+                idPais.getClienteList().remove(cliente);
+                idPais = em.merge(idPais);
             }
             Usuario idUsuario = cliente.getIdUsuario();
             if (idUsuario != null) {

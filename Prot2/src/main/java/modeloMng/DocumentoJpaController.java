@@ -210,7 +210,7 @@ public class DocumentoJpaController implements Serializable {
         try {
             String consulta = "select d from Documento d "+ 
                               " where d.idExpediente.idExpediente= :idExp "+
-                              "and d.idDocumento = (select max(d.idDocumento) from Documento d)";
+                              "and d.folioHasta = (select max(d.folioHasta) from Documento d where d.idExpediente.idExpediente= :idExp)";
         
             Query q = em.createQuery(consulta);
             

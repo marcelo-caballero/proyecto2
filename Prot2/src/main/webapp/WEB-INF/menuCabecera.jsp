@@ -1,8 +1,3 @@
-<%-- 
-    Document   : menuCabecera
-    Created on : 12-ago-2018, 16:02:30
-    Author     : Acer
---%>
 
 <%@page import="modeloMng.PermisoJpaController"%>
 <%@page import="modelo.Rol"%>
@@ -32,13 +27,13 @@
         </div>
     </div>
 
-    <div class="row">
+    <div class="row ">
         <div class="col" id="linea1" ></div>
         <div class="col-9" id="linea2">
             <ul class="nav nav-tabs" >
-                    <li class="nav-item" >
-                        <a class="nav-link" href="<%=request.getContextPath()%>/menu.jsp"><i class="fa fa-home"></i></a>
-                    </li>
+                <li class="nav-item" >
+                    <a class="nav-link" href="<%=request.getContextPath()%>/menu.jsp"><i class="fa fa-home"></i></a>
+                </li>
                 <%if(permisoControlAcceso.permisoRolVentana(rolUsuarioConectado,"marcas.jsp")){%> 
                     <li class="nav-item" >
                         <a class="nav-link" href="<%=request.getContextPath()%>/marcas.jsp">Marcas</a>
@@ -63,28 +58,17 @@
                     </li>
                 <%}%>    
                     
-                <%if(permisoControlAcceso.permisoRolVentana(rolUsuarioConectado,"usuarios.jsp")){%> 
+                <%if(permisoControlAcceso.permisoRolVentana(rolUsuarioConectado,"configuraciones.jsp")){%> 
                     <li class="nav-item">
-                        <a class="nav-link" href="<%=request.getContextPath()%>/usuarios.jsp">Usuarios</a>
+                        <a class="nav-link" href="<%=request.getContextPath()%>/configuraciones.jsp">Configuraciones</a>
                     </li>
                 <%}%>
                 
-                <%if(permisoControlAcceso.permisoRolVentana(rolUsuarioConectado,"roles.jsp")){%> 
+                <%if(permisoControlAcceso.permisoRolVentana(rolUsuarioConectado,"oposicionesHechas.jsp")){%>
                     <li class="nav-item">
-                        <a class="nav-link" href="<%=request.getContextPath()%>/roles.jsp">Roles</a>
+                        <a class="nav-link" href="<%=request.getContextPath()%>/oposicionesHechas.jsp">Oposiciones</a>
                     </li>
                 <%}%>
-                
-                <%if(permisoControlAcceso.permisoRolVentana(rolUsuarioConectado,"permisos.jsp")){%>
-                    <li class="nav-item">
-                        <a class="nav-link" href="<%=request.getContextPath()%>/permisos.jsp">Permisos</a>
-                    </li>
-                <%}%>
-                
-                <li class="nav-item">
-                        <a class="nav-link" href="<%=request.getContextPath()%>/prefijo.jsp">Prefijo</a>
-                </li>
-                
             </ul>
         </div>
     </div>

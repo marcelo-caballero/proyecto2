@@ -43,7 +43,8 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Expediente.findByFechaEstado", query = "SELECT e FROM Expediente e WHERE e.fechaEstado = :fechaEstado"),
     @NamedQuery(name = "Expediente.findByProducto", query = "SELECT e FROM Expediente e WHERE e.producto = :producto"),
     @NamedQuery(name = "Expediente.findByObservacion", query = "SELECT e FROM Expediente e WHERE e.observacion = :observacion"),
-    @NamedQuery(name = "Expediente.findByNroCertificado", query = "SELECT e FROM Expediente e WHERE e.nroCertificado = :nroCertificado")})
+    @NamedQuery(name = "Expediente.findByNroCertificado", query = "SELECT e FROM Expediente e WHERE e.nroCertificado = :nroCertificado"),
+    @NamedQuery(name = "Expediente.findByComentarioCierre", query = "SELECT e FROM Expediente e WHERE e.comentarioCierre = :comentarioCierre")})
 public class Expediente implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -69,6 +70,8 @@ public class Expediente implements Serializable {
     private String observacion;
     @Column(name = "nro_certificado")
     private Integer nroCertificado;
+    @Column(name = "comentario_cierre")
+    private String comentarioCierre;
     @JoinColumn(name = "id_abogado", referencedColumnName = "id_abogado")
     @ManyToOne(optional = false)
     private Abogado idAbogado;
@@ -91,6 +94,12 @@ public class Expediente implements Serializable {
     private List<Documento> documentoList;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idExpediente")
     private List<Evento> eventoList;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idExpediente")
+    private List<HistorialEstadoMarca> historialEstadoMarcaList;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idExpediente")
+    private List<OposicionRecibida> oposicionRecibidaList;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idExpedienteOpositante")
+    private List<OposicionHecha> oposicionHechaList;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idExpediente")
     private List<Historial> historialList;
 
@@ -164,6 +173,14 @@ public class Expediente implements Serializable {
         this.nroCertificado = nroCertificado;
     }
 
+    public String getComentarioCierre() {
+        return comentarioCierre;
+    }
+
+    public void setComentarioCierre(String comentarioCierre) {
+        this.comentarioCierre = comentarioCierre;
+    }
+
     public Abogado getIdAbogado() {
         return idAbogado;
     }
@@ -231,6 +248,33 @@ public class Expediente implements Serializable {
     }
 
     @XmlTransient
+    public List<HistorialEstadoMarca> getHistorialEstadoMarcaList() {
+        return historialEstadoMarcaList;
+    }
+
+    public void setHistorialEstadoMarcaList(List<HistorialEstadoMarca> historialEstadoMarcaList) {
+        this.historialEstadoMarcaList = historialEstadoMarcaList;
+    }
+
+    @XmlTransient
+    public List<OposicionRecibida> getOposicionRecibidaList() {
+        return oposicionRecibidaList;
+    }
+
+    public void setOposicionRecibidaList(List<OposicionRecibida> oposicionRecibidaList) {
+        this.oposicionRecibidaList = oposicionRecibidaList;
+    }
+
+    @XmlTransient
+    public List<OposicionHecha> getOposicionHechaList() {
+        return oposicionHechaList;
+    }
+
+    public void setOposicionHechaList(List<OposicionHecha> oposicionHechaList) {
+        this.oposicionHechaList = oposicionHechaList;
+    }
+
+    @XmlTransient
     public List<Historial> getHistorialList() {
         return historialList;
     }
@@ -263,7 +307,6 @@ public class Expediente implements Serializable {
     public String toString() {
         return "modelo.Expediente[ idExpediente=" + idExpediente + " ]";
     }
-    
     public String getStringFechaEstado(){
         String fecha = new SimpleDateFormat("dd-MM-yyyy").format(this.fechaEstado);
         return fecha;  
@@ -273,9 +316,5 @@ public class Expediente implements Serializable {
         String fecha = new SimpleDateFormat("dd-MM-yyyy").format(this.fechaSolicitud);
         return fecha;  
     }
-    
-    
-    
-   
-    
+ 
 }

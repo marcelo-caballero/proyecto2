@@ -1,4 +1,6 @@
 
+<%@page import="modeloMng.EstadoMarcaJpaController"%>
+<%@page import="modelo.EstadoMarca"%>
 <%@page import="modelo.Evento"%>
 <%@page import="java.util.List"%>
 <%@page import="modelo.Expediente"%>
@@ -22,7 +24,14 @@
             ExpedienteJpaController expControl = new ExpedienteJpaController();
             Expediente expediente = expControl.findExpediente(idExp);
             List<Evento> listaEventos = expediente.getEventoList();
-
+            
+            //Verificamos que el expediente esta en un estado final
+            boolean estaEstadoFinal = false;
+            if(expediente.getIdEstado().getTipo() == null){
+                estaEstadoFinal = false;
+            }else if(expediente.getIdEstado().getTipo().equals("F")){
+                estaEstadoFinal = true; 
+            }
         %> 
         
         <%@include file="//WEB-INF/menuCabecera.jsp" %>
@@ -36,11 +45,17 @@
             <%@include file="//WEB-INF/mensajeErrorABM.jsp" %>
             <h2 class="text-justify">Eventos</h2>
             <br>
+            <%if(estaEstadoFinal){%>  
+                <div class="alert alert-info alert-dismissible">
+                    <button type="button" class="close" data-dismiss="alert">&times;</button>
+                    <strong>¡Información! </strong>El expediente se encuentra cerrado
+                </div>
+            <%}%>
             
             <table id="mytable" class="table table-striped table-bordered dt-responsive nowrap">
                 <thead style="background-color:whitesmoke">
                     <tr>
-                        
+
                         <th>Nombre</th>
                         <th>Fecha a notificar</th>
                         <th>Prioridad</th>
@@ -49,7 +64,12 @@
                                 <i class="fa fa-plus-circle"  
                                     style="font-size:24px"  
                                     onmouseover="this.style.cursor = 'pointer'" 
-                                    onclick='window.location.href = "<%=request.getContextPath()%>/eventos/agregarEvento.jsp"'> 
+                                    <%if(estaEstadoFinal){%> 
+                                        onclick="mostrarMensajeSoloVer()"
+                                    <%}else{%>
+                                        onclick='window.location.href = "<%=request.getContextPath()%>/eventos/agregarEvento.jsp"'
+                                    <%}%>
+                                > 
                                 </i>
                             <%}%>
                         </th>
@@ -64,7 +84,7 @@
                         <td id="nombre-<%=i%>"><%=listaEventos.get(i).getNombre()%></td>
                         <td id=""><%=listaEventos.get(i).getStringFecha()%></td>   
                         <td id="prioridad"><%=listaEventos.get(i).getPrioridad()%></td> 
-                        
+
                         <td>
                             <%if(permisoControlAcceso.permisoRolVentana(rolUsuarioConectado,"verEvento.jsp" )){%> 
                                 <i class="fa fa-search" 
@@ -77,14 +97,24 @@
                                 <i class="fa fa-edit" 
                                    style="font-size:24px"  
                                    onmouseover="this.style.cursor = 'pointer'" 
-                                   onclick='window.location.href = "<%=request.getContextPath()%>/eventos/editarEvento.jsp?idEvento=<%=listaEventos.get(i).getIdEvento()%>"'> 
+                                    <%if(estaEstadoFinal){%> 
+                                        onclick="mostrarMensajeSoloVer()"
+                                    <%}else{%>
+                                        onclick='window.location.href = "<%=request.getContextPath()%>/eventos/editarEvento.jsp?idEvento=<%=listaEventos.get(i).getIdEvento()%>"'
+                                    <%}%>
+                                > 
                                 </i>
                             <%}%>
                             <%if(permisoControlAcceso.permisoRolVentana(rolUsuarioConectado,"eliminarEvento")){%>
                                 <i class="fa fa-remove" 
                                    style="font-size:24px"  
-                                   onmouseover="this.style.cursor = 'pointer'" 
-                                   onclick="modalEliminar('<%=i%>')"> 
+                                   onmouseover="this.style.cursor = 'pointer'"
+                                    <%if(estaEstadoFinal){%> 
+                                        onclick="mostrarMensajeSoloVer()"
+                                    <%}else{%>
+                                        onclick="modalEliminar('<%=i%>')"
+                                    <%}%>
+                                > 
                                 </i>
                             <%}%>
                         </td>
@@ -92,7 +122,7 @@
                     <%}%>
                 </tbody>
             </table> 
-
+            
         </div>
         <%-- Modal Eliminar --%>
         <div class="modal fade" id="modal-eliminar" role="dialog">
@@ -117,6 +147,27 @@
                 </div>
             </div>
         </div>
+        
+        <%-- Modal MensajeVer --%>
+        <div class="modal fade" id="modal-mensaje" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+
+                    <div class="modal-header">
+                        <h4 class="modal-title">Información</h4>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+
+                    </div>
+                    <div class="modal-body">
+                        <p>Solamente se puede ver el Evento</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button  type="button" data-dismiss="modal"  class="btn btn-default" >Cerrar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
         <br>
         <script>
             function modalEliminar(fila) {
@@ -133,6 +184,13 @@
                     
                 });
             }
+            
+            function mostrarMensajeSoloVer() {
+                $(document).ready(function () {
+                    $("#modal-mensaje").modal();
+                });
+            }
+            
             $(document).ready(function () {
                 $('#mytable').DataTable({
                     "language": {

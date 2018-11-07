@@ -30,6 +30,10 @@
         <%@include file="//WEB-INF/menuCabecera.jsp" %>
         <br>
         
+        <div class="container">
+           <%@include file="//WEB-INF/menuConfiguraciones.jsp" %>     
+        </div>
+        
         <div class="container form-control">
             <%@include file="//WEB-INF/mensajeErrorABM.jsp" %>
             <h2 class="text-justify">Usuarios</h2>

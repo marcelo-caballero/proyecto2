@@ -6,6 +6,7 @@
 package modelo;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -20,6 +21,7 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -34,6 +36,12 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "HistorialEstadoOposicionRecibida.findByIdHistorial", query = "SELECT h FROM HistorialEstadoOposicionRecibida h WHERE h.idHistorial = :idHistorial"),
     @NamedQuery(name = "HistorialEstadoOposicionRecibida.findByFecha", query = "SELECT h FROM HistorialEstadoOposicionRecibida h WHERE h.fecha = :fecha")})
 public class HistorialEstadoOposicionRecibida implements Serializable {
+
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "fecha_registro")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date fechaRegistro;
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -121,4 +129,16 @@ public class HistorialEstadoOposicionRecibida implements Serializable {
         return "modelo.HistorialEstadoOposicionRecibida[ idHistorial=" + idHistorial + " ]";
     }
     
+    public String getStringFecha(){
+        String fecha = new SimpleDateFormat("dd/MM/yyyy").format(this.fecha);
+        return fecha;  
+    }
+
+    public Date getFechaRegistro() {
+        return fechaRegistro;
+    }
+
+    public void setFechaRegistro(Date fechaRegistro) {
+        this.fechaRegistro = fechaRegistro;
+    }
 }

@@ -89,6 +89,7 @@
                            class="form-control"
                            type="date"
                            min="<%=new SimpleDateFormat("yyyy-MM-dd").format(fechaInferior)%>"
+                           max="<%=new SimpleDateFormat("yyyy-MM-dd").format(new Date())%>" 
                            value="<%=new SimpleDateFormat("yyyy-MM-dd").format(fechaInferior)%>"
                            required> 
                     <div id="fecha-retro"></div>
@@ -381,7 +382,7 @@
                 if(!fechaInput.validity.valid){ 
                     fechaInput.setAttribute("class","form-control is-invalid");
                     retroFecha.setAttribute("class","invalid-feedback");
-                    retroFecha.textContent = 'La fecha no debe ser anterior a <%=new SimpleDateFormat("dd/MM/yyyy").format(fechaInferior)%>';
+                    retroFecha.textContent = 'La fecha no debe ser entre <%=new SimpleDateFormat("dd/MM/yyyy").format(fechaInferior)%> a <%=new SimpleDateFormat("dd/MM/yyyy").format(new Date())%>';
                     
                     return false;
                 } 

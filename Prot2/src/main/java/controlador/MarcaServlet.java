@@ -24,6 +24,8 @@ import javax.servlet.http.Part;
 import modelo.Marca;
 import modeloMng.MarcaJpaController;
 import modeloMng.TipoMarcaJpaController;
+import modeloMng.exceptions.IllegalOrphanException;
+import modeloMng.exceptions.NonexistentEntityException;
 //import modeloMng.exceptions.IllegalOrphanException;
 //import modeloMng.exceptions.NonexistentEntityException;
 
@@ -167,10 +169,14 @@ public class MarcaServlet extends HttpServlet {
                 Integer idMarca = Integer.parseInt(request.getParameter("idMarca"));
                 marcaControl.destroy(idMarca);
                 
-            }catch(Exception e) {
-                System.out.println(e);
-                request.getSession().setAttribute("mensajeErrorABM", "No se pudo eliminar la marca");
+            }catch(IllegalOrphanException e) {
+                
+                request.getSession().setAttribute("mensajeErrorABM", "La marca se encuentra asociada a un expediente");
             
+            }catch(Exception ex){
+                
+                request.getSession().setAttribute("mensajeErrorABM", "No se pudo eliminar la marca");
+                
             }finally{
                 
                 response.sendRedirect("marcas.jsp");

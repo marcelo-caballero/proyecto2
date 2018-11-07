@@ -23,20 +23,25 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import javax.persistence.criteria.CriteriaBuilder;
 import modelo.Evento;
 import modelo.Expediente;
+import modelo.Expediente_;
 import modelo.Historial;
+import modelo.HistorialEstadoMarca;
+import modelo.OposicionHecha;
+import modelo.OposicionRecibida;
 import modeloMng.exceptions.IllegalOrphanException;
 import modeloMng.exceptions.NonexistentEntityException;
 
 /**
  *
- * @author Acer
+ * @author User
  */
 public class ExpedienteJpaController implements Serializable {
 
     public ExpedienteJpaController() {
-        this.emf = Persistence.createEntityManagerFactory("com.mycompany_Prot2_war_1.0-SNAPSHOTPU");
+        this.emf = Persistence.createEntityManagerFactory("com.mycompany_Prot2_war_1.0-SNAPSHOTPU"); 
     }
     private EntityManagerFactory emf = null;
 
@@ -50,6 +55,15 @@ public class ExpedienteJpaController implements Serializable {
         }
         if (expediente.getEventoList() == null) {
             expediente.setEventoList(new ArrayList<Evento>());
+        }
+        if (expediente.getHistorialEstadoMarcaList() == null) {
+            expediente.setHistorialEstadoMarcaList(new ArrayList<HistorialEstadoMarca>());
+        }
+        if (expediente.getOposicionRecibidaList() == null) {
+            expediente.setOposicionRecibidaList(new ArrayList<OposicionRecibida>());
+        }
+        if (expediente.getOposicionHechaList() == null) {
+            expediente.setOposicionHechaList(new ArrayList<OposicionHecha>());
         }
         if (expediente.getHistorialList() == null) {
             expediente.setHistorialList(new ArrayList<Historial>());
@@ -100,6 +114,24 @@ public class ExpedienteJpaController implements Serializable {
                 attachedEventoList.add(eventoListEventoToAttach);
             }
             expediente.setEventoList(attachedEventoList);
+            List<HistorialEstadoMarca> attachedHistorialEstadoMarcaList = new ArrayList<HistorialEstadoMarca>();
+            for (HistorialEstadoMarca historialEstadoMarcaListHistorialEstadoMarcaToAttach : expediente.getHistorialEstadoMarcaList()) {
+                historialEstadoMarcaListHistorialEstadoMarcaToAttach = em.getReference(historialEstadoMarcaListHistorialEstadoMarcaToAttach.getClass(), historialEstadoMarcaListHistorialEstadoMarcaToAttach.getIdHistorial());
+                attachedHistorialEstadoMarcaList.add(historialEstadoMarcaListHistorialEstadoMarcaToAttach);
+            }
+            expediente.setHistorialEstadoMarcaList(attachedHistorialEstadoMarcaList);
+            List<OposicionRecibida> attachedOposicionRecibidaList = new ArrayList<OposicionRecibida>();
+            for (OposicionRecibida oposicionRecibidaListOposicionRecibidaToAttach : expediente.getOposicionRecibidaList()) {
+                oposicionRecibidaListOposicionRecibidaToAttach = em.getReference(oposicionRecibidaListOposicionRecibidaToAttach.getClass(), oposicionRecibidaListOposicionRecibidaToAttach.getIdOposicion());
+                attachedOposicionRecibidaList.add(oposicionRecibidaListOposicionRecibidaToAttach);
+            }
+            expediente.setOposicionRecibidaList(attachedOposicionRecibidaList);
+            List<OposicionHecha> attachedOposicionHechaList = new ArrayList<OposicionHecha>();
+            for (OposicionHecha oposicionHechaListOposicionHechaToAttach : expediente.getOposicionHechaList()) {
+                oposicionHechaListOposicionHechaToAttach = em.getReference(oposicionHechaListOposicionHechaToAttach.getClass(), oposicionHechaListOposicionHechaToAttach.getIdOposicion());
+                attachedOposicionHechaList.add(oposicionHechaListOposicionHechaToAttach);
+            }
+            expediente.setOposicionHechaList(attachedOposicionHechaList);
             List<Historial> attachedHistorialList = new ArrayList<Historial>();
             for (Historial historialListHistorialToAttach : expediente.getHistorialList()) {
                 historialListHistorialToAttach = em.getReference(historialListHistorialToAttach.getClass(), historialListHistorialToAttach.getIdHistorial());
@@ -149,6 +181,33 @@ public class ExpedienteJpaController implements Serializable {
                     oldIdExpedienteOfEventoListEvento = em.merge(oldIdExpedienteOfEventoListEvento);
                 }
             }
+            for (HistorialEstadoMarca historialEstadoMarcaListHistorialEstadoMarca : expediente.getHistorialEstadoMarcaList()) {
+                Expediente oldIdExpedienteOfHistorialEstadoMarcaListHistorialEstadoMarca = historialEstadoMarcaListHistorialEstadoMarca.getIdExpediente();
+                historialEstadoMarcaListHistorialEstadoMarca.setIdExpediente(expediente);
+                historialEstadoMarcaListHistorialEstadoMarca = em.merge(historialEstadoMarcaListHistorialEstadoMarca);
+                if (oldIdExpedienteOfHistorialEstadoMarcaListHistorialEstadoMarca != null) {
+                    oldIdExpedienteOfHistorialEstadoMarcaListHistorialEstadoMarca.getHistorialEstadoMarcaList().remove(historialEstadoMarcaListHistorialEstadoMarca);
+                    oldIdExpedienteOfHistorialEstadoMarcaListHistorialEstadoMarca = em.merge(oldIdExpedienteOfHistorialEstadoMarcaListHistorialEstadoMarca);
+                }
+            }
+            for (OposicionRecibida oposicionRecibidaListOposicionRecibida : expediente.getOposicionRecibidaList()) {
+                Expediente oldIdExpedienteOfOposicionRecibidaListOposicionRecibida = oposicionRecibidaListOposicionRecibida.getIdExpediente();
+                oposicionRecibidaListOposicionRecibida.setIdExpediente(expediente);
+                oposicionRecibidaListOposicionRecibida = em.merge(oposicionRecibidaListOposicionRecibida);
+                if (oldIdExpedienteOfOposicionRecibidaListOposicionRecibida != null) {
+                    oldIdExpedienteOfOposicionRecibidaListOposicionRecibida.getOposicionRecibidaList().remove(oposicionRecibidaListOposicionRecibida);
+                    oldIdExpedienteOfOposicionRecibidaListOposicionRecibida = em.merge(oldIdExpedienteOfOposicionRecibidaListOposicionRecibida);
+                }
+            }
+            for (OposicionHecha oposicionHechaListOposicionHecha : expediente.getOposicionHechaList()) {
+                Expediente oldIdExpedienteOpositanteOfOposicionHechaListOposicionHecha = oposicionHechaListOposicionHecha.getIdExpedienteOpositante();
+                oposicionHechaListOposicionHecha.setIdExpedienteOpositante(expediente);
+                oposicionHechaListOposicionHecha = em.merge(oposicionHechaListOposicionHecha);
+                if (oldIdExpedienteOpositanteOfOposicionHechaListOposicionHecha != null) {
+                    oldIdExpedienteOpositanteOfOposicionHechaListOposicionHecha.getOposicionHechaList().remove(oposicionHechaListOposicionHecha);
+                    oldIdExpedienteOpositanteOfOposicionHechaListOposicionHecha = em.merge(oldIdExpedienteOpositanteOfOposicionHechaListOposicionHecha);
+                }
+            }
             for (Historial historialListHistorial : expediente.getHistorialList()) {
                 Expediente oldIdExpedienteOfHistorialListHistorial = historialListHistorial.getIdExpediente();
                 historialListHistorial.setIdExpediente(expediente);
@@ -188,6 +247,12 @@ public class ExpedienteJpaController implements Serializable {
             List<Documento> documentoListNew = expediente.getDocumentoList();
             List<Evento> eventoListOld = persistentExpediente.getEventoList();
             List<Evento> eventoListNew = expediente.getEventoList();
+            List<HistorialEstadoMarca> historialEstadoMarcaListOld = persistentExpediente.getHistorialEstadoMarcaList();
+            List<HistorialEstadoMarca> historialEstadoMarcaListNew = expediente.getHistorialEstadoMarcaList();
+            List<OposicionRecibida> oposicionRecibidaListOld = persistentExpediente.getOposicionRecibidaList();
+            List<OposicionRecibida> oposicionRecibidaListNew = expediente.getOposicionRecibidaList();
+            List<OposicionHecha> oposicionHechaListOld = persistentExpediente.getOposicionHechaList();
+            List<OposicionHecha> oposicionHechaListNew = expediente.getOposicionHechaList();
             List<Historial> historialListOld = persistentExpediente.getHistorialList();
             List<Historial> historialListNew = expediente.getHistorialList();
             List<String> illegalOrphanMessages = null;
@@ -205,6 +270,30 @@ public class ExpedienteJpaController implements Serializable {
                         illegalOrphanMessages = new ArrayList<String>();
                     }
                     illegalOrphanMessages.add("You must retain Evento " + eventoListOldEvento + " since its idExpediente field is not nullable.");
+                }
+            }
+            for (HistorialEstadoMarca historialEstadoMarcaListOldHistorialEstadoMarca : historialEstadoMarcaListOld) {
+                if (!historialEstadoMarcaListNew.contains(historialEstadoMarcaListOldHistorialEstadoMarca)) {
+                    if (illegalOrphanMessages == null) {
+                        illegalOrphanMessages = new ArrayList<String>();
+                    }
+                    illegalOrphanMessages.add("You must retain HistorialEstadoMarca " + historialEstadoMarcaListOldHistorialEstadoMarca + " since its idExpediente field is not nullable.");
+                }
+            }
+            for (OposicionRecibida oposicionRecibidaListOldOposicionRecibida : oposicionRecibidaListOld) {
+                if (!oposicionRecibidaListNew.contains(oposicionRecibidaListOldOposicionRecibida)) {
+                    if (illegalOrphanMessages == null) {
+                        illegalOrphanMessages = new ArrayList<String>();
+                    }
+                    illegalOrphanMessages.add("You must retain OposicionRecibida " + oposicionRecibidaListOldOposicionRecibida + " since its idExpediente field is not nullable.");
+                }
+            }
+            for (OposicionHecha oposicionHechaListOldOposicionHecha : oposicionHechaListOld) {
+                if (!oposicionHechaListNew.contains(oposicionHechaListOldOposicionHecha)) {
+                    if (illegalOrphanMessages == null) {
+                        illegalOrphanMessages = new ArrayList<String>();
+                    }
+                    illegalOrphanMessages.add("You must retain OposicionHecha " + oposicionHechaListOldOposicionHecha + " since its idExpedienteOpositante field is not nullable.");
                 }
             }
             for (Historial historialListOldHistorial : historialListOld) {
@@ -256,6 +345,27 @@ public class ExpedienteJpaController implements Serializable {
             }
             eventoListNew = attachedEventoListNew;
             expediente.setEventoList(eventoListNew);
+            List<HistorialEstadoMarca> attachedHistorialEstadoMarcaListNew = new ArrayList<HistorialEstadoMarca>();
+            for (HistorialEstadoMarca historialEstadoMarcaListNewHistorialEstadoMarcaToAttach : historialEstadoMarcaListNew) {
+                historialEstadoMarcaListNewHistorialEstadoMarcaToAttach = em.getReference(historialEstadoMarcaListNewHistorialEstadoMarcaToAttach.getClass(), historialEstadoMarcaListNewHistorialEstadoMarcaToAttach.getIdHistorial());
+                attachedHistorialEstadoMarcaListNew.add(historialEstadoMarcaListNewHistorialEstadoMarcaToAttach);
+            }
+            historialEstadoMarcaListNew = attachedHistorialEstadoMarcaListNew;
+            expediente.setHistorialEstadoMarcaList(historialEstadoMarcaListNew);
+            List<OposicionRecibida> attachedOposicionRecibidaListNew = new ArrayList<OposicionRecibida>();
+            for (OposicionRecibida oposicionRecibidaListNewOposicionRecibidaToAttach : oposicionRecibidaListNew) {
+                oposicionRecibidaListNewOposicionRecibidaToAttach = em.getReference(oposicionRecibidaListNewOposicionRecibidaToAttach.getClass(), oposicionRecibidaListNewOposicionRecibidaToAttach.getIdOposicion());
+                attachedOposicionRecibidaListNew.add(oposicionRecibidaListNewOposicionRecibidaToAttach);
+            }
+            oposicionRecibidaListNew = attachedOposicionRecibidaListNew;
+            expediente.setOposicionRecibidaList(oposicionRecibidaListNew);
+            List<OposicionHecha> attachedOposicionHechaListNew = new ArrayList<OposicionHecha>();
+            for (OposicionHecha oposicionHechaListNewOposicionHechaToAttach : oposicionHechaListNew) {
+                oposicionHechaListNewOposicionHechaToAttach = em.getReference(oposicionHechaListNewOposicionHechaToAttach.getClass(), oposicionHechaListNewOposicionHechaToAttach.getIdOposicion());
+                attachedOposicionHechaListNew.add(oposicionHechaListNewOposicionHechaToAttach);
+            }
+            oposicionHechaListNew = attachedOposicionHechaListNew;
+            expediente.setOposicionHechaList(oposicionHechaListNew);
             List<Historial> attachedHistorialListNew = new ArrayList<Historial>();
             for (Historial historialListNewHistorialToAttach : historialListNew) {
                 historialListNewHistorialToAttach = em.getReference(historialListNewHistorialToAttach.getClass(), historialListNewHistorialToAttach.getIdHistorial());
@@ -334,6 +444,39 @@ public class ExpedienteJpaController implements Serializable {
                     }
                 }
             }
+            for (HistorialEstadoMarca historialEstadoMarcaListNewHistorialEstadoMarca : historialEstadoMarcaListNew) {
+                if (!historialEstadoMarcaListOld.contains(historialEstadoMarcaListNewHistorialEstadoMarca)) {
+                    Expediente oldIdExpedienteOfHistorialEstadoMarcaListNewHistorialEstadoMarca = historialEstadoMarcaListNewHistorialEstadoMarca.getIdExpediente();
+                    historialEstadoMarcaListNewHistorialEstadoMarca.setIdExpediente(expediente);
+                    historialEstadoMarcaListNewHistorialEstadoMarca = em.merge(historialEstadoMarcaListNewHistorialEstadoMarca);
+                    if (oldIdExpedienteOfHistorialEstadoMarcaListNewHistorialEstadoMarca != null && !oldIdExpedienteOfHistorialEstadoMarcaListNewHistorialEstadoMarca.equals(expediente)) {
+                        oldIdExpedienteOfHistorialEstadoMarcaListNewHistorialEstadoMarca.getHistorialEstadoMarcaList().remove(historialEstadoMarcaListNewHistorialEstadoMarca);
+                        oldIdExpedienteOfHistorialEstadoMarcaListNewHistorialEstadoMarca = em.merge(oldIdExpedienteOfHistorialEstadoMarcaListNewHistorialEstadoMarca);
+                    }
+                }
+            }
+            for (OposicionRecibida oposicionRecibidaListNewOposicionRecibida : oposicionRecibidaListNew) {
+                if (!oposicionRecibidaListOld.contains(oposicionRecibidaListNewOposicionRecibida)) {
+                    Expediente oldIdExpedienteOfOposicionRecibidaListNewOposicionRecibida = oposicionRecibidaListNewOposicionRecibida.getIdExpediente();
+                    oposicionRecibidaListNewOposicionRecibida.setIdExpediente(expediente);
+                    oposicionRecibidaListNewOposicionRecibida = em.merge(oposicionRecibidaListNewOposicionRecibida);
+                    if (oldIdExpedienteOfOposicionRecibidaListNewOposicionRecibida != null && !oldIdExpedienteOfOposicionRecibidaListNewOposicionRecibida.equals(expediente)) {
+                        oldIdExpedienteOfOposicionRecibidaListNewOposicionRecibida.getOposicionRecibidaList().remove(oposicionRecibidaListNewOposicionRecibida);
+                        oldIdExpedienteOfOposicionRecibidaListNewOposicionRecibida = em.merge(oldIdExpedienteOfOposicionRecibidaListNewOposicionRecibida);
+                    }
+                }
+            }
+            for (OposicionHecha oposicionHechaListNewOposicionHecha : oposicionHechaListNew) {
+                if (!oposicionHechaListOld.contains(oposicionHechaListNewOposicionHecha)) {
+                    Expediente oldIdExpedienteOpositanteOfOposicionHechaListNewOposicionHecha = oposicionHechaListNewOposicionHecha.getIdExpedienteOpositante();
+                    oposicionHechaListNewOposicionHecha.setIdExpedienteOpositante(expediente);
+                    oposicionHechaListNewOposicionHecha = em.merge(oposicionHechaListNewOposicionHecha);
+                    if (oldIdExpedienteOpositanteOfOposicionHechaListNewOposicionHecha != null && !oldIdExpedienteOpositanteOfOposicionHechaListNewOposicionHecha.equals(expediente)) {
+                        oldIdExpedienteOpositanteOfOposicionHechaListNewOposicionHecha.getOposicionHechaList().remove(oposicionHechaListNewOposicionHecha);
+                        oldIdExpedienteOpositanteOfOposicionHechaListNewOposicionHecha = em.merge(oldIdExpedienteOpositanteOfOposicionHechaListNewOposicionHecha);
+                    }
+                }
+            }
             for (Historial historialListNewHistorial : historialListNew) {
                 if (!historialListOld.contains(historialListNewHistorial)) {
                     Expediente oldIdExpedienteOfHistorialListNewHistorial = historialListNewHistorial.getIdExpediente();
@@ -388,6 +531,27 @@ public class ExpedienteJpaController implements Serializable {
                     illegalOrphanMessages = new ArrayList<String>();
                 }
                 illegalOrphanMessages.add("This Expediente (" + expediente + ") cannot be destroyed since the Evento " + eventoListOrphanCheckEvento + " in its eventoList field has a non-nullable idExpediente field.");
+            }
+            List<HistorialEstadoMarca> historialEstadoMarcaListOrphanCheck = expediente.getHistorialEstadoMarcaList();
+            for (HistorialEstadoMarca historialEstadoMarcaListOrphanCheckHistorialEstadoMarca : historialEstadoMarcaListOrphanCheck) {
+                if (illegalOrphanMessages == null) {
+                    illegalOrphanMessages = new ArrayList<String>();
+                }
+                illegalOrphanMessages.add("This Expediente (" + expediente + ") cannot be destroyed since the HistorialEstadoMarca " + historialEstadoMarcaListOrphanCheckHistorialEstadoMarca + " in its historialEstadoMarcaList field has a non-nullable idExpediente field.");
+            }
+            List<OposicionRecibida> oposicionRecibidaListOrphanCheck = expediente.getOposicionRecibidaList();
+            for (OposicionRecibida oposicionRecibidaListOrphanCheckOposicionRecibida : oposicionRecibidaListOrphanCheck) {
+                if (illegalOrphanMessages == null) {
+                    illegalOrphanMessages = new ArrayList<String>();
+                }
+                illegalOrphanMessages.add("This Expediente (" + expediente + ") cannot be destroyed since the OposicionRecibida " + oposicionRecibidaListOrphanCheckOposicionRecibida + " in its oposicionRecibidaList field has a non-nullable idExpediente field.");
+            }
+            List<OposicionHecha> oposicionHechaListOrphanCheck = expediente.getOposicionHechaList();
+            for (OposicionHecha oposicionHechaListOrphanCheckOposicionHecha : oposicionHechaListOrphanCheck) {
+                if (illegalOrphanMessages == null) {
+                    illegalOrphanMessages = new ArrayList<String>();
+                }
+                illegalOrphanMessages.add("This Expediente (" + expediente + ") cannot be destroyed since the OposicionHecha " + oposicionHechaListOrphanCheckOposicionHecha + " in its oposicionHechaList field has a non-nullable idExpedienteOpositante field.");
             }
             List<Historial> historialListOrphanCheck = expediente.getHistorialList();
             for (Historial historialListOrphanCheckHistorial : historialListOrphanCheck) {
@@ -449,8 +613,10 @@ public class ExpedienteJpaController implements Serializable {
     private List<Expediente> findExpedienteEntities(boolean all, int maxResults, int firstResult) {
         EntityManager em = getEntityManager();
         try {
-            CriteriaQuery cq = em.getCriteriaBuilder().createQuery();
+            CriteriaBuilder cb = em.getCriteriaBuilder();
+            CriteriaQuery cq = cb.createQuery();
             cq.select(cq.from(Expediente.class));
+            cq.orderBy(cb.asc(cq.from(Expediente.class).get(Expediente_.nroExpediente)));
             Query q = em.createQuery(cq);
             if (!all) {
                 q.setMaxResults(maxResults);
@@ -483,7 +649,6 @@ public class ExpedienteJpaController implements Serializable {
             em.close();
         }
     }
-    
     
     /*Responde si existe una duplicacion del numero de expediente  
     
@@ -572,14 +737,21 @@ public class ExpedienteJpaController implements Serializable {
         }
     }
     
-    public Boolean esEditable(Integer idExp) {
+    /**
+     * Retorna true si el expediente esta vacio, caso contrario false
+     * @param idExp
+     * @return Boolean
+     */
+    public Boolean expedienteVacio(Integer idExp) {
        
        EntityManager em = getEntityManager();
        
         try {
             String consulta =   "select d.idExpediente.idExpediente from Documento d where d.idExpediente.idExpediente = :idExp "+
                                 "union "+
-                                "select e.idExpediente.idExpediente from Evento e where e.idExpediente.idExpediente = :idExp ";
+                                "select e.idExpediente.idExpediente from Evento e where e.idExpediente.idExpediente = :idExp "+
+                                "union "+
+                                "select r.idExpediente.idExpediente from OposicionRecibida r where r.idExpediente.idExpediente = :idExp ";
                 
             Query q = em.createQuery(consulta);
             
@@ -595,11 +767,46 @@ public class ExpedienteJpaController implements Serializable {
             }
             
         } catch(Exception e){
-            
+            System.out.println(e);
             return false;
             
         }finally {
             em.close();
         }
     }
+        
+    /**
+     * Retorna true si el expediente tiene asociada oposiciones hechas por el estudio juridico
+     * @param idExp
+     * @return Boolean
+     */
+    public Boolean expedienteConOposicionesHechas(Integer idExp) {
+       
+       EntityManager em = getEntityManager();
+       
+        try {
+            String consulta =   "select o.idExpedienteOpositante.idExpediente from OposicionHecha o where o.idExpedienteOpositante.idExpediente = :idExp ";
+                
+            Query q = em.createQuery(consulta);
+            
+            q.setParameter("idExp", idExp);
+           
+             
+            List<Integer> lista = q.getResultList();
+           
+            if(lista.size() > 0){
+                return  true;
+            }else{
+                return false;
+            }
+            
+        } catch(Exception e){
+            System.out.println(e);
+            return true;
+            
+        }finally {
+            em.close();
+        }
+    }
+    
 }

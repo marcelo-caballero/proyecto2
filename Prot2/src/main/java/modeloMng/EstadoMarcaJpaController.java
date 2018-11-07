@@ -19,6 +19,8 @@ import javax.persistence.Persistence;
 import javax.persistence.criteria.CriteriaBuilder;
 import modelo.EstadoMarca;
 import modelo.EstadoMarca_;
+import modelo.HistorialEstadoMarca;
+import modeloMng.exceptions.IllegalOrphanException;
 import modeloMng.exceptions.NonexistentEntityException;
 
 /**
@@ -40,6 +42,9 @@ public class EstadoMarcaJpaController implements Serializable {
         if (estadoMarca.getExpedienteList() == null) {
             estadoMarca.setExpedienteList(new ArrayList<Expediente>());
         }
+        if (estadoMarca.getHistorialEstadoMarcaList() == null) {
+            estadoMarca.setHistorialEstadoMarcaList(new ArrayList<HistorialEstadoMarca>());
+        }
         EntityManager em = null;
         try {
             em = getEntityManager();
@@ -50,6 +55,12 @@ public class EstadoMarcaJpaController implements Serializable {
                 attachedExpedienteList.add(expedienteListExpedienteToAttach);
             }
             estadoMarca.setExpedienteList(attachedExpedienteList);
+            List<HistorialEstadoMarca> attachedHistorialEstadoMarcaList = new ArrayList<HistorialEstadoMarca>();
+            for (HistorialEstadoMarca historialEstadoMarcaListHistorialEstadoMarcaToAttach : estadoMarca.getHistorialEstadoMarcaList()) {
+                historialEstadoMarcaListHistorialEstadoMarcaToAttach = em.getReference(historialEstadoMarcaListHistorialEstadoMarcaToAttach.getClass(), historialEstadoMarcaListHistorialEstadoMarcaToAttach.getIdHistorial());
+                attachedHistorialEstadoMarcaList.add(historialEstadoMarcaListHistorialEstadoMarcaToAttach);
+            }
+            estadoMarca.setHistorialEstadoMarcaList(attachedHistorialEstadoMarcaList);
             em.persist(estadoMarca);
             for (Expediente expedienteListExpediente : estadoMarca.getExpedienteList()) {
                 EstadoMarca oldIdEstadoOfExpedienteListExpediente = expedienteListExpediente.getIdEstado();
@@ -60,6 +71,15 @@ public class EstadoMarcaJpaController implements Serializable {
                     oldIdEstadoOfExpedienteListExpediente = em.merge(oldIdEstadoOfExpedienteListExpediente);
                 }
             }
+            for (HistorialEstadoMarca historialEstadoMarcaListHistorialEstadoMarca : estadoMarca.getHistorialEstadoMarcaList()) {
+                EstadoMarca oldIdEstadoMarcaOfHistorialEstadoMarcaListHistorialEstadoMarca = historialEstadoMarcaListHistorialEstadoMarca.getIdEstadoMarca();
+                historialEstadoMarcaListHistorialEstadoMarca.setIdEstadoMarca(estadoMarca);
+                historialEstadoMarcaListHistorialEstadoMarca = em.merge(historialEstadoMarcaListHistorialEstadoMarca);
+                if (oldIdEstadoMarcaOfHistorialEstadoMarcaListHistorialEstadoMarca != null) {
+                    oldIdEstadoMarcaOfHistorialEstadoMarcaListHistorialEstadoMarca.getHistorialEstadoMarcaList().remove(historialEstadoMarcaListHistorialEstadoMarca);
+                    oldIdEstadoMarcaOfHistorialEstadoMarcaListHistorialEstadoMarca = em.merge(oldIdEstadoMarcaOfHistorialEstadoMarcaListHistorialEstadoMarca);
+                }
+            }
             em.getTransaction().commit();
         } finally {
             if (em != null) {
@@ -68,7 +88,7 @@ public class EstadoMarcaJpaController implements Serializable {
         }
     }
 
-    public void edit(EstadoMarca estadoMarca) throws NonexistentEntityException, Exception {
+    public void edit(EstadoMarca estadoMarca) throws IllegalOrphanException, NonexistentEntityException, Exception {
         EntityManager em = null;
         try {
             em = getEntityManager();
@@ -76,6 +96,20 @@ public class EstadoMarcaJpaController implements Serializable {
             EstadoMarca persistentEstadoMarca = em.find(EstadoMarca.class, estadoMarca.getIdEstado());
             List<Expediente> expedienteListOld = persistentEstadoMarca.getExpedienteList();
             List<Expediente> expedienteListNew = estadoMarca.getExpedienteList();
+            List<HistorialEstadoMarca> historialEstadoMarcaListOld = persistentEstadoMarca.getHistorialEstadoMarcaList();
+            List<HistorialEstadoMarca> historialEstadoMarcaListNew = estadoMarca.getHistorialEstadoMarcaList();
+            List<String> illegalOrphanMessages = null;
+            for (HistorialEstadoMarca historialEstadoMarcaListOldHistorialEstadoMarca : historialEstadoMarcaListOld) {
+                if (!historialEstadoMarcaListNew.contains(historialEstadoMarcaListOldHistorialEstadoMarca)) {
+                    if (illegalOrphanMessages == null) {
+                        illegalOrphanMessages = new ArrayList<String>();
+                    }
+                    illegalOrphanMessages.add("You must retain HistorialEstadoMarca " + historialEstadoMarcaListOldHistorialEstadoMarca + " since its idEstadoMarca field is not nullable.");
+                }
+            }
+            if (illegalOrphanMessages != null) {
+                throw new IllegalOrphanException(illegalOrphanMessages);
+            }
             List<Expediente> attachedExpedienteListNew = new ArrayList<Expediente>();
             for (Expediente expedienteListNewExpedienteToAttach : expedienteListNew) {
                 expedienteListNewExpedienteToAttach = em.getReference(expedienteListNewExpedienteToAttach.getClass(), expedienteListNewExpedienteToAttach.getIdExpediente());
@@ -83,6 +117,13 @@ public class EstadoMarcaJpaController implements Serializable {
             }
             expedienteListNew = attachedExpedienteListNew;
             estadoMarca.setExpedienteList(expedienteListNew);
+            List<HistorialEstadoMarca> attachedHistorialEstadoMarcaListNew = new ArrayList<HistorialEstadoMarca>();
+            for (HistorialEstadoMarca historialEstadoMarcaListNewHistorialEstadoMarcaToAttach : historialEstadoMarcaListNew) {
+                historialEstadoMarcaListNewHistorialEstadoMarcaToAttach = em.getReference(historialEstadoMarcaListNewHistorialEstadoMarcaToAttach.getClass(), historialEstadoMarcaListNewHistorialEstadoMarcaToAttach.getIdHistorial());
+                attachedHistorialEstadoMarcaListNew.add(historialEstadoMarcaListNewHistorialEstadoMarcaToAttach);
+            }
+            historialEstadoMarcaListNew = attachedHistorialEstadoMarcaListNew;
+            estadoMarca.setHistorialEstadoMarcaList(historialEstadoMarcaListNew);
             estadoMarca = em.merge(estadoMarca);
             for (Expediente expedienteListOldExpediente : expedienteListOld) {
                 if (!expedienteListNew.contains(expedienteListOldExpediente)) {
@@ -98,6 +139,17 @@ public class EstadoMarcaJpaController implements Serializable {
                     if (oldIdEstadoOfExpedienteListNewExpediente != null && !oldIdEstadoOfExpedienteListNewExpediente.equals(estadoMarca)) {
                         oldIdEstadoOfExpedienteListNewExpediente.getExpedienteList().remove(expedienteListNewExpediente);
                         oldIdEstadoOfExpedienteListNewExpediente = em.merge(oldIdEstadoOfExpedienteListNewExpediente);
+                    }
+                }
+            }
+            for (HistorialEstadoMarca historialEstadoMarcaListNewHistorialEstadoMarca : historialEstadoMarcaListNew) {
+                if (!historialEstadoMarcaListOld.contains(historialEstadoMarcaListNewHistorialEstadoMarca)) {
+                    EstadoMarca oldIdEstadoMarcaOfHistorialEstadoMarcaListNewHistorialEstadoMarca = historialEstadoMarcaListNewHistorialEstadoMarca.getIdEstadoMarca();
+                    historialEstadoMarcaListNewHistorialEstadoMarca.setIdEstadoMarca(estadoMarca);
+                    historialEstadoMarcaListNewHistorialEstadoMarca = em.merge(historialEstadoMarcaListNewHistorialEstadoMarca);
+                    if (oldIdEstadoMarcaOfHistorialEstadoMarcaListNewHistorialEstadoMarca != null && !oldIdEstadoMarcaOfHistorialEstadoMarcaListNewHistorialEstadoMarca.equals(estadoMarca)) {
+                        oldIdEstadoMarcaOfHistorialEstadoMarcaListNewHistorialEstadoMarca.getHistorialEstadoMarcaList().remove(historialEstadoMarcaListNewHistorialEstadoMarca);
+                        oldIdEstadoMarcaOfHistorialEstadoMarcaListNewHistorialEstadoMarca = em.merge(oldIdEstadoMarcaOfHistorialEstadoMarcaListNewHistorialEstadoMarca);
                     }
                 }
             }
@@ -118,7 +170,7 @@ public class EstadoMarcaJpaController implements Serializable {
         }
     }
 
-    public void destroy(Integer id) throws NonexistentEntityException {
+    public void destroy(Integer id) throws IllegalOrphanException, NonexistentEntityException {
         EntityManager em = null;
         try {
             em = getEntityManager();
@@ -129,6 +181,17 @@ public class EstadoMarcaJpaController implements Serializable {
                 estadoMarca.getIdEstado();
             } catch (EntityNotFoundException enfe) {
                 throw new NonexistentEntityException("The estadoMarca with id " + id + " no longer exists.", enfe);
+            }
+            List<String> illegalOrphanMessages = null;
+            List<HistorialEstadoMarca> historialEstadoMarcaListOrphanCheck = estadoMarca.getHistorialEstadoMarcaList();
+            for (HistorialEstadoMarca historialEstadoMarcaListOrphanCheckHistorialEstadoMarca : historialEstadoMarcaListOrphanCheck) {
+                if (illegalOrphanMessages == null) {
+                    illegalOrphanMessages = new ArrayList<String>();
+                }
+                illegalOrphanMessages.add("This EstadoMarca (" + estadoMarca + ") cannot be destroyed since the HistorialEstadoMarca " + historialEstadoMarcaListOrphanCheckHistorialEstadoMarca + " in its historialEstadoMarcaList field has a non-nullable idEstadoMarca field.");
+            }
+            if (illegalOrphanMessages != null) {
+                throw new IllegalOrphanException(illegalOrphanMessages);
             }
             List<Expediente> expedienteList = estadoMarca.getExpedienteList();
             for (Expediente expedienteListExpediente : expedienteList) {
@@ -169,24 +232,6 @@ public class EstadoMarcaJpaController implements Serializable {
             em.close();
         }
     }
-    
-    public List<EstadoMarca> findEstadoMarcaPrimarias(boolean all, int maxResults, int firstResult) {
-        EntityManager em = getEntityManager();
-        try {
-            CriteriaBuilder cb = em.getCriteriaBuilder();
-            CriteriaQuery cq = cb.createQuery();
-            cq.select(cq.from(EstadoMarca.class));
-           
-            Query q = em.createQuery(cq);
-            if (!all) {
-                q.setMaxResults(maxResults);
-                q.setFirstResult(firstResult);
-            }
-            return q.getResultList();
-        } finally {
-            em.close();
-        }
-    }
 
     public EstadoMarca findEstadoMarca(Integer id) {
         EntityManager em = getEntityManager();
@@ -210,4 +255,57 @@ public class EstadoMarcaJpaController implements Serializable {
         }
     }
     
+    /**
+     * Retorna la lista de estados de marcas en las que se reciben oposiciones
+     * @return List<EstadoMarca> 
+     */
+    public List<EstadoMarca> getEstadoMarcaOposicion() {
+        EntityManager em = getEntityManager();
+        
+        try {
+           
+            String consulta = "select e from EstadoMarca e where e.tipo like 'O' order by e.descripcion";
+            Query q = em.createQuery(consulta); 
+            return q.getResultList();
+            
+        }finally {
+            em.close();
+        }
+    }
+    
+    /**
+     * Retorna una lista de estados de marcas iniciales
+     * @return List<EstadoMarca>
+     */
+    public List<EstadoMarca> getListaEstadoMarcaIniciales() {
+        EntityManager em = getEntityManager();
+        
+        try {
+           
+            String consulta = "select e from EstadoMarca e where e.tipo like 'I' order by e.descripcion";
+            Query q = em.createQuery(consulta); 
+            return q.getResultList();
+            
+        }finally {
+            em.close();
+        }
+    }
+    
+    /**
+     * Retorna una lista de estados de marcas finales
+     * @return List<EstadoMarca>
+     */
+    public List<EstadoMarca> getListaEstadoMarcaFinales() {
+        EntityManager em = getEntityManager();
+        
+        try {
+           
+            String consulta = "select e from EstadoMarca e where e.tipo like 'F' order by e.descripcion";
+            Query q = em.createQuery(consulta); 
+            return q.getResultList();
+            
+        }finally {
+            em.close();
+        }
+    }
 }

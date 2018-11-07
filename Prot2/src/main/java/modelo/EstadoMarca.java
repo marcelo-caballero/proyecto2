@@ -8,6 +8,7 @@ package modelo;
 import java.io.Serializable;
 import java.util.List;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -34,6 +35,13 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "EstadoMarca.findByIdEstado", query = "SELECT e FROM EstadoMarca e WHERE e.idEstado = :idEstado"),
     @NamedQuery(name = "EstadoMarca.findByDescripcion", query = "SELECT e FROM EstadoMarca e WHERE e.descripcion = :descripcion")})
 public class EstadoMarca implements Serializable {
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idEstadoMarca")
+    private List<HistorialEstadoMarca> historialEstadoMarcaList;
+
+    @Size(max = 2147483647)
+    @Column(name = "tipo")
+    private String tipo;
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -109,6 +117,23 @@ public class EstadoMarca implements Serializable {
     @Override
     public String toString() {
         return "modelo.EstadoMarca[ idEstado=" + idEstado + " ]";
+    }
+
+    public String getTipo() {
+        return tipo;
+    }
+
+    public void setTipo(String tipo) {
+        this.tipo = tipo;
+    }
+
+    @XmlTransient
+    public List<HistorialEstadoMarca> getHistorialEstadoMarcaList() {
+        return historialEstadoMarcaList;
+    }
+
+    public void setHistorialEstadoMarcaList(List<HistorialEstadoMarca> historialEstadoMarcaList) {
+        this.historialEstadoMarcaList = historialEstadoMarcaList;
     }
     
 }
