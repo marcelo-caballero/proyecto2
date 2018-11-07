@@ -40,7 +40,7 @@
                         <a class="nav-link" href="<%=request.getContextPath()%>/menu.jsp"><i class="fa fa-home"></i></a>
                     </li>
                 <%if(permisoControlAcceso.permisoRolVentana(rolUsuarioConectado,"marcas.jsp")){%> 
-                    <li class="nav-item" >
+                <li class="nav-item">
                         <a class="nav-link" href="<%=request.getContextPath()%>/marcas.jsp">Marcas</a>
                     </li>
                 <%}%>
