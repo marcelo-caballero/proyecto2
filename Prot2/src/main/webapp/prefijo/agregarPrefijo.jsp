@@ -1,9 +1,6 @@
-<%-- 
-    Document   : agregarRol
-    Created on : 13-sep-2018, 12:47:26
-    Author     : Acer
---%>
 
+<%@page import="modelo.Prefijo"%>
+<%@page import="modeloMng.PrefijoJpaController"%>
 <%@page import="modeloMng.RolJpaController"%>
 <%@page import="java.util.List"%>
 <%@page import="modelo.Rol"%> 
@@ -19,7 +16,7 @@
     </head>
     <body>
         <%
-            List<Rol> listaRol = new RolJpaController().findRolEntities();
+            List<Prefijo> listaRol = new PrefijoJpaController().findPrefijoEntities();
             
         %>
         <%@include file="//WEB-INF/menuCabecera.jsp" %>
@@ -27,7 +24,7 @@
          
         <div class ="container form-control">
         
-            <h2 class="text-justify"> Agregar Rol</h2>
+            <h2 class="text-justify">Agregar datos de la </h2>
             <br> 
         
             <form id="agregarRol" 
