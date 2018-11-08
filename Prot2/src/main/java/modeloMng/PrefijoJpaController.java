@@ -1,8 +1,8 @@
 
 package modeloMng;
 
-import controlador.exceptions.NonexistentEntityException;
-import controlador.exceptions.PreexistingEntityException;
+import modeloMng.exceptions.NonexistentEntityException;
+import modeloMng.exceptions.PreexistingEntityException;
 import java.io.Serializable;
 import java.util.List;
 import javax.persistence.EntityManager;
