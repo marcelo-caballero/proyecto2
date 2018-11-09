@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="71adade5-a4d6-4077-b411-0a4de1d538c5">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="24"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="inicio" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="123" splitType="Stretch">
+			<rectangle radius="10">
+				<reportElement x="12" y="0" width="287" height="111" uuid="ab09e4bf-7548-4312-a550-51f27e00d78c"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="40" y="11" width="221" height="20" uuid="b52a77e4-8fd8-4807-b1fc-8800fe8dfd3d"/>
+				<textElement>
+					<font size="14" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[Fátima María Ida Sánchez Ávalos]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="50" y="31" width="221" height="20" uuid="af56a025-f149-4dd1-9f1c-c2e5cc9627d7"/>
+				<textElement textAlignment="Justified"/>
+				<text><![CDATA[ACTIVIDADES JURÍDICAS (ABOGADO)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="28" y="61" width="258" height="20" uuid="41aae028-a6bc-4418-9c89-af8f4615d5e1"/>
+				<textElement textAlignment="Justified"/>
+				<text><![CDATA[Las Perlas Casi Torreani Viera - Cel: (0972) 284 925 ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="94" y="81" width="107" height="25" uuid="1baa1e9b-3b50-48f0-bcaa-cace48fb8095"/>
+				<textElement textAlignment="Justified"/>
+				<text><![CDATA[Asunción - Paraguay]]></text>
+			</staticText>
+			<rectangle radius="10">
+				<reportElement x="327" y="0" width="214" height="111" uuid="0deec0e6-837a-46c4-90b1-c3993cc15501"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="368" y="7" width="128" height="20" uuid="51fdafd2-af40-42c8-9059-2b35a41fac7a"/>
+				<text><![CDATA[TIMBRADO N° 13053382]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="338" y="28" width="190" height="20" uuid="76a8c230-971d-4f60-9233-5425400fb038"/>
+				<text><![CDATA[Válido del 31/10/2018 al 31/10/2019]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="383" y="49" width="100" height="20" uuid="afde2f6f-84c4-4b2c-ae84-44b0f6ba0a8b"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[RUC: 4379105-0]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="402" y="69" width="55" height="20" uuid="5eef18a8-46bc-43f8-b074-a24b0e333940"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[FACTURA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="379" y="91" width="64" height="20" uuid="32ebec8c-6270-48a0-a8df-c502887cc0df"/>
+				<textElement>
+					<font isBold="false"/>
+				</textElement>
+				<text><![CDATA[N° 001-001-]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="433" y="91" width="57" height="20" uuid="491e0311-1c32-4d7b-8b92-f9b1f7fcfdfe"/>
+				<textFieldExpression><![CDATA[$P{inicio}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="132" splitType="Stretch">
+			<rectangle radius="10">
+				<reportElement x="12" y="11" width="529" height="110" uuid="2c38dd0d-e976-42f5-8f88-2051f97ae360"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="28" y="25" width="100" height="20" uuid="98353c6f-4c14-488b-ac81-058be2c49c38"/>
+				<text><![CDATA[Fecha de emisión:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="28" y="45" width="116" height="20" uuid="59dbb923-6e44-4074-8d3e-e488e3ebf39d"/>
+				<text><![CDATA[Nombre o razón social:]]></text>
+			</staticText>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="61" splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="125" splitType="Stretch"/>
+	</detail>
+	<columnFooter>
+		<band height="45" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="54" splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="42" splitType="Stretch"/>
+	</summary>
+</jasperReport>
