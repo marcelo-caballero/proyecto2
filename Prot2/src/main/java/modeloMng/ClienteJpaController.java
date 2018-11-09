@@ -18,6 +18,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import modelo.Cliente;
+import modelo.FacturaCabecera;
 import modelo.Pais;
 import modeloMng.exceptions.IllegalOrphanException;
 import modeloMng.exceptions.NonexistentEntityException;
@@ -41,6 +42,9 @@ public class ClienteJpaController implements Serializable {
         if (cliente.getExpedienteList() == null) {
             cliente.setExpedienteList(new ArrayList<Expediente>());
         }
+        if (cliente.getFacturaCabeceraList() == null) {
+            cliente.setFacturaCabeceraList(new ArrayList<FacturaCabecera>());
+        }
         EntityManager em = null;
         try {
             em = getEntityManager();
@@ -61,6 +65,12 @@ public class ClienteJpaController implements Serializable {
                 attachedExpedienteList.add(expedienteListExpedienteToAttach);
             }
             cliente.setExpedienteList(attachedExpedienteList);
+            List<FacturaCabecera> attachedFacturaCabeceraList = new ArrayList<FacturaCabecera>();
+            for (FacturaCabecera facturaCabeceraListFacturaCabeceraToAttach : cliente.getFacturaCabeceraList()) {
+                facturaCabeceraListFacturaCabeceraToAttach = em.getReference(facturaCabeceraListFacturaCabeceraToAttach.getClass(), facturaCabeceraListFacturaCabeceraToAttach.getIdFactura());
+                attachedFacturaCabeceraList.add(facturaCabeceraListFacturaCabeceraToAttach);
+            }
+            cliente.setFacturaCabeceraList(attachedFacturaCabeceraList);
             em.persist(cliente);
             if (idPais != null) {
                 idPais.getClienteList().add(cliente);
@@ -77,6 +87,15 @@ public class ClienteJpaController implements Serializable {
                 if (oldIdClienteOfExpedienteListExpediente != null) {
                     oldIdClienteOfExpedienteListExpediente.getExpedienteList().remove(expedienteListExpediente);
                     oldIdClienteOfExpedienteListExpediente = em.merge(oldIdClienteOfExpedienteListExpediente);
+                }
+            }
+            for (FacturaCabecera facturaCabeceraListFacturaCabecera : cliente.getFacturaCabeceraList()) {
+                Cliente oldIdClienteOfFacturaCabeceraListFacturaCabecera = facturaCabeceraListFacturaCabecera.getIdCliente();
+                facturaCabeceraListFacturaCabecera.setIdCliente(cliente);
+                facturaCabeceraListFacturaCabecera = em.merge(facturaCabeceraListFacturaCabecera);
+                if (oldIdClienteOfFacturaCabeceraListFacturaCabecera != null) {
+                    oldIdClienteOfFacturaCabeceraListFacturaCabecera.getFacturaCabeceraList().remove(facturaCabeceraListFacturaCabecera);
+                    oldIdClienteOfFacturaCabeceraListFacturaCabecera = em.merge(oldIdClienteOfFacturaCabeceraListFacturaCabecera);
                 }
             }
             em.getTransaction().commit();
@@ -99,6 +118,8 @@ public class ClienteJpaController implements Serializable {
             Usuario idUsuarioNew = cliente.getIdUsuario();
             List<Expediente> expedienteListOld = persistentCliente.getExpedienteList();
             List<Expediente> expedienteListNew = cliente.getExpedienteList();
+            List<FacturaCabecera> facturaCabeceraListOld = persistentCliente.getFacturaCabeceraList();
+            List<FacturaCabecera> facturaCabeceraListNew = cliente.getFacturaCabeceraList();
             List<String> illegalOrphanMessages = null;
             for (Expediente expedienteListOldExpediente : expedienteListOld) {
                 if (!expedienteListNew.contains(expedienteListOldExpediente)) {
@@ -106,6 +127,14 @@ public class ClienteJpaController implements Serializable {
                         illegalOrphanMessages = new ArrayList<String>();
                     }
                     illegalOrphanMessages.add("You must retain Expediente " + expedienteListOldExpediente + " since its idCliente field is not nullable.");
+                }
+            }
+            for (FacturaCabecera facturaCabeceraListOldFacturaCabecera : facturaCabeceraListOld) {
+                if (!facturaCabeceraListNew.contains(facturaCabeceraListOldFacturaCabecera)) {
+                    if (illegalOrphanMessages == null) {
+                        illegalOrphanMessages = new ArrayList<String>();
+                    }
+                    illegalOrphanMessages.add("You must retain FacturaCabecera " + facturaCabeceraListOldFacturaCabecera + " since its idCliente field is not nullable.");
                 }
             }
             if (illegalOrphanMessages != null) {
@@ -126,6 +155,13 @@ public class ClienteJpaController implements Serializable {
             }
             expedienteListNew = attachedExpedienteListNew;
             cliente.setExpedienteList(expedienteListNew);
+            List<FacturaCabecera> attachedFacturaCabeceraListNew = new ArrayList<FacturaCabecera>();
+            for (FacturaCabecera facturaCabeceraListNewFacturaCabeceraToAttach : facturaCabeceraListNew) {
+                facturaCabeceraListNewFacturaCabeceraToAttach = em.getReference(facturaCabeceraListNewFacturaCabeceraToAttach.getClass(), facturaCabeceraListNewFacturaCabeceraToAttach.getIdFactura());
+                attachedFacturaCabeceraListNew.add(facturaCabeceraListNewFacturaCabeceraToAttach);
+            }
+            facturaCabeceraListNew = attachedFacturaCabeceraListNew;
+            cliente.setFacturaCabeceraList(facturaCabeceraListNew);
             cliente = em.merge(cliente);
             if (idPaisOld != null && !idPaisOld.equals(idPaisNew)) {
                 idPaisOld.getClienteList().remove(cliente);
@@ -151,6 +187,17 @@ public class ClienteJpaController implements Serializable {
                     if (oldIdClienteOfExpedienteListNewExpediente != null && !oldIdClienteOfExpedienteListNewExpediente.equals(cliente)) {
                         oldIdClienteOfExpedienteListNewExpediente.getExpedienteList().remove(expedienteListNewExpediente);
                         oldIdClienteOfExpedienteListNewExpediente = em.merge(oldIdClienteOfExpedienteListNewExpediente);
+                    }
+                }
+            }
+            for (FacturaCabecera facturaCabeceraListNewFacturaCabecera : facturaCabeceraListNew) {
+                if (!facturaCabeceraListOld.contains(facturaCabeceraListNewFacturaCabecera)) {
+                    Cliente oldIdClienteOfFacturaCabeceraListNewFacturaCabecera = facturaCabeceraListNewFacturaCabecera.getIdCliente();
+                    facturaCabeceraListNewFacturaCabecera.setIdCliente(cliente);
+                    facturaCabeceraListNewFacturaCabecera = em.merge(facturaCabeceraListNewFacturaCabecera);
+                    if (oldIdClienteOfFacturaCabeceraListNewFacturaCabecera != null && !oldIdClienteOfFacturaCabeceraListNewFacturaCabecera.equals(cliente)) {
+                        oldIdClienteOfFacturaCabeceraListNewFacturaCabecera.getFacturaCabeceraList().remove(facturaCabeceraListNewFacturaCabecera);
+                        oldIdClienteOfFacturaCabeceraListNewFacturaCabecera = em.merge(oldIdClienteOfFacturaCabeceraListNewFacturaCabecera);
                     }
                 }
             }
@@ -190,6 +237,13 @@ public class ClienteJpaController implements Serializable {
                     illegalOrphanMessages = new ArrayList<String>();
                 }
                 illegalOrphanMessages.add("This Cliente (" + cliente + ") cannot be destroyed since the Expediente " + expedienteListOrphanCheckExpediente + " in its expedienteList field has a non-nullable idCliente field.");
+            }
+            List<FacturaCabecera> facturaCabeceraListOrphanCheck = cliente.getFacturaCabeceraList();
+            for (FacturaCabecera facturaCabeceraListOrphanCheckFacturaCabecera : facturaCabeceraListOrphanCheck) {
+                if (illegalOrphanMessages == null) {
+                    illegalOrphanMessages = new ArrayList<String>();
+                }
+                illegalOrphanMessages.add("This Cliente (" + cliente + ") cannot be destroyed since the FacturaCabecera " + facturaCabeceraListOrphanCheckFacturaCabecera + " in its facturaCabeceraList field has a non-nullable idCliente field.");
             }
             if (illegalOrphanMessages != null) {
                 throw new IllegalOrphanException(illegalOrphanMessages);
@@ -420,6 +474,20 @@ public class ClienteJpaController implements Serializable {
             
             return false;
             
+        }finally {
+            em.close();
+        }
+    }
+    
+     public List<Cliente> getClientePorRuc(String ruc) {
+        EntityManager em = getEntityManager();
+        
+        try {
+            String consulta = "select c from Cliente c where c.ruc = :ruc";
+            Query q = em.createQuery(consulta); 
+            q.setParameter("ruc", ruc);
+            return q.getResultList();
+         
         }finally {
             em.close();
         }

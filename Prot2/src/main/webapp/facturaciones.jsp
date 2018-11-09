@@ -4,6 +4,9 @@
     Author     : User
 --%>
 
+<%@page import="modeloMng.FacturaCabeceraJpaController"%>
+<%@page import="modelo.FacturaCabecera"%>
+<%@page import="java.util.List"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%response.setHeader("Cache-Control", "no-cache");
 %>
@@ -11,7 +14,7 @@
 <html>
     <head>
 
-        <title>Marcas - Ta'angapp</title>
+        <title>Facturaciones - Ta'angapp</title>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <%@include file="//WEB-INF/paginaCabecera.jsp" %>
         <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.16/css/jquery.dataTables.css">
@@ -21,9 +24,9 @@
     <body onload="init()">
         
         <%
-            List<Marca> listaMarca;
-            MarcaJpaController marcaControl = new MarcaJpaController();
-            listaMarca = marcaControl.findMarcaEntities();
+            List<FacturaCabecera> lista;
+            FacturaCabeceraJpaController facturaControl = new FacturaCabeceraJpaController();
+            lista = facturaControl.findFacturaCabeceraEntities();
             /*try{
                 lista = clasecontrol.findClaseEntities();
             }catch(Exception e){ 
@@ -34,20 +37,23 @@
         <br>
         <div class="container form-control">
             <%@include file="//WEB-INF/mensajeErrorABM.jsp" %>
-            <h2 class="text-justify">Marcas</h2>
+            <h2 class="text-justify">Facturas</h2>
             <br>
 
             <table id="mytable" class="table table-striped table-bordered dt-responsive nowrap">
                 <thead style="background-color:whitesmoke">
                     <tr>
-                        <th>Nombre de la Marca</th>
-                        <th>Signo</th>
+                        <th>Número de Factura</th>
+                        <th>R.U.C.</th>
+                        <th>Fecha</th>
+                        <th>Condición Venta</th>
+                        <th>Estado</th>
                         <th>
-                            <%if(permisoControlAcceso.permisoRolVentana(rolUsuarioConectado,"agregarMarca.jsp")){%>
+                            <%if(permisoControlAcceso.permisoRolVentana(rolUsuarioConectado,"agregarFactura.jsp")){%>
                                 <i class="fa fa-plus-circle" 
                                    style="font-size:24px"  
                                    onmouseover="this.style.cursor = 'pointer'" 
-                                   onclick='window.location.href = "<%=request.getContextPath()%>/marcas/agregarMarca.jsp"'> 
+                                   onclick='window.location.href = "<%=request.getContextPath()%>/facturacion/agregarFactura.jsp"'> 
                                 </i>
                             <%}%> 
                         </th>
@@ -55,33 +61,29 @@
                 </thead>
 
                 <tbody id='cuerpoTabla'>
-                    <%for (int i = 0; i < listaMarca.size(); i++) {%>
+                    <%for (int i = 0; i < lista.size(); i++) {%>
 
                     <tr>
-                        <input id="marca-<%=i%>" type="hidden"  value="<%=listaMarca.get(i).getIdMarca()%>"/> 
-                        <td id="denominacion-<%=i%>"><%=listaMarca.get(i).getDenominacion()%></td>
-                        <td id="signo-<%=i%>"><%=listaMarca.get(i).getIdTipoMarca().getDescripcion()%></td> 
+                        <input id="idFactura-<%=i%>" type="hidden"  value="<%=lista.get(i).getIdFactura()%>"/>   
+                        <td id="numFactura-<%=i%>"><%=lista.get(i).getNumeroFactura()%></td>
+                        <td id=""><%=lista.get(i).getIdCliente().getRuc()%></td>  
+                        <td id=""><%=lista.get(i).getStringFecha()%></td>  
+                        <td id=""><%=lista.get(i).getCondicionVenta()%></td>  
+                        <td id=""><%=lista.get(i).getEstado()%></td>  
                        
                         <td>
-                            <%if(permisoControlAcceso.permisoRolVentana(rolUsuarioConectado,"verMarca.jsp")){%> 
+                            <%if(permisoControlAcceso.permisoRolVentana(rolUsuarioConectado,"verFactura.jsp")){%> 
                                 <i class="fa fa-search" 
                                    style="font-size:24px"  
                                    onmouseover="this.style.cursor = 'pointer'" 
-                                   onclick='window.location.href = "<%=request.getContextPath()%>/marcas/verMarca.jsp?idMarca=<%=listaMarca.get(i).getIdMarca()%>"'> 
+                                   onclick='window.location.href = "<%=request.getContextPath()%>/facturacion/verFactura.jsp?idFactura=<%=lista.get(i).getIdFactura()%>"'> 
                                 </i>
                             <%}%>
-                            <%if(permisoControlAcceso.permisoRolVentana(rolUsuarioConectado,"editarMarca.jsp" )){%> 
-                                <i class="fa fa-edit" 
-                                   style="font-size:24px"  
-                                   onmouseover="this.style.cursor = 'pointer'" 
-                                   onclick='window.location.href = "<%=request.getContextPath()%>/marcas/editarMarca.jsp?idMarca=<%=listaMarca.get(i).getIdMarca()%>"'> 
-                                </i>
-                            <%}%>
-                            <%if(permisoControlAcceso.permisoRolVentana(rolUsuarioConectado,"eliminarMarca")){%>
+                            <%if(permisoControlAcceso.permisoRolVentana(rolUsuarioConectado,"anularFactura.jsp" )){%> 
                                 <i class="fa fa-remove" 
                                    style="font-size:24px"  
                                    onmouseover="this.style.cursor = 'pointer'" 
-                                   onclick="modalEliminar('<%=i%>')"> 
+                                   onclick='window.location.href = "<%=request.getContextPath()%>/facturacion/anularFactura.jsp?idFactura=<%=lista.get(i).getIdFactura()%>"'> 
                                 </i>
                             <%}%>
                         </td>
@@ -91,47 +93,8 @@
             </table> 
 
         </div>
-        <%-- Modal Eliminar --%>
-        <div class="modal fade" id="modal-eliminar" role="dialog">
-            <div class="modal-dialog">
-                <div class="modal-content">
-
-                    <div class="modal-header">
-                        <h4 class="modal-title">Eliminar</h4>
-                        <button type="button" class="close" data-dismiss="modal">&times;</button>
-
-                    </div>
-                    <div class="modal-body">
-                        <form id="form-eliminar" action="<%=request.getContextPath()%>/MarcaServlet" method="post">
-                            <input name= "idMarca" id="eliminar-marca" type="hidden"/>   
-                            <p id="eliminar-mensaje"></p>
-
-                        </form>
-                    </div>
-                    <div class="modal-footer">
-                        <button form="form-eliminar" id="btn-eliminar"  type="submit" name="eliminar" class="btn btn-default" >Eliminar</button>
-                    </div>
-                </div>
-            </div>
-        </div>
         <br>
         <script>
-
-            function modalEliminar(fila) {
-                $(document).ready(function () {
-
-                    $("#modal-eliminar").modal();
-                    var denominacion = document.getElementById("denominacion-" + fila).textContent;
-                    var idMarca = document.getElementById("marca-" + fila).value;
-
-                    document.getElementById("eliminar-marca").value = idMarca;
-                    document.getElementById("eliminar-mensaje").textContent =
-                            "¿Desea eliminar la marca " + denominacion + "?";
-
-
-                });
-            }
-
             $(document).ready(function () {
                 $('#mytable').DataTable({
                     "language": {

@@ -36,7 +36,7 @@
             <h2 class="text-justify"> Agregar Titular</h2>
             <br> 
         
-            <form id="agregarCliente" 
+            <form id="agregarFactura" 
                   action="<%=request.getContextPath()%>/ClienteServlet?agregar=true" 
                   method="post" 
                   novalidate>

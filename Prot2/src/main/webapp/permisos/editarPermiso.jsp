@@ -846,7 +846,43 @@
                                <%if(permisoControl.permisoRolVentana(idRol,"facturaciones.jsp")){%> 
                                   checked
                                <%}%>
+                               onclick="ocultarSubmenuFacturacion()"
                                >Menú Facturación
+                </div>
+                <div class="col-8 form-control">
+                    <div class="col">
+                        <input form="editarPermiso"
+                               name="permiso"
+                               id="agregarFactura"
+                               type="checkbox"
+                               value="71"
+                               <%if(permisoControl.permisoRolVentana(idRol, "agregarFactura.jsp")){%> 
+                                  checked
+                               <%}%>
+                               >Agregar Factura
+                    </div>
+                    <div class="col">
+                        <input form="editarPermiso"
+                               name="permiso"
+                               id="verFactura"
+                               type="checkbox"
+                               value="72"
+                               <%if(permisoControl.permisoRolVentana(idRol, "verFactura.jsp")){%> 
+                                  checked
+                               <%}%>
+                               >Ver Factura
+                    </div>
+                    <div class="col">
+                        <input form="editarPermiso"
+                               name="permiso"
+                               id="anularFactura"
+                               type="checkbox"
+                               value="73"
+                               <%if(permisoControl.permisoRolVentana(idRol, "anularFactura.jsp")){%> 
+                                  checked
+                               <%}%>
+                               >Anular Factura
+                    </div>
                 </div>
             </div>
                                
@@ -875,6 +911,7 @@
                 ocultarSubmenuUsuario();
                 ocultarSubmenuRol();
                 ocultarSubmenuPermiso();
+                ocultarSubmenuFacturacion();
                 
                 ocultarSubmenuDocumentoOposicionHecha();
                 ocultarSubmenuEventoOposicionHecha();
@@ -918,6 +955,22 @@
                 }else{
                     document.getElementById("agregarPermiso").setAttribute("disabled","");
                     document.getElementById("verPermiso").setAttribute("disabled","");
+                    
+                }
+            }
+            
+            function ocultarSubmenuFacturacion(){
+                var checkInput = document.getElementById("menuFacturacion");
+                    
+                if(checkInput.checked){
+                    document.getElementById("agregarFactura").removeAttribute("disabled","");
+                    document.getElementById("verFactura").removeAttribute("disabled","");
+                    document.getElementById("anularFactura").removeAttribute("disabled","");
+                    
+                }else{
+                    document.getElementById("agregarFactura").setAttribute("disabled","");
+                    document.getElementById("verFactura").setAttribute("disabled","");
+                    document.getElementById("anularFactura").setAttribute("disabled","");
                     
                 }
             }

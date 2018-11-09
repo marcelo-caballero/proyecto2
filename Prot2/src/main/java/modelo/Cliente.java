@@ -103,6 +103,9 @@ public class Cliente implements Serializable {
     @JoinColumn(name = "id_usuario", referencedColumnName = "id_usuario")
     @ManyToOne(optional = false)
     private Usuario idUsuario;
+    
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idCliente")
+    private List<FacturaCabecera> facturaCabeceraList;
 
     public Cliente() {
     }
@@ -217,6 +220,15 @@ public class Cliente implements Serializable {
         this.idUsuario = idUsuario;
     }
 
+    @XmlTransient
+    public List<FacturaCabecera> getFacturaCabeceraList() {
+        return facturaCabeceraList;
+    }
+
+    public void setFacturaCabeceraList(List<FacturaCabecera> facturaCabeceraList) {
+        this.facturaCabeceraList = facturaCabeceraList;
+    }
+    
 
     @Override
     public int hashCode() {

@@ -8,6 +8,7 @@ package controlador;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.math.BigDecimal;
+import java.util.List;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -41,26 +42,49 @@ public class ClienteServlet extends HttpServlet {
         String ruc = request.getParameter("rucDuplicado");
         
         
-        //Cuando la operacion es editar 
-        
-        if(request.getParameter("idCliente") != null){
-            idCliente = Integer.parseInt(request.getParameter("idCliente"));
-        }
-        
-        //Operacion agregar
-        if(ci != null){
-            Integer ciNumero = Integer.parseInt(ci);
-            Boolean ciDuplicado = clienteControl.existeCiDuplicado(ciNumero,idCliente); 
-            
-            try (PrintWriter out = response.getWriter()) {
-                out.println("{\"ciDuplicado\":"+ciDuplicado+"}");
+        if(ci != null || ruc != null){
+            //Cuando la operacion es editar 
+
+            if(request.getParameter("idCliente") != null){
+                idCliente = Integer.parseInt(request.getParameter("idCliente"));
+            }
+
+            //Operacion agregar
+            if(ci != null){
+                Integer ciNumero = Integer.parseInt(ci);
+                Boolean ciDuplicado = clienteControl.existeCiDuplicado(ciNumero,idCliente); 
+
+                try (PrintWriter out = response.getWriter()) {
+                    out.println("{\"ciDuplicado\":"+ciDuplicado+"}");
+                }
+            }
+            if(ruc != null){
+                Boolean rucDuplicado = clienteControl.existeRucDuplicado(ruc,idCliente); 
+
+                try (PrintWriter out = response.getWriter()) {
+                    out.println("{\"rucDuplicado\":"+rucDuplicado+"}");
+                }
             }
         }
-        if(ruc != null){
-            Boolean rucDuplicado = clienteControl.existeRucDuplicado(ruc,idCliente); 
+        
+        if(request.getParameter("rellenarCliente") != null){
+            String nroRuc = request.getParameter("nroRuc");
+            boolean valido = false;
             
+            List<Cliente> lista = clienteControl.getClientePorRuc(nroRuc);
+            if(lista.size()>0){
+                valido = true;
+            }
             try (PrintWriter out = response.getWriter()) {
-                out.println("{\"rucDuplicado\":"+rucDuplicado+"}");
+                if(valido){
+                    out.println("{\"valido\":"+valido+",");
+                    out.println("\"cliente\":\""+lista.get(0).getNombreCliente()+"\",");
+                    out.println("\"direccion\":\""+lista.get(0).getDireccion()+"\",");
+                    out.println("\"idCliente\":\""+lista.get(0).getIdCliente()+"\",");
+                    out.println("\"telefono\":\""+lista.get(0).getTelefono()+"\"}");
+                }else{
+                    out.println("{\"valido\":"+valido+"}");
+                }
             }
         }
     }
