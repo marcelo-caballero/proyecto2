@@ -8,19 +8,19 @@
 %>
 <ul class="nav nav-tabs" >
     <%if(permisoControlAccesoConfiguracion.permisoRolVentana(rolUsuarioConectadoConfiguracion,"usuarios.jsp")){%> 
-        <li class="nav-item">
+        <li class="nav-item" id="pestanaItem">
             <a class="nav-link" href="<%=request.getContextPath()%>/usuarios.jsp">Usuarios</a>
         </li>
     <%}%>
 
     <%if(permisoControlAccesoConfiguracion.permisoRolVentana(rolUsuarioConectadoConfiguracion,"roles.jsp")){%> 
-        <li class="nav-item">
+        <li class="nav-item" id="pestanaItem">
             <a class="nav-link" href="<%=request.getContextPath()%>/roles.jsp">Roles</a>
         </li>
     <%}%>
 
     <%if(permisoControlAccesoConfiguracion.permisoRolVentana(rolUsuarioConectadoConfiguracion,"permisos.jsp")){%>
-        <li class="nav-item">
+        <li class="nav-item" id="pestanaItem">
             <a class="nav-link" href="<%=request.getContextPath()%>/permisos.jsp">Permisos</a>
         </li>
     <%}%>

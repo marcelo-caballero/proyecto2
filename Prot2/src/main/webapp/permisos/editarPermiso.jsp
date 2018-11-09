@@ -40,7 +40,22 @@
                   method="post">
                 <input type="hidden" name="idRol" value="<%=idRol%>">
             </form>
-          
+            
+            <div class="row form-group">
+                <div class="col-3">
+                    <input form="editarPermiso"
+                               name="permiso"
+                               id="notificacion"
+                               type="checkbox"
+                               value="70"
+                               <%if(permisoControl.permisoRolVentana(idRol,"notificaciones.jsp")){%> 
+                                  checked
+                               <%}%>
+                               
+                               >Notificaciones
+                </div>
+            </div>
+                               
             <div class="row form-group">
                 <div class="col-3">
                     <input form="editarPermiso"
@@ -290,6 +305,67 @@
                 <div class="col-3">
                     <input form="editarPermiso"
                                name="permiso"
+                               id="menuOposicionRecibida"
+                               type="checkbox"
+                               value="44"
+                               <%if(permisoControl.permisoRolVentana(idRol, "oposicionesRecibidas.jsp")){%> 
+                                  checked
+                               <%}%>
+                               onclick="ocultarSubmenuOposicionRecibida()"
+                               >Menú Oposiciones Recibidas
+                </div>
+                <div class="col-8 form-control">
+                    <div class="col">
+                        <input form="editarPermiso"
+                               name="permiso"
+                               id="agregarOposicionRecibida"
+                               type="checkbox"
+                               value="45"
+                               <%if(permisoControl.permisoRolVentana(idRol, "agregarOposicionRecibida.jsp")){%> 
+                                  checked
+                               <%}%>
+                               >Agregar
+                    </div>
+                    <div class="col">
+                        <input form="editarPermiso"
+                               name="permiso"
+                               id="verOposicionRecibida"
+                               type="checkbox"
+                               value="46"
+                               <%if(permisoControl.permisoRolVentana(idRol,"verOposicionRecibida.jsp")){%> 
+                                  checked
+                               <%}%>
+                               >Ver
+                    </div>
+                    <div class="col">
+                        <input form="editarPermiso"
+                               name="permiso"
+                               id="editarOposicionRecibida"
+                               type="checkbox"
+                               value="47"
+                               <%if(permisoControl.permisoRolVentana(idRol, "editarOposicionRecibida.jsp")){%> 
+                                  checked
+                               <%}%>
+                               >Editar
+                    </div>
+                    <div class="col">
+                        <input form="editarPermiso"
+                               name="permiso"
+                               id="eliminarOposicionRecibida"
+                               type="checkbox"
+                               value="48"
+                               <%if(permisoControl.permisoRolVentana(idRol, "eliminarOposicionRecibida")){%> 
+                                  checked
+                               <%}%>
+                               >Eliminar
+                    </div>
+                </div>
+            </div>
+                     
+            <div class="row form-group">
+                <div class="col-3">
+                    <input form="editarPermiso"
+                               name="permiso"
                                id="menuAgente"
                                type="checkbox"
                                value="21"
@@ -408,6 +484,21 @@
                 </div>
             </div>
                   
+            <div class="row form-group">
+                <div class="col-3">
+                    <input form="editarPermiso"
+                               name="permiso"
+                               id="configuraciones"
+                               type="checkbox"
+                               value="50"
+                               <%if(permisoControl.permisoRolVentana(idRol,"configuraciones.jsp")){%> 
+                                  checked
+                               <%}%>
+                               onclick="ocultarSubmenuConfiguraciones()" 
+                               >Configuraciones
+                </div>
+            </div>
+                               
             <div class="row form-group">
                 <div class="col-3">
                     <input form="editarPermiso"
@@ -561,7 +652,204 @@
                 </div>
             </div>
   
+            <div class="row form-group">
+                <div class="col-3">
+                    <input form="editarPermiso"
+                               name="permiso"
+                               id="menuOposicionHecha"
+                               type="checkbox"
+                               value="49"
+                               <%if(permisoControl.permisoRolVentana(idRol, "oposicionesHechas.jsp")){%> 
+                                  checked
+                               <%}%>
+                               onclick="ocultarSubmenuOposicionHecha()"
+                               >Menú Oposiciones Hechas
+                </div>
+                <div class="col-8 form-control">
+                    <div class="col">
+                        <input form="editarPermiso"
+                               name="permiso"
+                               id="agregarOposicionHecha"
+                               type="checkbox"
+                               value="53"
+                               <%if(permisoControl.permisoRolVentana(idRol, "agregarOposicionHecha.jsp")){%> 
+                                  checked
+                               <%}%>
+                               >Agregar
+                    </div>
+                    <div class="col">
+                        <input form="editarPermiso"
+                               name="permiso"
+                               id="verOposicionHecha"
+                               type="checkbox"
+                               value="54"
+                               <%if(permisoControl.permisoRolVentana(idRol, "verOposicionHecha.jsp")){%> 
+                                  checked
+                               <%}%>
+                               onclick="ocultarSubmenuVerOposicionHecha()"
+                               >Ver
+                    </div>
+                    <div class="col">
+                        <input form="editarPermiso"
+                               name="permiso"
+                               id="editarOposicionHecha"
+                               type="checkbox"
+                               value="55"
+                               <%if(permisoControl.permisoRolVentana(idRol,"editarOposicionHecha.jsp")){%> 
+                                  checked
+                               <%}%>
+                               >Editar
+                    </div>
+                    <div class="col">
+                        <input form="editarPermiso"
+                               name="permiso"
+                               id="eliminarOposicionHecha"
+                               type="checkbox"
+                               value="56"
+                               <%if(permisoControl.permisoRolVentana(idRol, "eliminarOposicionHecha")){%> 
+                                  checked
+                               <%}%>
+                               >Eliminar
+                    </div>
+                </div>
+            </div>
+                  
+            <div class="row form-group">
+                <div class="col-3">
+                    <input form="editarPermiso"
+                               name="permiso"
+                               id="menuDocumentoOposicionHecha"
+                               type="checkbox"
+                               value="57"
+                               <%if(permisoControl.permisoRolVentana(idRol, "documentosOposicionesHechas.jsp")){%> 
+                                  checked
+                               <%}%>
+                               onclick="ocultarSubmenuDocumentoOposicionHecha()"
+                               >Menú Documento Oposiciones Hechas
+                </div>
+                <div class="col-8 form-control">
+                    <div class="col">
+                        <input form="editarPermiso"
+                               name="permiso"
+                               id="agregarDocumentoOposicionHecha"
+                               type="checkbox"
+                               value="63"
+                               <%if(permisoControl.permisoRolVentana(idRol, "agregarDocumentoOposicionHecha.jsp")){%> 
+                                  checked
+                               <%}%>
+                               >Agregar
+                    </div>
+                    <div class="col">
+                        <input form="editarPermiso"
+                               name="permiso"
+                               id="verDocumentoOposicionHecha"
+                               type="checkbox"
+                               value="64"
+                               <%if(permisoControl.permisoRolVentana(idRol,"verDocumentoOposicionHecha.jsp")){%> 
+                                  checked
+                               <%}%>
+                               >Ver
+                    </div>
+                    <div class="col">
+                        <input form="editarPermiso"
+                               name="permiso"
+                               id="editarDocumentoOposicionHecha"
+                               type="checkbox"
+                               value="67"
+                               <%if(permisoControl.permisoRolVentana(idRol, "editarDocumentoOposicionHecha.jsp")){%> 
+                                  checked
+                               <%}%>
+                               >Editar
+                    </div>
+                    <div class="col">
+                        <input form="editarPermiso"
+                               name="permiso"
+                               id="eliminarDocumentoOposicionHecha"
+                               type="checkbox"
+                               value="68"
+                               <%if(permisoControl.permisoRolVentana(idRol, "eliminarDocumentoOposicionHecha")){%> 
+                                  checked
+                               <%}%>
+                               >Eliminar
+                    </div>
+                </div>
+            </div>
+                  
+            <div class="row form-group">
+                <div class="col-3">
+                    <input form="editarPermiso"
+                               name="permiso"
+                               id="menuEventoOposicionHecha"
+                               type="checkbox"
+                               value="58"
+                               <%if(permisoControl.permisoRolVentana(idRol, "eventosOposicionesHechas.jsp")){%> 
+                                  checked
+                               <%}%>
+                               onclick="ocultarSubmenuEventoOposicionHecha()"
+                               >Menú Evento Oposiciones Hechas
+                </div>
+                <div class="col-8 form-control">
+                    <div class="col">
+                        <input form="editarPermiso"
+                               name="permiso"
+                               id="agregarEventoOposicionHecha"
+                               type="checkbox"
+                               value="59"
+                               <%if(permisoControl.permisoRolVentana(idRol, "agregarEventoOposicionHecha.jsp")){%> 
+                                  checked
+                               <%}%>
+                               >Agregar
+                    </div>
+                    <div class="col">
+                        <input form="editarPermiso"
+                               name="permiso"
+                               id="verEventoOposicionHecha"
+                               type="checkbox"
+                               value="60"
+                               <%if(permisoControl.permisoRolVentana(idRol,"verEventoOposicionHecha.jsp")){%> 
+                                  checked
+                               <%}%>
+                               >Ver
+                    </div>
+                    <div class="col">
+                        <input form="editarPermiso"
+                               name="permiso"
+                               id="editarEventoOposicionHecha"
+                               type="checkbox"
+                               value="61"
+                               <%if(permisoControl.permisoRolVentana(idRol, "editarEventoOposicionHecha.jsp")){%> 
+                                  checked
+                               <%}%>
+                               >Editar
+                    </div>
+                    <div class="col">
+                        <input form="editarPermiso"
+                               name="permiso"
+                               id="eliminarEventoOposicionHecha"
+                               type="checkbox"
+                               value="62"
+                               <%if(permisoControl.permisoRolVentana(idRol, "eliminarEventoOposicionHecha")){%> 
+                                  checked
+                               <%}%>
+                               >Eliminar
+                    </div>
+                </div>
+            </div>
             
+            <div class="row form-group">
+                <div class="col-3">
+                    <input form="editarPermiso"
+                               name="permiso"
+                               id="menuFacturacion"
+                               type="checkbox"
+                               value="69"
+                               <%if(permisoControl.permisoRolVentana(idRol,"facturaciones.jsp")){%> 
+                                  checked
+                               <%}%>
+                               >Menú Facturación
+                </div>
+            </div>
+                               
             <div class="row form-group">
                 <div class="col-5">
                 </div>
@@ -588,10 +876,36 @@
                 ocultarSubmenuRol();
                 ocultarSubmenuPermiso();
                 
+                ocultarSubmenuDocumentoOposicionHecha();
+                ocultarSubmenuEventoOposicionHecha();
                 
+                ocultarSubmenuConfiguraciones();
+                
+                ocultarSubmenuOposicionRecibida();
                 
                 ocultarSubmenuVerExp();
                 
+                
+                ocultarSubmenuOposicionHecha();
+                
+                ocultarSubmenuVerOposicionHecha();
+            }
+            
+            function ocultarSubmenuOposicionRecibida(){
+                var checkInput = document.getElementById("menuOposicionRecibida");
+                    
+                if(checkInput.checked){
+                    document.getElementById("agregarOposicionRecibida").removeAttribute("disabled","");
+                    document.getElementById("verOposicionRecibida").removeAttribute("disabled","");
+                    document.getElementById("eliminarOposicionRecibida").removeAttribute("disabled","");
+                    document.getElementById("editarOposicionRecibida").removeAttribute("disabled","");
+                    
+                }else{
+                    document.getElementById("agregarOposicionRecibida").setAttribute("disabled","");
+                    document.getElementById("verOposicionRecibida").setAttribute("disabled","");
+                    document.getElementById("eliminarOposicionRecibida").setAttribute("disabled","");
+                    document.getElementById("editarOposicionRecibida").setAttribute("disabled","");
+                }
             }
             
             function ocultarSubmenuPermiso(){
@@ -720,6 +1034,12 @@
                     document.getElementById("verEven").setAttribute("disabled","");
                     document.getElementById("eliminarEven").setAttribute("disabled","");
                     document.getElementById("editarEven").setAttribute("disabled","");
+                    
+                    document.getElementById("menuOposicionRecibida").setAttribute("disabled","");
+                    document.getElementById("agregarOposicionRecibida").setAttribute("disabled","");
+                    document.getElementById("verOposicionRecibida").setAttribute("disabled","");
+                    document.getElementById("eliminarOposicionRecibida").setAttribute("disabled","");
+                    document.getElementById("editarOposicionRecibida").setAttribute("disabled","");
                 }
             }
             
@@ -763,9 +1083,11 @@
                 if(checkInput.checked){
                     document.getElementById("menuDocumento").removeAttribute("disabled","");
                     document.getElementById("menuEvento").removeAttribute("disabled","");
+                    document.getElementById("menuOposicionRecibida").removeAttribute("disabled","");
                     
                     ocultarSubmenuDocumento();
                     ocultarSubmenuEvento();
+                    ocultarSubmenuOposicionRecibida()
                     
                 }else{
                     document.getElementById("menuDocumento").setAttribute("disabled","");
@@ -779,11 +1101,150 @@
                     document.getElementById("verEven").setAttribute("disabled","");
                     document.getElementById("eliminarEven").setAttribute("disabled","");
                     document.getElementById("editarEven").setAttribute("disabled","");
+                    
+                    document.getElementById("menuOposicionRecibida").setAttribute("disabled","");
+                    document.getElementById("agregarOposicionRecibida").setAttribute("disabled","");
+                    document.getElementById("verOposicionRecibida").setAttribute("disabled","");
+                    document.getElementById("eliminarOposicionRecibida").setAttribute("disabled","");
+                    document.getElementById("editarOposicionRecibida").setAttribute("disabled","");
                 }
                 
             }
             
+            function ocultarSubmenuConfiguraciones(){
+                var checkInput= document.getElementById("configuraciones");
+                    
+                if(checkInput.checked){
+                    
+                    document.getElementById("menuPermiso").removeAttribute("disabled","");
+                    document.getElementById("agregarPermiso").removeAttribute("disabled","");
+                    document.getElementById("verPermiso").removeAttribute("disabled","");
+                    
+                    document.getElementById("menuRol").removeAttribute("disabled","");
+                    document.getElementById("agregarRol").removeAttribute("disabled","");
+                    document.getElementById("eliminarRol").removeAttribute("disabled","");
+                    document.getElementById("editarRol").removeAttribute("disabled","");
+                    
+                    document.getElementById("menuUsuario").removeAttribute("disabled","");
+                    document.getElementById("agregarUsuario").removeAttribute("disabled","");
+                    document.getElementById("verUsuario").removeAttribute("disabled","");
+                    document.getElementById("eliminarUsuario").removeAttribute("disabled","");
+                    document.getElementById("editarUsuario").removeAttribute("disabled","");
+                    
+                    
+                }else{
+                    
+                    document.getElementById("menuPermiso").setAttribute("disabled","");
+                    document.getElementById("agregarPermiso").setAttribute("disabled","");
+                    document.getElementById("verPermiso").setAttribute("disabled","");
+                    
+                    document.getElementById("menuRol").setAttribute("disabled","");
+                    document.getElementById("agregarRol").setAttribute("disabled","");
+                    document.getElementById("eliminarRol").setAttribute("disabled","");
+                    document.getElementById("editarRol").setAttribute("disabled","");
+                    
+                    document.getElementById("menuUsuario").setAttribute("disabled","");
+                    document.getElementById("agregarUsuario").setAttribute("disabled","");
+                    document.getElementById("verUsuario").setAttribute("disabled","");
+                    document.getElementById("eliminarUsuario").setAttribute("disabled","");
+                    document.getElementById("editarUsuario").setAttribute("disabled","");
+                    
+                }
+            }
             
+            function ocultarSubmenuOposicionHecha(){
+                var checkInput= document.getElementById("menuOposicionHecha");
+                    
+                if(checkInput.checked){
+                    document.getElementById("agregarOposicionHecha").removeAttribute("disabled","");
+                    document.getElementById("verOposicionHecha").removeAttribute("disabled","");
+                    document.getElementById("eliminarOposicionHecha").removeAttribute("disabled","");
+                    document.getElementById("editarOposicionHecha").removeAttribute("disabled","");
+                    
+                    ocultarSubmenuVerOposicionHecha();
+                    
+                }else{
+                    document.getElementById("agregarOposicionHecha").setAttribute("disabled","");
+                    document.getElementById("verOposicionHecha").setAttribute("disabled","");
+                    document.getElementById("eliminarOposicionHecha").setAttribute("disabled","");
+                    document.getElementById("editarOposicionHecha").setAttribute("disabled","");
+                    
+                    document.getElementById("menuDocumentoOposicionHecha").setAttribute("disabled","");
+                    document.getElementById("agregarDocumentoOposicionHecha").setAttribute("disabled","");
+                    document.getElementById("verDocumentoOposicionHecha").setAttribute("disabled","");
+                    document.getElementById("eliminarDocumentoOposicionHecha").setAttribute("disabled","");
+                    document.getElementById("editarDocumentoOposicionHecha").setAttribute("disabled","");
+                    
+                    document.getElementById("menuEventoOposicionHecha").setAttribute("disabled","");
+                    document.getElementById("agregarEventoOposicionHecha").setAttribute("disabled","");
+                    document.getElementById("verEventoOposicionHecha").setAttribute("disabled","");
+                    document.getElementById("eliminarEventoOposicionHecha").setAttribute("disabled","");
+                    document.getElementById("editarEventoOposicionHecha").setAttribute("disabled","");
+                    
+                }
+            }
+            
+            function ocultarSubmenuVerOposicionHecha(){
+                var checkInput= document.getElementById("verOposicionHecha");
+                
+                if(checkInput.checked){
+                    document.getElementById("menuDocumentoOposicionHecha").removeAttribute("disabled","");
+                    document.getElementById("menuEventoOposicionHecha").removeAttribute("disabled","");
+                    
+                    ocultarSubmenuDocumentoOposicionHecha();
+                    ocultarSubmenuEventoOposicionHecha();
+                  
+                    
+                }else{
+                    document.getElementById("menuDocumentoOposicionHecha").setAttribute("disabled","");
+                    document.getElementById("agregarDocumentoOposicionHecha").setAttribute("disabled","");
+                    document.getElementById("verDocumentoOposicionHecha").setAttribute("disabled","");
+                    document.getElementById("eliminarDocumentoOposicionHecha").setAttribute("disabled","");
+                    document.getElementById("editarDocumentoOposicionHecha").setAttribute("disabled","");
+                    
+                    document.getElementById("menuEventoOposicionHecha").setAttribute("disabled","");
+                    document.getElementById("agregarEventoOposicionHecha").setAttribute("disabled","");
+                    document.getElementById("verEventoOposicionHecha").setAttribute("disabled","");
+                    document.getElementById("eliminarEventoOposicionHecha").setAttribute("disabled","");
+                    document.getElementById("editarEventoOposicionHecha").setAttribute("disabled","");
+                    
+                }
+                
+            }
+            
+            function ocultarSubmenuDocumentoOposicionHecha(){
+                var checkInput= document.getElementById("menuDocumentoOposicionHecha");
+                    
+                if(checkInput.checked){
+                    document.getElementById("agregarDocumentoOposicionHecha").removeAttribute("disabled","");
+                    document.getElementById("verDocumentoOposicionHecha").removeAttribute("disabled","");
+                    document.getElementById("eliminarDocumentoOposicionHecha").removeAttribute("disabled","");
+                    document.getElementById("editarDocumentoOposicionHecha").removeAttribute("disabled","");
+                    
+                }else{
+                    document.getElementById("agregarDocumentoOposicionHecha").setAttribute("disabled","");
+                    document.getElementById("verDocumentoOposicionHecha").setAttribute("disabled","");
+                    document.getElementById("eliminarDocumentoOposicionHecha").setAttribute("disabled","");
+                    document.getElementById("editarDocumentoOposicionHecha").setAttribute("disabled","");
+                }
+            }
+            
+            function ocultarSubmenuEventoOposicionHecha(){
+                var checkInput= document.getElementById("menuEventoOposicionHecha");
+                    
+                if(checkInput.checked){
+                    document.getElementById("agregarEventoOposicionHecha").removeAttribute("disabled","");
+                    document.getElementById("verEventoOposicionHecha").removeAttribute("disabled","");
+                    document.getElementById("eliminarEventoOposicionHecha").removeAttribute("disabled","");
+                    document.getElementById("editarEventoOposicionHecha").removeAttribute("disabled","");
+                    
+                }else{
+                    document.getElementById("agregarEventoOposicionHecha").setAttribute("disabled","");
+                    document.getElementById("verEventoOposicionHecha").setAttribute("disabled","");
+                    document.getElementById("eliminarEventoOposicionHecha").setAttribute("disabled","");
+                    document.getElementById("editarEventoOposicionHecha").setAttribute("disabled","");
+                }
+            }
         </script>
     </body>
 </html>

@@ -102,7 +102,7 @@
                 </li>
                 
                 <%if(permisoControlAcceso.permisoRolVentana(rolUsuarioConectado,"notificaciones.jsp")){%> 
-                   <li class="nav-item" >
+                   <li class="nav-item" id="pestanaItem">
                        <a class="nav-link" href="<%=request.getContextPath()%>/notificaciones.jsp">
                            Notificaciones <span class="<%=bagdeNotificacion %>"><%=valorNotificacion %></span>
                         </a>
@@ -110,43 +110,43 @@
                 <%}%>
                 
                 <%if(permisoControlAcceso.permisoRolVentana(rolUsuarioConectado,"marcas.jsp")){%> 
-                    <li class="nav-item" >
+                    <li class="nav-item" id="pestanaItem">
                         <a class="nav-link" href="<%=request.getContextPath()%>/marcas.jsp">Marcas</a>
                     </li>
                 <%}%>
                 
                 <%if(permisoControlAcceso.permisoRolVentana(rolUsuarioConectado,"expedientes.jsp")){%>
-                    <li class="nav-item">
+                    <li class="nav-item" id="pestanaItem">
                         <a class="nav-link" href="<%=request.getContextPath()%>/expedientes.jsp">Expedientes</a>
                     </li>
                 <%}%>
                 
                 <%if(permisoControlAcceso.permisoRolVentana(rolUsuarioConectado,"abogados.jsp")){%>  
-                    <li class="nav-item">
+                    <li class="nav-item" id="pestanaItem">
                         <a class="nav-link" href="<%=request.getContextPath()%>/abogados.jsp">Agentes</a>
                     </li>
                 <%}%>
                 
                 <%if(permisoControlAcceso.permisoRolVentana(rolUsuarioConectado,"clientes.jsp")){%>  
-                    <li class="nav-item">
+                    <li class="nav-item" id="pestanaItem">
                         <a class="nav-link" href="<%=request.getContextPath()%>/clientes.jsp">Titulares</a>
                     </li>
                 <%}%>    
                     
                 <%if(permisoControlAcceso.permisoRolVentana(rolUsuarioConectado,"configuraciones.jsp")){%> 
-                    <li class="nav-item">
+                    <li class="nav-item" id="pestanaItem">
                         <a class="nav-link" href="<%=request.getContextPath()%>/configuraciones.jsp">Configuraciones</a>
                     </li>
                 <%}%>
                 
                 <%if(permisoControlAcceso.permisoRolVentana(rolUsuarioConectado,"oposicionesHechas.jsp")){%>
-                    <li class="nav-item">
+                    <li class="nav-item" id="pestanaItem">
                         <a class="nav-link" href="<%=request.getContextPath()%>/oposicionesHechas.jsp">Oposiciones</a>
                     </li>
                 <%}%>
                 <%if(permisoControlAcceso.permisoRolVentana(rolUsuarioConectado,"facturaciones.jsp")){%>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Facturaciones</a>
+                    <li class="nav-item" id="pestanaItem">
+                        <a class="nav-link" href="<%=request.getContextPath()%>/facturaciones.jsp">Facturaciones</a>
                     </li>
                 <%}%>
             </ul>

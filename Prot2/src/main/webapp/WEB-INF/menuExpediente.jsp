@@ -8,28 +8,28 @@
 %>
 
 <ul class="nav nav-tabs" >
-    <li class="nav-item">
+    <li class="nav-item" id="pestanaItem">
         <a class="nav-link" 
            href="<%=request.getContextPath()%>/expedientes/verExpediente.jsp"> 
             Detalles</a>
     </li>
 
     <%if (permisoControlAccesoExp.permisoRolVentana(rolUsuarioConectadoExp,"documentos.jsp")){%>
-    <li class="nav-item">
+    <li class="nav-item" id="pestanaItem">
         <a class="nav-link" 
            href="<%=request.getContextPath()%>/documentos.jsp">
             Documentos</a>
     </li>
     <%}%>
     <%if (permisoControlAccesoExp.permisoRolVentana(rolUsuarioConectadoExp,"eventos.jsp")){%>
-    <li class="nav-item">
+    <li class="nav-item" id="pestanaItem">
         <a class="nav-link" href="<%=request.getContextPath()%>/eventos.jsp">
             Eventos</a>
     </li>
     <%}%>
     
     <%if (permisoControlAccesoExp.permisoRolVentana(rolUsuarioConectadoExp,"oposicionesRecibidas.jsp")){%>
-    <li class="nav-item">
+    <li class="nav-item" id="pestanaItem">
         <a class="nav-link" href="<%=request.getContextPath()%>/oposicionesRecibidas.jsp">
             Oposiciones</a>
     </li>
