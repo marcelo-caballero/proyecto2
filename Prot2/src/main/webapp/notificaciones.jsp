@@ -68,6 +68,7 @@
                         <thead style="background-color:whitesmoke">
                             <tr>
                                 <th>Orden</th>
+                                <th>Prioridad</th>
                                 <th>Número del expediente</th>
                                 <th>Fecha</th>
                                 <th>Hora</th>
@@ -78,25 +79,28 @@
                         <tbody id='cuerpoTabla'>
                             <%for (int i = 0; i < listaAlta.size(); i++) {%>
                                 <tr>
-                                    <td style="color:#b94a48;">1</td>
-                                    <td style="color:#b94a48;"><%=listaAlta.get(i).getIdExpediente().getNroExpediente()%></td> 
-                                    <td style="color:#b94a48;"><%=listaAlta.get(i).getStringFecha()%></td>
-                                    <td style="color:#b94a48;"><%=listaAlta.get(i).getStringHora()%>:<%=listaAlta.get(i).getStringMinuto()%></td>
-                                    <td style="color:#b94a48;"><%=listaAlta.get(i).getNombre()%></td> 
+                                    <td style="color:#ff3232;">1</td>
+                                    <td style="color:#ff3232;">Alta</td>
+                                    <td style="color:#ff3232;"><%=listaAlta.get(i).getIdExpediente().getNroExpediente()%></td> 
+                                    <td style="color:#ff3232;"><%=listaAlta.get(i).getStringFecha()%></td>
+                                    <td style="color:#ff3232;"><%=listaAlta.get(i).getStringHora()%>:<%=listaAlta.get(i).getStringMinuto()%></td>
+                                    <td style="color:#ff3232;"><%=listaAlta.get(i).getNombre()%></td> 
                                 </tr>
                             <%}%>
                             <%for (int i = 0; i < listaMedia.size(); i++) {%>
                                 <tr>
-                                    <td style="color:#f89406;">2</td>
-                                    <td style="color:#f89406;"><%=listaMedia.get(i).getIdExpediente().getNroExpediente()%></td> 
-                                    <td style="color:#f89406;"><%=listaMedia.get(i).getStringFecha()%></td>
-                                    <td style="color:#f89406;"><%=listaMedia.get(i).getStringHora()%>:<%=listaMedia.get(i).getStringMinuto()%></td>
-                                    <td style="color:#f89406;"><%=listaMedia.get(i).getNombre()%></td> 
+                                    <td style="color:#ccc80c;">2</td>
+                                    <td style="color:#ccc80c;">Media</td>
+                                    <td style="color:#ccc80c;"><%=listaMedia.get(i).getIdExpediente().getNroExpediente()%></td> 
+                                    <td style="color:#ccc80c;"><%=listaMedia.get(i).getStringFecha()%></td>
+                                    <td style="color:#ccc80c;"><%=listaMedia.get(i).getStringHora()%>:<%=listaMedia.get(i).getStringMinuto()%></td>
+                                    <td style="color:#ccc80c;"><%=listaMedia.get(i).getNombre()%></td> 
                                 </tr>
                             <%}%>
                             <%for (int i = 0; i < listaBaja.size(); i++) {%>
                                 <tr>
                                     <td style="color:#468847;">3</td>
+                                    <td style="color:#468847;">Baja</td>
                                     <td style="color:#468847;"><%=listaBaja.get(i).getIdExpediente().getNroExpediente()%></td> 
                                     <td style="color:#468847;"><%=listaBaja.get(i).getStringFecha()%></td>
                                     <td style="color:#468847;"><%=listaBaja.get(i).getStringHora()%>:<%=listaBaja.get(i).getStringMinuto()%></td>
@@ -114,6 +118,7 @@
                         <thead style="background-color:whitesmoke">
                             <tr>
                                 <th>Orden</th>
+                                <th>Prioridad</th>
                                 <th>Nº. Expediente Opositado</th>
                                 <th>Fecha</th>
                                 <th>Hora</th>
@@ -125,6 +130,7 @@
                             <%for (int i = 0; i < listaOposicionAlta.size(); i++) {%>
                                 <tr>
                                     <td style="color:#b94a48;">1</td>
+                                    <td style="color:#b94a48;">Alta</td>
                                     <td style="color:#b94a48;"><%=listaOposicionAlta.get(i).getIdOposicionHecha().getNroExpedienteOpositado()%></td> 
                                     <td style="color:#b94a48;"><%=listaOposicionAlta.get(i).getStringFecha()%></td>
                                     <td style="color:#b94a48;"><%=listaOposicionAlta.get(i).getStringHora()%>:<%=listaOposicionAlta.get(i).getStringMinuto()%></td>
@@ -133,16 +139,18 @@
                             <%}%>
                             <%for (int i = 0; i < listaOposicionMedia.size(); i++) {%>
                                 <tr>
-                                    <td style="color:#f89406;">2</td>
-                                    <td style="color:#f89406;"><%=listaOposicionMedia.get(i).getIdOposicionHecha().getNroExpedienteOpositado()%></td> 
-                                    <td style="color:#f89406;"><%=listaOposicionMedia.get(i).getStringFecha()%></td>
-                                    <td style="color:#f89406;"><%=listaOposicionMedia.get(i).getStringHora()%>:<%=listaOposicionMedia.get(i).getStringMinuto()%></td>
-                                    <td style="color:#f89406;"><%=listaOposicionMedia.get(i).getNombre()%></td> 
+                                    <td style="color:#ccc80c;">2</td>
+                                    <td style="color:#ccc80c;">Media</td>
+                                    <td style="color:#ccc80c;"><%=listaOposicionMedia.get(i).getIdOposicionHecha().getNroExpedienteOpositado()%></td> 
+                                    <td style="color:#ccc80c;"><%=listaOposicionMedia.get(i).getStringFecha()%></td>
+                                    <td style="color:#ccc80c;"><%=listaOposicionMedia.get(i).getStringHora()%>:<%=listaOposicionMedia.get(i).getStringMinuto()%></td>
+                                    <td style="color:#ccc80c;"><%=listaOposicionMedia.get(i).getNombre()%></td> 
                                 </tr>
                             <%}%>
                             <%for (int i = 0; i < listaOposicionBaja.size(); i++) {%>
                                 <tr>
                                     <td style="color:#468847;">3</td>
+                                    <td style="color:#468847;">Baja</td>
                                     <td style="color:#468847;"><%=listaOposicionBaja.get(i).getIdOposicionHecha().getNroExpedienteOpositado()%></td> 
                                     <td style="color:#468847;"><%=listaOposicionBaja.get(i).getStringFecha()%></td>
                                     <td style="color:#468847;"><%=listaOposicionBaja.get(i).getStringHora()%>:<%=listaOposicionBaja.get(i).getStringMinuto()%></td>
