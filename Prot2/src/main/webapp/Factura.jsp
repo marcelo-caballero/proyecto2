@@ -41,7 +41,9 @@
                 
                 File reportfile = new File(application.getRealPath("/WEB-INF/reportes/Factura.jasper"));
                 Map<String, Object> parameter = new HashMap<>();
-                parameter.put("inicio", "0000015");
+                parameter.put("inicio", numFact);
+                parameter.put("ruc", ruc);
+                
                 byte[] bytes = JasperRunManager.runReportToPdf(reportfile.getPath(), parameter, con);
                 response.setContentType("application/pdf");
                 response.setContentLength(bytes.length);
