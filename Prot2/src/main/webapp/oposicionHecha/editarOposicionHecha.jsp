@@ -54,6 +54,9 @@
             if(oposicion.getDocumentoOposicionHechaList().isEmpty() && oposicion.getEventoOposicionHechaList().isEmpty()){
                 oposicionVacia = true;
             }
+            
+            //Lista de estados finales
+            List<EstadoOposicion> listaEstadoOposicionFinales = estadoOposicionControl.getEstadoOposicionFinales();
 
             //Verificamos si la oposicion esta cerrada
             boolean oposicionCerrada = false;
@@ -62,7 +65,7 @@
             }else if(oposicion.getIdEstadoOposicion().getTipo().equals("F")){
                 oposicionCerrada = true; 
             }
-            System.out.println("Tamaño:"+listaExpediente.size()); 
+            
         %>
 
         <%--> Input tipo hidden para cambiar el marca,cliente,abogado  
@@ -274,6 +277,7 @@
                     <select form="agregarOposicion"
                             name="idEstado" 
                             class="form-control"
+                            onchange="mostrarComentarioCierre()"
                             id="idEstado">
                         <option selected value="<%=oposicion.getIdEstadoOposicion().getIdEstado()%>"><%=oposicion.getIdEstadoOposicion().getDescripcion()%></option>
                         <%for (int j = 0; j < listaEstadoOposicion.size(); j++) {%>
@@ -311,6 +315,24 @@
                 </div>
             </div>
                     
+            <div class="row form-group">    
+                <div class="col-3">
+                    <label for="comentario">Comentario de cierre:</label></div>
+                <div class="col-6">
+                        <textarea form="agregarOposicion"
+                               name="comentario"
+                               id="comentario"
+                               class="form-control"
+                               type="text"
+                               placeholder="Escriba el comentario de cierre de la oposición"
+                               rows="6"
+                               maxlength="250"
+                               disabled  
+                               required></textarea> 
+                    <div id="comentario-retro"></div>
+                </div>
+            </div>
+                    
             <div class="row form-group">
                 <div class="col-5">
                 </div>
@@ -327,6 +349,25 @@
         </div>  
         <br>
         <script>
+            function mostrarComentarioCierre(){
+                var comentarioInput = document.getElementById("comentario");
+                var idEstadoInput = document.getElementById("idEstado");
+                
+                if(<%for(int i=0;i<listaEstadoOposicionFinales.size();i++){%> 
+                        idEstadoInput.value == <%=listaEstadoOposicionFinales.get(i).getIdEstado()%>
+                        <%if(i+1<listaEstadoOposicionFinales.size()){%>
+                            ||
+                        <%}%>
+                    <%}%>)
+                {
+                    comentarioInput.disabled = false;
+                }else{
+                    comentarioInput.disabled = true;
+                    
+                }
+            }
+            
+            
             //ACtualiza los datos de Opositor, marca, cliente y abogado según expediente
             function cambiarDatosOpositor() {
                 
@@ -366,6 +407,12 @@
                 
                 var abogadoOpositorValido = validarIdAbogadoOpositor();
                 
+                var comentarioValido = true;
+                if(!document.getElementById("comentario").disabled){
+                    
+                    comentarioValido = validarComentario();
+                }
+                
                 if(nroExpOpositadoValido && 
                         denominacionValido &&
                         claseValido &&
@@ -374,9 +421,34 @@
                         nroExpOpositor &&
                         fechaValido &&
                         idEstadoValido && 
-                        abogadoOpositorValido){
+                        abogadoOpositorValido && 
+                        comentarioValido){
                     document.getElementById("agregarOposicion").submit();
                 }
+            }
+            
+            function validarComentario(){
+                
+                var comentarioInput = document.getElementById("comentario");
+                var retroComentario = document.getElementById("comentario-retro");
+                var strComentario= comentarioInput.value.trim();
+                comentarioInput.value = strComentario;
+                
+                if(strComentario.length == 0){
+
+                    comentarioInput.setAttribute("class","form-control is-invalid");
+                    retroComentario.setAttribute("class","invalid-feedback");
+                    retroComentario.textContent = 'Escriba el comentario de cierre';
+                    
+                    return false;
+                }
+                
+                comentarioInput.setAttribute("class","form-control is-valid");
+                retroComentario.setAttribute("class","valid-feedback");
+                retroComentario.textContent = '';
+                    
+                 
+                return true;
             }
             
             function validarFecha(){

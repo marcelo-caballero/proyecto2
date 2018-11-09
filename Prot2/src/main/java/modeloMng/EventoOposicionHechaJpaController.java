@@ -6,6 +6,10 @@
 package modeloMng;
 
 import java.io.Serializable;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -166,4 +170,48 @@ public class EventoOposicionHechaJpaController implements Serializable {
         }
     }
     
+    /**
+     * Retorna una lista de eventos de oposiciones hechas que ocurrirán a partir de hoy hasta una cantidad de días especificado 
+     * con una prioridad especificada por abogado
+     * Si el abogado es nulo, entonces traerá una lista de todos eventos que ocurriran en todas las oposiciones
+     * en el rango de tiempo especificado
+     * @param dia cantidad de día a partir de hoy
+     * @param prioridad puede ser "ALTA", "MEDIA", "BAJA"
+     * @param idAbogado el idAbogado
+     * @return List<EventoOposicionHecha>
+     * @throws ParseException 
+     */
+    public List<EventoOposicionHecha> getListaEventosOposicionHecha(Integer dia, String prioridad, Integer idAbogado) throws ParseException{
+        EntityManager em = getEntityManager();
+        try {
+            Calendar c = Calendar.getInstance();
+            c.setTime(new Date());
+            c.add(Calendar.DATE, dia);
+            Date traspasadoManana = c.getTime();
+            
+            SimpleDateFormat formatoHoy = new SimpleDateFormat("yyyy-MM-dd");
+            SimpleDateFormat formatoTraspasadoManana = new SimpleDateFormat("yyyy-MM-ddHH:mm:ss");
+            Date hoy = formatoHoy.parse(formatoHoy.format(new Date())); 
+            traspasadoManana = formatoTraspasadoManana.parse(formatoHoy.format(traspasadoManana)+"23:59:59");
+            
+            String consulta = "select e from EventoOposicionHecha e where e.fecha>= :hoy and e.fecha <= :traspasadoManana and e.prioridad = :prioridad ";
+            
+            if(idAbogado != null){
+             consulta = consulta + "and e.idOposicionHecha.idOposicion in (select o.idOposicion from OposicionHecha o where o.idAbogadoOpositante.idAbogado = :idAbogado)";
+            }
+            
+            Query q = em.createQuery(consulta); 
+            q.setParameter("hoy", hoy);
+            q.setParameter("traspasadoManana", traspasadoManana);
+            q.setParameter("prioridad", prioridad);
+            
+            if(idAbogado != null){
+                q.setParameter("idAbogado", idAbogado);
+            }
+             
+            return q.getResultList();
+        }finally {
+            em.close();
+        }
+    }
 }

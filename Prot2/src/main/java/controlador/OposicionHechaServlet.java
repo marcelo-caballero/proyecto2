@@ -122,7 +122,7 @@ public class OposicionHechaServlet extends HttpServlet {
                 Date fecha = formatoFecha.parse(request.getParameter("fecha"));
                 Integer idEstado = Integer.parseInt(request.getParameter("idEstado"));
                 Integer idAbogadoOpositor = Integer.parseInt(request.getParameter("agenteOpositor"));
-
+                String comentario = request.getParameter("comentario");
                 
                 
                 Expediente expedienteOpositor = expControl.findExpediente(idExpOpositor);
@@ -141,6 +141,9 @@ public class OposicionHechaServlet extends HttpServlet {
                 oposicion.setFecha(fecha);
                 oposicion.setIdEstadoOposicion(estado);
                 oposicion.setIdAbogadoOpositante(abogadoOpositor);
+                if(comentario != null){
+                    oposicion.setComentarioCierre(comentario);
+                }
                 
                 oposicionHechaControl.edit(oposicion);
                 

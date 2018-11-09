@@ -23,14 +23,19 @@
 
     </head>
     <body>
-        
-        <% List<Expediente> lista;
-            ExpedienteJpaController expControl = new ExpedienteJpaController();
-            lista = expControl.findExpedienteEntities();
-        %>
         <%@include file="//WEB-INF/menuCabecera.jsp" %>
         <br>
-        
+        <% List<Expediente> lista;
+            ExpedienteJpaController expControl = new ExpedienteJpaController();
+            lista = expControl.findExpedienteEntities();;
+            
+            //Verificamos si se conecto un cliente o un abogado
+            if(usuario.getAsociado() != null){ 
+                if(usuario.getAsociado().equals("CLIENTE")){
+                    lista = expControl.getListaExpedienteCliente(usuario.getClienteList().get(0).getIdCliente()); 
+                }
+            }
+        %>
         <div class="container form-control">
             <%@include file="//WEB-INF/mensajeErrorABM.jsp" %>
             <h2 class="text-justify">Expedientes</h2>
@@ -79,8 +84,9 @@
                             <%if(permisoControlAcceso.permisoRolVentana(rolUsuarioConectado,"editarExpediente.jsp")){%> 
                                 <i class="fa fa-edit" 
                                    style="font-size:24px"  
-                                   onmouseover="this.style.cursor = 'pointer'" 
-                                   onclick='window.location.href = "<%=request.getContextPath()%>/expedientes/editarExpediente.jsp?idExpediente=<%=lista.get(i).getIdExpediente()%>"'> 
+                                   onmouseover="this.style.cursor = 'pointer'"
+                                   onclick='window.location.href = "<%=request.getContextPath()%>/expedientes/editarExpediente.jsp?idExpediente=<%=lista.get(i).getIdExpediente()%>"'
+                                > 
                                 </i>
                             <%}%>
                             <%if(permisoControlAcceso.permisoRolVentana(rolUsuarioConectado,"eliminarExpediente")){%>  
@@ -119,6 +125,27 @@
                 </div>
             </div>
         </div>
+                            
+        <%-- Modal MensajeVer --%>
+        <div class="modal fade" id="modal-mensaje" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+
+                    <div class="modal-header">
+                        <h4 class="modal-title">Información</h4>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+
+                    </div>
+                    <div class="modal-body">
+                        <p>Solamente se puede ver el Evento</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button  type="button" data-dismiss="modal"  class="btn btn-default" >Cerrar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
         <br>
         <script>
             function modalEliminar(fila) {
@@ -133,6 +160,12 @@
                             "¿Desea eliminar el expediente " + nroExpediente + "?";
                     
                     
+                });
+            }
+            
+            function mostrarMensajeSoloVer() {
+                $(document).ready(function () {
+                    $("#modal-mensaje").modal();
                 });
             }
             

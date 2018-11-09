@@ -13,11 +13,11 @@ body{
 
 }
 
-.nav-tabs{
+#pestana{
     border-bottom: 0px;
     margin-bottom: 0px;
 }
-.nav-item{
+#pestanaItem{
     border-left: 1px solid #ddd;
     border-top: 1px solid #ddd;
     border-right: 1px solid #ddd;

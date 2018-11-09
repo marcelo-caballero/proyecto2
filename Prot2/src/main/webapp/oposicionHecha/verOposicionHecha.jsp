@@ -150,7 +150,7 @@
                 </div>
             </div>
                 
-            <%--<%if(oposicion.getComentarioCierre() != null){%>
+            <%if(oposicion.getComentarioCierre() != null){%>
                 <div class="row form-group">
                     <div class="col-3">
                         <label>Comentario de cierre:</label>
@@ -159,7 +159,7 @@
                         <%=oposicion.getComentarioCierre()%> 
                     </div>
                 </div>
-            <%}%>--%>
+            <%}%>
                 
             <%if(!oposicion.getDocumentoOposicionHechaList().isEmpty()){%>
                 <div class="row form-group">

@@ -6,6 +6,10 @@
 package modeloMng;
 
 import java.io.Serializable;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -166,4 +170,61 @@ public class EventoJpaController implements Serializable {
         }
     }
     
+    public List<Evento> getListaEventosPorAbogados(Integer idAbogado){
+        EntityManager em = getEntityManager();
+        try {
+           
+            String consulta = "select e from Evento e where date_trunc('day',e.fecha)>= date_trunc('day',localtimestamp) and date_trunc('day',e.fecha)<= date_trunc('day',(localtimestamp + interval '3 day')) " +
+                              " and e.idExpediente in (select ex.idExpediente.idExpediente from Expediente ex where ex.idAbogado.idAbogado = :idAbogado)";
+            Query q = em.createQuery(consulta); 
+            q.setParameter("idAbogado", idAbogado);
+            return q.getResultList();
+            
+        }finally {
+            em.close();
+        }
+    }
+    
+    /**
+     * Retorna una lista de eventos que ocurrirán a partir de hoy hasta una cantidad de días especificado 
+     * con una prioridad especificada de cada abogado.
+     * Si el abogado es nulo, entonces traerá una lista de todos eventos que ocurriran en todos los expedientes
+     * en el rango de tiempo especificado
+     * @param dia cantidad de día a partir de hoy
+     * @param prioridad puede ser "ALTA", "MEDIA", "BAJA"
+     * @param idAbogado el idAbogado
+     * @return List<Evento>
+     * @throws ParseException 
+     */
+    public List<Evento> getListaEventos(Integer dia, String prioridad, Integer idAbogado) throws ParseException{
+        EntityManager em = getEntityManager();
+        try {
+            Calendar c = Calendar.getInstance();
+            c.setTime(new Date());
+            c.add(Calendar.DATE, dia);
+            Date traspasadoManana = c.getTime();
+            
+            SimpleDateFormat formatoHoy = new SimpleDateFormat("yyyy-MM-dd");
+            SimpleDateFormat formatoTraspasadoManana = new SimpleDateFormat("yyyy-MM-ddHH:mm:ss");
+            Date hoy = formatoHoy.parse(formatoHoy.format(new Date())); 
+            traspasadoManana = formatoTraspasadoManana.parse(formatoHoy.format(traspasadoManana)+"23:59:59");
+            
+            String consulta = "select e from Evento e where e.fecha>= :hoy and e.fecha <= :traspasadoManana and e.prioridad = :prioridad ";
+            
+            if(idAbogado != null){
+             consulta = consulta + "and e.idExpediente.idExpediente in (select ex.idExpediente from Expediente ex where ex.idAbogado.idAbogado = :idAbogado)";
+            }
+            Query q = em.createQuery(consulta); 
+            q.setParameter("hoy", hoy);
+            q.setParameter("traspasadoManana", traspasadoManana);
+            q.setParameter("prioridad", prioridad);
+            
+            if(idAbogado != null){
+                q.setParameter("idAbogado", idAbogado);
+            }
+            return q.getResultList();
+        }finally {
+            em.close();
+        }
+    }
 }

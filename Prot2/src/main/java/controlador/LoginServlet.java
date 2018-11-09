@@ -9,14 +9,19 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.math.BigInteger;
 import java.security.MessageDigest;
+import java.util.List;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import modelo.Evento;
+import modelo.EventoOposicionHecha;
 
 import modelo.Usuario;
+import modeloMng.EventoJpaController;
+import modeloMng.EventoOposicionHechaJpaController;
 import modeloMng.UsuarioJpaController;
 
 /**
@@ -90,6 +95,34 @@ public class LoginServlet extends HttpServlet {
                 } else {
                     sesion.setAttribute("usuario", usuario);
                     //request.getRequestDispatcher("clienteVista.jsp").forward(request, response);
+                    
+                    
+                    //La notificacion
+                    Integer idAbogado = null; 
+            
+                    if(!usuario.getAbogadoList().isEmpty()){
+                        idAbogado = usuario.getAbogadoList().get(0).getIdAbogado();
+                    }
+                        //Eventos del expedientes
+                    EventoJpaController eventoControl = new EventoJpaController();
+                    List<Evento> listaAlta = eventoControl.getListaEventos(3,"ALTA",idAbogado); 
+                    List<Evento> listaMedia= eventoControl.getListaEventos(2,"MEDIA",idAbogado); 
+                    List<Evento> listaBaja = eventoControl.getListaEventos(1,"BAJA",idAbogado);   
+
+                        //Eventos de Oposiciones Hechas
+                    EventoOposicionHechaJpaController eventoOposicionControl = new EventoOposicionHechaJpaController();
+                    List<EventoOposicionHecha> listaOposicionAlta = eventoOposicionControl.getListaEventosOposicionHecha(3,"ALTA",idAbogado);
+                    List<EventoOposicionHecha> listaOposicionMedia= eventoOposicionControl.getListaEventosOposicionHecha(2,"MEDIA",idAbogado);
+                    List<EventoOposicionHecha> listaOposicionBaja = eventoOposicionControl.getListaEventosOposicionHecha(1,"BAJA",idAbogado);
+
+                    if(listaAlta.size()+listaOposicionAlta.size()> 0){
+                        sesion.setAttribute("alta", listaAlta.size()+listaOposicionAlta.size());
+                    }else if(listaMedia.size()+listaOposicionMedia.size()> 0){
+                        sesion.setAttribute("media", listaMedia.size()+listaOposicionMedia.size());
+                    }else if(listaBaja.size()+listaOposicionBaja.size()>0){
+                         sesion.setAttribute("baja", listaBaja.size()+listaOposicionBaja.size());
+                    }
+                    //----------------------------------------------------------------------------
                     response.sendRedirect("menu.jsp");
                 }
             }catch(Exception e ){

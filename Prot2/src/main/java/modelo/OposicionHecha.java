@@ -23,6 +23,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
@@ -43,6 +44,10 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "OposicionHecha.findByAgenteOpositado", query = "SELECT o FROM OposicionHecha o WHERE o.agenteOpositado = :agenteOpositado"),
     @NamedQuery(name = "OposicionHecha.findByFecha", query = "SELECT o FROM OposicionHecha o WHERE o.fecha = :fecha")})
 public class OposicionHecha implements Serializable {
+
+    @Size(max = 2147483647)
+    @Column(name = "comentario_cierre")
+    private String comentarioCierre;
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -232,6 +237,14 @@ public class OposicionHecha implements Serializable {
     @Override
     public String toString() {
         return "modelo.OposicionHecha[ idOposicion=" + idOposicion + " ]";
+    }
+
+    public String getComentarioCierre() {
+        return comentarioCierre;
+    }
+
+    public void setComentarioCierre(String comentarioCierre) {
+        this.comentarioCierre = comentarioCierre;
     }
     
 }

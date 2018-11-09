@@ -809,4 +809,43 @@ public class ExpedienteJpaController implements Serializable {
         }
     }
     
+    /**
+     * Retorna la lista de expedientes de un cliente
+     * @param idCliente
+     * @return 
+     */
+    public List<Expediente> getListaExpedienteCliente(Integer idCliente) {
+        EntityManager em = getEntityManager();
+        
+        try {
+           
+            String consulta = "select e from Expediente e where e.idCliente.idCliente = :idCliente";
+            Query q = em.createQuery(consulta); 
+            q.setParameter("idCliente", idCliente);
+            return q.getResultList();
+            
+        }finally {
+            em.close();
+        }
+    }
+    
+     /**
+     * Retorna la lista de expedientes de un abogado
+     * @param idAbogado
+     * @return 
+     */
+    public List<Expediente> getListaExpedienteAbogado(Integer idAbogado) {
+        EntityManager em = getEntityManager();
+        
+        try {
+           
+            String consulta = "select e from Expediente e where e.idAbogado.idAbogado = :idAbogado";
+            Query q = em.createQuery(consulta); 
+            q.setParameter("idAbogado", idAbogado);
+            return q.getResultList();
+            
+        }finally {
+            em.close();
+        }
+    }
 }

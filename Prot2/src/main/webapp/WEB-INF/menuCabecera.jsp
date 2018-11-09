@@ -3,10 +3,76 @@
 <%@page import="modelo.Rol"%>
 <%@page import="modelo.Usuario"%>
 <link href="<%=request.getContextPath()%>/css/menu.css" rel="stylesheet">
+<style>
+        .badge {
+          padding: 1px 9px 2px;
+          font-size: 12.025px;
+          font-weight: bold;
+          white-space: nowrap;
+          color: #ffffff;
+          background-color: #999999;
+          -webkit-border-radius: 9px;
+          -moz-border-radius: 9px;
+          border-radius: 9px;
+        }
+        .badge:hover {
+          color: #ffffff;
+          text-decoration: none;
+          cursor: pointer;
+        }
+        .badge-error {
+          background-color: #b94a48;
+        }
+        .badge-error:hover {
+          background-color: #953b39;
+        }
+        .badge-warning {
+          background-color: #f89406;
+        }
+        .badge-warning:hover {
+          background-color: #c67605;
+        }
+        .badge-success {
+          background-color: #468847;
+        }
+        .badge-success:hover {
+          background-color: #356635;
+        }
+        .badge-info {
+          background-color: #3a87ad;
+        }
+        .badge-info:hover {
+          background-color: #2d6987;
+        }
+        .badge-inverse {
+          background-color: #333333;
+        }
+        .badge-inverse:hover {
+          background-color: #1a1a1a;
+        }
+</style>
 <% Usuario usuario = (Usuario) request.getSession().getAttribute("usuario");
    
    Integer rolUsuarioConectado = usuario.getIdRol().getIdRol();
    PermisoJpaController permisoControlAcceso = new PermisoJpaController();
+   
+   //Notificacion
+   String bagdeNotificacion  ="badge ";
+   String valorNotificacion ="";
+   if(request.getSession().getAttribute("alta") != null){
+       bagdeNotificacion  = bagdeNotificacion  + "badge-error";
+       valorNotificacion  = (Integer) request.getSession().getAttribute("alta")+"";
+      
+   }else if(request.getSession().getAttribute("media") != null){
+       bagdeNotificacion  = bagdeNotificacion  + "badge-warning";
+       valorNotificacion  = (Integer) request.getSession().getAttribute("media")+"";
+       
+   }else if(request.getSession().getAttribute("baja") != null){
+       bagdeNotificacion  = bagdeNotificacion  + "badge-success";
+       valorNotificacion  = (Integer) request.getSession().getAttribute("baja")+"";
+       
+   }
+   //------------------------------------------------------
 %>
 <div class="container-fluid">
     <br>
@@ -28,12 +94,21 @@
     </div>
 
     <div class="row ">
-        <div class="col" id="linea1" ></div>
-        <div class="col-9" id="linea2">
-            <ul class="nav nav-tabs" >
-                <li class="nav-item" >
+        <div class="col-2" id="linea1" ></div>
+        <div class="col" id="linea2">
+            <ul class="nav nav-tabs" id="pestana">
+                <li class="nav-item" id="pestanaItem" >
                     <a class="nav-link" href="<%=request.getContextPath()%>/menu.jsp"><i class="fa fa-home"></i></a>
                 </li>
+                
+                <%if(permisoControlAcceso.permisoRolVentana(rolUsuarioConectado,"notificaciones.jsp")){%> 
+                   <li class="nav-item" >
+                       <a class="nav-link" href="<%=request.getContextPath()%>/notificaciones.jsp">
+                           Notificaciones <span class="<%=bagdeNotificacion %>"><%=valorNotificacion %></span>
+                        </a>
+                    </li>
+                <%}%>
+                
                 <%if(permisoControlAcceso.permisoRolVentana(rolUsuarioConectado,"marcas.jsp")){%> 
                     <li class="nav-item" >
                         <a class="nav-link" href="<%=request.getContextPath()%>/marcas.jsp">Marcas</a>
@@ -67,6 +142,11 @@
                 <%if(permisoControlAcceso.permisoRolVentana(rolUsuarioConectado,"oposicionesHechas.jsp")){%>
                     <li class="nav-item">
                         <a class="nav-link" href="<%=request.getContextPath()%>/oposicionesHechas.jsp">Oposiciones</a>
+                    </li>
+                <%}%>
+                <%if(permisoControlAcceso.permisoRolVentana(rolUsuarioConectado,"facturaciones.jsp")){%>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Facturaciones</a>
                     </li>
                 <%}%>
             </ul>
