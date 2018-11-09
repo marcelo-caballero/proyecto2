@@ -30,7 +30,7 @@
         
         <div class="container form-control">
             <%@include file="//WEB-INF/mensajeErrorABM.jsp" %>
-            <h2 class="text-justify">Prefijo</h2>
+            <h2 class="text-justify">Datos de la factura</h2>
             <br>
             
             <table id="mytable" class="table table-striped table-bordered dt-responsive nowrap">
@@ -40,6 +40,8 @@
                         <th>Prefijo</th>
                         <th>Inicio</th>
                         <th>Fin</th>
+                        <th>Valor Actual</th>
+                       
                         <th>
                             <%if(permisoControlAcceso.permisoRolVentana(rolUsuarioConectado,"agregarPrefijo.jsp")){%> 
                                 <i class="fa fa-plus-circle" 
@@ -59,7 +61,9 @@
                 <input id="idPrefijo-<%=i%>" type="hidden"  value="<%=lista.get(i).getId()%>"/>   
                         <td id="prefijo-<%=i%>"><%=lista.get(i).getPrefijo()%></td>
                         <td><%=lista.get(i).getInicio()%></td> 
-                        <td><%=lista.get(i).getFin()%></td> 
+                        <td><%=lista.get(i).getFin()%></td>
+                        <td><%=lista.get(i).getActual()%></td>
+                        
                         <td>
                             <%if(permisoControlAcceso.permisoRolVentana(rolUsuarioConectado,"editarPrefijo.jsp")){%>
                                 <i class="fa fa-edit" 

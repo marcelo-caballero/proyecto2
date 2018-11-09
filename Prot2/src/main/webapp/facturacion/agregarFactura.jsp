@@ -391,7 +391,7 @@
 
                             rucInput.setAttribute("class","form-control is-invalid");
                             retroRuc.setAttribute("class","invalid-feedback");
-                            retroRuc.textContent = '¡Ocurrió un error! El R.U.C. es inválido';
+                            retroRuc.textContent = '¡Ocurrió un error! El R.U.C. no existe o esta inhabilitado';
 
                             //se desbloquea boton agregar
                             document.getElementById("agregar").removeAttribute("disabled");

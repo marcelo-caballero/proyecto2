@@ -483,7 +483,7 @@ public class ClienteJpaController implements Serializable {
         EntityManager em = getEntityManager();
         
         try {
-            String consulta = "select c from Cliente c where c.ruc = :ruc";
+            String consulta = "select c from Cliente c where c.ruc = :ruc and c.estado = 'ACTIVO'";
             Query q = em.createQuery(consulta); 
             q.setParameter("ruc", ruc);
             return q.getResultList();

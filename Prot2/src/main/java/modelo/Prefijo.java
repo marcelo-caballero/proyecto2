@@ -2,7 +2,6 @@
 package modelo;
 
 import java.io.Serializable;
-import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -10,51 +9,60 @@ import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 
-/**
- *
- * @author Pathy
- */
 @Entity
 @Table(name = "prefijo")
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "Prefijo.findAll", query = "SELECT p FROM Prefijo p")
+    , @NamedQuery(name = "Prefijo.findById", query = "SELECT p FROM Prefijo p WHERE p.id = :id")
     , @NamedQuery(name = "Prefijo.findByPrefijo", query = "SELECT p FROM Prefijo p WHERE p.prefijo = :prefijo")
     , @NamedQuery(name = "Prefijo.findByInicio", query = "SELECT p FROM Prefijo p WHERE p.inicio = :inicio")
     , @NamedQuery(name = "Prefijo.findByFin", query = "SELECT p FROM Prefijo p WHERE p.fin = :fin")
-    , @NamedQuery(name = "Prefijo.findByFecha", query = "SELECT p FROM Prefijo p WHERE p.fecha = :fecha")})
+    , @NamedQuery(name = "Prefijo.findByActual", query = "SELECT p FROM Prefijo p WHERE p.actual = :actual")})
 public class Prefijo implements Serializable {
 
+    private static final long serialVersionUID = 1L;
     @Basic(optional = false)
     @Column(name = "id")
     private int id;
-
-    private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 2147483647)
     @Column(name = "prefijo")
     private String prefijo;
+    @Size(max = 2147483647)
     @Column(name = "inicio")
-    private Integer inicio;
+    private String inicio;
+    @Size(max = 2147483647)
     @Column(name = "fin")
-    private Integer fin;
-    @Column(name = "fecha")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date fecha;
+    private String fin;
+    @Size(max = 2147483647)
+    @Column(name = "actual")
+    private String actual;
 
     public Prefijo() {
     }
 
     public Prefijo(String prefijo) {
         this.prefijo = prefijo;
+    }
+
+    public Prefijo(String prefijo, int id) {
+        this.prefijo = prefijo;
+        this.id = id;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getPrefijo() {
@@ -65,28 +73,28 @@ public class Prefijo implements Serializable {
         this.prefijo = prefijo;
     }
 
-    public Integer getInicio() {
+    public String getInicio() {
         return inicio;
     }
 
-    public void setInicio(Integer inicio) {
+    public void setInicio(String inicio) {
         this.inicio = inicio;
     }
 
-    public Integer getFin() {
+    public String getFin() {
         return fin;
     }
 
-    public void setFin(Integer fin) {
+    public void setFin(String fin) {
         this.fin = fin;
     }
 
-    public Date getFecha() {
-        return fecha;
+    public String getActual() {
+        return actual;
     }
 
-    public void setFecha(Date fecha) {
-        this.fecha = fecha;
+    public void setActual(String actual) {
+        this.actual = actual;
     }
 
     @Override
@@ -112,14 +120,6 @@ public class Prefijo implements Serializable {
     @Override
     public String toString() {
         return "modelo.Prefijo[ prefijo=" + prefijo + " ]";
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
     
 }

@@ -1,8 +1,6 @@
 
 package modeloMng;
 
-import modeloMng.exceptions.NonexistentEntityException;
-import modeloMng.exceptions.PreexistingEntityException;
 import java.io.Serializable;
 import java.util.List;
 import javax.persistence.EntityManager;
@@ -13,11 +11,9 @@ import javax.persistence.Persistence;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import modelo.Prefijo;
+import modeloMng.exceptions.NonexistentEntityException;
+import modeloMng.exceptions.PreexistingEntityException;
 
-/**
- *
- * @author Pathy
- */
 public class PrefijoJpaController implements Serializable {
 
     public PrefijoJpaController() {

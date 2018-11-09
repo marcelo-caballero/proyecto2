@@ -20,7 +20,7 @@
         <%@include file="//WEB-INF/menuCabecera.jsp" %>
         <br> 
         <div class="container">
-            <%@include file="//WEB-INF/menuConfiguraciones.jsp" %>  
+                <%@include file="//WEB-INF/menuConfiguraciones.jsp" %>  
         </div>
     </body>
 </html>
