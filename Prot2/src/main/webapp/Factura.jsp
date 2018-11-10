@@ -1,5 +1,6 @@
 
 
+<%@page import="net.sf.jasperreports.engine.JasperRunManager"%>
 <%@page import="modeloMng.ClienteJpaController"%>
 <%@page import="java.sql.DriverManager"%>
 <%@page import="javax.persistence.Persistence"%>

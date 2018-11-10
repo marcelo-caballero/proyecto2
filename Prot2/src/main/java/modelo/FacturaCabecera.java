@@ -218,4 +218,9 @@ public class FacturaCabecera implements Serializable {
         String fecha = new SimpleDateFormat("dd/MM/yyyy").format(this.fecha);
         return fecha;  
     }
+     
+    public String getNumeroFormaPago(){
+        if(numeroCheque != null) return numeroCheque;
+        return numeroCuenta;
+    }
 }
