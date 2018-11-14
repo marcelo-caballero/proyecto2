@@ -842,12 +842,26 @@
                                name="permiso"
                                id="menuFacturacion"
                                type="checkbox"
-                               value="69"
+                               value="77"
                                <%if(permisoControl.permisoRolVentana(idRol,"facturaciones.jsp")){%> 
                                   checked
                                <%}%>
                                onclick="ocultarSubmenuFacturacion()"
                                >Menú Facturación
+                </div>
+            </div>
+            <div class="row form-group">
+                <div class="col-3">
+                    <input form="editarPermiso"
+                               name="permiso"
+                               id="menuFactura"
+                               type="checkbox"
+                               value="69"
+                               <%if(permisoControl.permisoRolVentana(idRol,"facturas.jsp")){%> 
+                                  checked
+                               <%}%>
+                               onclick="ocultarSubmenuFactura()"
+                               >Menú Factura
                 </div>
                 <div class="col-8 form-control">
                     <div class="col">
@@ -885,6 +899,45 @@
                     </div>
                 </div>
             </div>
+                              
+            <div class="row form-group">
+                <div class="col-3">
+                    <input form="editarPermiso"
+                               name="permiso"
+                               id="menuPrefijo"
+                               type="checkbox"
+                               value="76"
+                               <%if(permisoControl.permisoRolVentana(idRol,"prefijos.jsp")){%> 
+                                  checked
+                               <%}%>
+                               onclick="ocultarSubmenuDatosFactura()"
+                               >Datos de Factura
+                </div>
+                <div class="col-8 form-control">
+                    <div class="col">
+                        <input form="editarPermiso"
+                               name="permiso"
+                               id="verPrefijo"
+                               type="checkbox"
+                               value="74"
+                               <%if(permisoControl.permisoRolVentana(idRol, "verPrefijo.jsp")){%> 
+                                  checked
+                               <%}%>
+                               >Ver Datos de Factura
+                    </div>
+                    <div class="col">
+                        <input form="editarPermiso"
+                               name="permiso"
+                               id="editarPrefijo"
+                               type="checkbox"
+                               value="75"
+                               <%if(permisoControl.permisoRolVentana(idRol, "editarPrefijo.jsp")){%> 
+                                  checked
+                               <%}%>
+                               >Editar datos de Factura
+                    </div>
+                </div>
+            </div>
                                
             <div class="row form-group">
                 <div class="col-5">
@@ -911,7 +964,8 @@
                 ocultarSubmenuUsuario();
                 ocultarSubmenuRol();
                 ocultarSubmenuPermiso();
-                ocultarSubmenuFacturacion();
+                ocultarSubmenuFactura();
+                ocultarSubmenuDatosFactura();
                 
                 ocultarSubmenuDocumentoOposicionHecha();
                 ocultarSubmenuEventoOposicionHecha();
@@ -926,6 +980,9 @@
                 ocultarSubmenuOposicionHecha();
                 
                 ocultarSubmenuVerOposicionHecha();
+                
+                ocultarSubmenuFacturacion();
+                
             }
             
             function ocultarSubmenuOposicionRecibida(){
@@ -959,8 +1016,8 @@
                 }
             }
             
-            function ocultarSubmenuFacturacion(){
-                var checkInput = document.getElementById("menuFacturacion");
+            function ocultarSubmenuFactura(){
+                var checkInput = document.getElementById("menuFactura");
                     
                 if(checkInput.checked){
                     document.getElementById("agregarFactura").removeAttribute("disabled","");
@@ -971,6 +1028,22 @@
                     document.getElementById("agregarFactura").setAttribute("disabled","");
                     document.getElementById("verFactura").setAttribute("disabled","");
                     document.getElementById("anularFactura").setAttribute("disabled","");
+                    
+                }
+            }
+            
+            function ocultarSubmenuDatosFactura(){
+                var checkInput = document.getElementById("menuPrefijo");
+                    
+                if(checkInput.checked){
+                   
+                    document.getElementById("verPrefijo").removeAttribute("disabled","");
+                    document.getElementById("editarPrefijo").removeAttribute("disabled","");
+                    
+                }else{
+                    document.getElementById("verPrefijo").setAttribute("disabled","");
+                    document.getElementById("editarPrefijo").setAttribute("disabled","");
+                    
                     
                 }
             }
@@ -1201,6 +1274,39 @@
                     document.getElementById("verUsuario").setAttribute("disabled","");
                     document.getElementById("eliminarUsuario").setAttribute("disabled","");
                     document.getElementById("editarUsuario").setAttribute("disabled","");
+                    
+                }
+            }
+            
+            function ocultarSubmenuFacturacion(){
+                var checkInput= document.getElementById("menuFacturacion");
+                    
+                if(checkInput.checked){
+                    
+                    document.getElementById("menuPrefijo").removeAttribute("disabled","");
+                    document.getElementById("verPrefijo").removeAttribute("disabled","");
+                    document.getElementById("editarPrefijo").removeAttribute("disabled","");
+                    
+                    document.getElementById("menuFactura").removeAttribute("disabled","");
+                    document.getElementById("agregarFactura").removeAttribute("disabled","");
+                    document.getElementById("verFactura").removeAttribute("disabled","");
+                    document.getElementById("anularFactura").removeAttribute("disabled","");
+                    
+                    
+                    
+                    
+                }else{
+                    
+                    document.getElementById("menuPrefijo").setAttribute("disabled","");
+                    document.getElementById("verPrefijo").setAttribute("disabled","");
+                    document.getElementById("editarPrefijo").setAttribute("disabled","");
+                    
+                    document.getElementById("menuFactura").setAttribute("disabled","");
+                    document.getElementById("agregarFactura").setAttribute("disabled","");
+                    document.getElementById("verFactura").setAttribute("disabled","");
+                    document.getElementById("anularFactura").setAttribute("disabled","");
+                    
+                    
                     
                 }
             }
