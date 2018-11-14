@@ -176,21 +176,28 @@ public class UsuarioServlet extends HttpServlet {
                 String abogado = request.getParameter("idAbogado");
                 String cliente = request.getParameter("idCliente");
 
-                MessageDigest md = MessageDigest.getInstance("MD5");
-                byte[] messageDigest = md.digest(contraseña.getBytes()); //EN VEZ DE INPUT PASARLE CONTRASEÑA
-                BigInteger number = new BigInteger(1, messageDigest);
-                String hashtext = number.toString(16);
+                String hashtext = null;
+                System.out.println(contraseña); 
+                if(contraseña.length() > 0){
+                    MessageDigest md = MessageDigest.getInstance("MD5");
+                    byte[] messageDigest = md.digest(contraseña.getBytes()); //EN VEZ DE INPUT PASARLE CONTRASEÑA
+                    BigInteger number = new BigInteger(1, messageDigest);
+                    hashtext = number.toString(16);
 
-                while (hashtext.length() < 32) {
-                    hashtext = "0" + hashtext;
+                    while (hashtext.length() < 32) {
+                        hashtext = "0" + hashtext;
+                    }
                 }
-
                 Rol rol = rolControl.findRol(idRolNuevo);
 
 
                 usuario.setIdRol(rol);
-                usuario.setPassword(hashtext);
                 usuario.setCuenta(cuenta);
+                
+                if(contraseña.length() > 0){
+                     usuario.setPassword(hashtext);
+                }
+                
                 if(asociado != null){
                     if(asociado.length() > 0){
                         usuario.setAsociado(asociado);

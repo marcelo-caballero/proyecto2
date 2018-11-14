@@ -52,26 +52,27 @@ public class FacturaServlet extends HttpServlet {
         if(request.getParameter("agregar") != null){
             try{
                 Integer idCliente = Integer.parseInt(request.getParameter("idCliente"));  
-                System.out.println(idCliente);
+                //System.out.println(idCliente);
                 Date fecha = formatoFecha.parse(request.getParameter("fecha"));
-                System.out.println(fecha);
+                //System.out.println(fecha);
                 BigInteger nroFactura = new BigInteger(request.getParameter("numFact"));
-                System.out.println(nroFactura);
+                //System.out.println(nroFactura);
                 String condVenta = request.getParameter("cond_venta");
-                System.out.println(condVenta);
+                //System.out.println(condVenta);
                 String formaPago = request.getParameter("forma_pago");
-                System.out.println(formaPago);
+                //System.out.println(formaPago);
                 String banco = request.getParameter("banco");
-                System.out.println(banco);
+                //System.out.println(banco);
                 String nroFormaPago = request.getParameter("nroFormaPago");
-                System.out.println(nroFormaPago);
-
+                //System.out.println(nroFormaPago);
+                String nroTransaccion = request.getParameter("numeroTransaccion");
                 String descripcion = request.getParameter("descripcion");
-                System.out.println(descripcion);
+                //System.out.println(descripcion);
                 BigInteger monto = new BigInteger(request.getParameter("monto"));
-                System.out.println(monto);
+                //System.out.println(monto);
                 BigInteger iva = new BigInteger(request.getParameter("iva"));
-                System.out.println(iva);
+                //System.out.println(iva);
+                Integer cantidad = Integer.parseInt(request.getParameter("cantidad"));  
                 
                 FacturaCabecera cabecera = new FacturaCabecera();
                 cabecera.setIdCliente(clienteControl.findCliente(idCliente));
@@ -83,6 +84,7 @@ public class FacturaServlet extends HttpServlet {
                     cabecera.setNumeroCheque(nroFormaPago);
                 }else{
                     cabecera.setNumeroCuenta(nroFormaPago);
+                    cabecera.setNumeroTransaccionTransferenciaBancaria(new BigInteger(nroTransaccion));
                 }
                 cabecera.setEstado("Pagado");
                 cabecera.setBanco(banco);
@@ -95,21 +97,43 @@ public class FacturaServlet extends HttpServlet {
                 detalle.setDescripcion(descripcion);
                 detalle.setMonto(monto);
                 detalle.setIva(iva);
+                detalle.setCantidad(cantidad);
                 
                 facturaDetalleControl.create(detalle);
                 
                 Prefijo prefijo = prefijoControl.findPrefijoEntities().get(0);
-                prefijo.setId(prefijo.getId()+1);
+                prefijo.setProximo(prefijo.getProximo()+1);
                 
                 prefijoControl.edit(prefijo);
                 
                 
             }catch(Exception e){
                 System.out.println(e);
-                request.getSession().setAttribute("mensajeErrorABM", "No se pudo agregar la facturación");
+                request.getSession().setAttribute("mensajeErrorABM", "No se pudo agregar la factura");
             
             }finally{
-                response.sendRedirect("facturaciones.jsp");
+                response.sendRedirect("facturas.jsp");
+            }
+            
+        }
+        
+        if(request.getParameter("anular") != null){
+            try{
+               
+                Integer idFactura = Integer.parseInt(request.getParameter("idFactura"));
+                FacturaCabecera factura = factCabControl.findFacturaCabecera(idFactura);
+                
+                factura.setEstado("Anulado");
+                
+                factCabControl.edit(factura);
+                
+                
+            }catch(Exception e){
+                System.out.println(e);
+                request.getSession().setAttribute("mensajeErrorABM", "No se pudo anular la factura");
+            
+            }finally{
+                response.sendRedirect("facturas.jsp");
             }
             
         }

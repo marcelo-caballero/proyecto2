@@ -1,4 +1,8 @@
-
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package modeloMng;
 
 import java.io.Serializable;
@@ -14,10 +18,14 @@ import modelo.Prefijo;
 import modeloMng.exceptions.NonexistentEntityException;
 import modeloMng.exceptions.PreexistingEntityException;
 
+/**
+ *
+ * @author User
+ */
 public class PrefijoJpaController implements Serializable {
 
     public PrefijoJpaController() {
-        this.emf = Persistence.createEntityManagerFactory("com.mycompany_Prot2_war_1.0-SNAPSHOTPU");
+       this.emf = Persistence.createEntityManagerFactory("com.mycompany_Prot2_war_1.0-SNAPSHOTPU");
     }
     private EntityManagerFactory emf = null;
 
@@ -33,7 +41,7 @@ public class PrefijoJpaController implements Serializable {
             em.persist(prefijo);
             em.getTransaction().commit();
         } catch (Exception ex) {
-            if (findPrefijo(prefijo.getPrefijo()) != null) {
+            if (findPrefijo(prefijo.getId()) != null) {
                 throw new PreexistingEntityException("Prefijo " + prefijo + " already exists.", ex);
             }
             throw ex;
@@ -54,7 +62,7 @@ public class PrefijoJpaController implements Serializable {
         } catch (Exception ex) {
             String msg = ex.getLocalizedMessage();
             if (msg == null || msg.length() == 0) {
-                String id = prefijo.getPrefijo();
+                Integer id = prefijo.getId();
                 if (findPrefijo(id) == null) {
                     throw new NonexistentEntityException("The prefijo with id " + id + " no longer exists.");
                 }
@@ -67,7 +75,7 @@ public class PrefijoJpaController implements Serializable {
         }
     }
 
-    public void destroy(String id) throws NonexistentEntityException {
+    public void destroy(Integer id) throws NonexistentEntityException {
         EntityManager em = null;
         try {
             em = getEntityManager();
@@ -75,7 +83,7 @@ public class PrefijoJpaController implements Serializable {
             Prefijo prefijo;
             try {
                 prefijo = em.getReference(Prefijo.class, id);
-                prefijo.getPrefijo();
+                prefijo.getId();
             } catch (EntityNotFoundException enfe) {
                 throw new NonexistentEntityException("The prefijo with id " + id + " no longer exists.", enfe);
             }
@@ -112,7 +120,7 @@ public class PrefijoJpaController implements Serializable {
         }
     }
 
-    public Prefijo findPrefijo(String id) {
+    public Prefijo findPrefijo(Integer id) {
         EntityManager em = getEntityManager();
         try {
             return em.find(Prefijo.class, id);

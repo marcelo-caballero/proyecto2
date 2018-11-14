@@ -4,224 +4,388 @@
     Author     : Acer
 --%>
 
-<%@page import="modeloMng.RolJpaController"%>
+<%@page import="java.util.Calendar"%>
+<%@page import="java.text.SimpleDateFormat"%>
+<%@page import="java.util.Date"%>
+<%@page import="modeloMng.PrefijoJpaController"%>
+<%@page import="modelo.Prefijo"%>
 <%@page import="java.util.List"%>
-<%@page import="modelo.Rol"%> 
+
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%response.setHeader("Cache-Control", "no-cache");
 %>
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Rol - Ta'angapp</title>
+        <title>Factura - Ta'angapp</title>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <%@include file="//WEB-INF/paginaCabecera.jsp" %>
     </head>
     <body>
         <%
-            Integer idRol = Integer.parseInt(request.getParameter("idRol"));
-            Rol rol = new RolJpaController().findRol(idRol);
+            Integer id = Integer.parseInt(request.getParameter("idPrefijo"));
+            Prefijo prefijo = new PrefijoJpaController().findPrefijo(id);  
             
+            //Solamente se puede editar cuando el valor proximo a usar es igual al inicial
+            //O que haya expirado las numeraciones de factura
+            
+            boolean editable = false;
+            SimpleDateFormat formatoFecha = new SimpleDateFormat("dd/MM/yyyy");
+
+            Date hoy = formatoFecha.parse(formatoFecha.format(new Date()));
+            Date valido = formatoFecha.parse(formatoFecha.format(prefijo.getFechaValidoHasta()));
+            
+            if(prefijo.getInicio() == prefijo.getProximo()){
+                editable = true; 
+            }    
+
+            if(prefijo.getFin() == prefijo.getProximo()){
+                editable = true;
+            }
+            
+            if(hoy.compareTo(valido)>0){ 
+                editable = true; 
+            }
+            
+            //Establecer la fecha minima
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(new Date());
+            cal.add(Calendar.YEAR, -1);
+            Date fechaMin = cal.getTime(); 
+
+           
         %>
         <%@include file="//WEB-INF/menuCabecera.jsp" %>
         <br>
-         
+        <div class="container">
+           <%@include file="//WEB-INF/menuFacturacion.jsp" %>     
+        </div>
         <div class ="container form-control">
-            <%if(rol.getEstado().equals("ASIGNADO")){%>
+            <%if(!editable){%>
                 <div class="alert alert-info alert-dismissible">
                     <button type="button" class="close" data-dismiss="alert">&times;</button>
-                    <strong>¡Información! </strong> No se puede editar un rol ya asignado a una cuenta de usuario
+                    <strong>¡Información! </strong> Los datos no son editables porque ya se realizó facturaciones
                 </div>
             <%}%>
-            <h2 class="text-justify">Editar Rol</h2>
+            <h2 class="text-justify">Editar Datos</h2>
             <br> 
         
-            <form id="editarRol" 
-                  action="<%=request.getContextPath()%>/RolServlet?editar=true" 
+            <form id="editarPrefijo" 
+                  action="<%=request.getContextPath()%>/PrefijoServlet?editar=true" 
                   method="post"
                   novalidate
                   onsubmit="return false"
                   >
-                <input type="hidden" name="idRol" value="<%=idRol%>">
+                <input type="hidden" name="idPrefijo" value="<%=id%>">
             </form>
           
 
             <div class="row form-group">
                 <div class="col-3">
-                    <label for="rol">Rol:</label> 
+                    <label for="ruc">R.U.C.:</label> 
                 </div>
                 <div class="col-6">
-                    <input form="editarRol"
-                           name="rol"
-                           id="rol"
+                    <input form="editarPrefijo"
+                           name="ruc"
+                           id="ruc"
                            class="form-control"
                            type="text" 
-                           placeholder="Escriba el nombre del rol"
+                           placeholder="Escriba el R.U.C."
                            required 
-                           value="<%=rol.getRol()%>"
+                           value="<%=prefijo.getRuc()%>"
                            >
-                    <div id="rol-retro"></div>
+                    <div id="ruc-retro"></div>
+                </div> 
+            </div>
+            
+            <div class="row form-group">
+                <div class="col-3">
+                    <label for="timbrado">Número de Timbrado:</label> 
+                </div>
+                <div class="col-6">
+                    <input form="editarPrefijo"
+                           name="timbrado"
+                           id="timbrado"
+                           class="form-control"
+                           type="number" 
+                           placeholder="Escriba el timbrado"
+                           required 
+                           min="1"
+                           onkeypress="return isNumberKey(event)"
+                           value="<%=prefijo.getTimbrado()%>"
+                           >
+                    <div id="timbrado-retro"></div>
                 </div> 
             </div>
                            
             <div class="row form-group">
                 <div class="col-3">
-                    <label for="rol">Descripción:</label> 
+                    <label for="prefijo">Prefijo:</label> 
                 </div>
                 <div class="col-6">
-                    <textarea form="editarRol"
-                              name="descripcion"
-                              id="descripcion"
-                              class="form-control" 
-                              placeholder="Escriba una descripción para el rol"
-                              required 
-                              rows="6"
-                              maxlength="250"
-                              ><%=rol.getDescripcion()%></textarea>
-                    <div id="descripcion-retro"></div>
+                    <input form="editarPrefijo"
+                           name="prefijo"
+                           id="prefijo"
+                           class="form-control"
+                           type="text" 
+                           placeholder="Escriba el prefijo"
+                           required 
+                           value="<%=prefijo.getPrefijo()%>"
+                           >
+                    <div id="prefijo-retro"></div>
                 </div> 
             </div>
-            
-  
-            <%if(rol.getEstado().equals("NO ASIGNADO")){%>
-                <div class="row form-group">
-                    <div class="col-5">
-                    </div>
-                    <div class="col-2">
-                        <input id="editar"
-                               type="button"
-                               value="Editar"
-                               onclick="validarFormulario()"
-                              >
-                    </div>    
+                           
+            <div class="row form-group">
+                <div class="col-3">
+                    <label for="fechaValido">Válido hasta:</label> 
                 </div>
-            <%}%>
+                <div class="col-6">
+                    <input form="editarPrefijo"
+                           name="fechaValido"
+                           id="fechaValido"
+                           class="form-control"
+                           type="date" 
+                           placeholder="Escriba la fecha"
+                           required 
+                           min="<%=new SimpleDateFormat("yyyy-MM-dd").format(fechaMin)%>"
+                           max="<%=new SimpleDateFormat("yyyy-MM-dd").format(new Date())%>" 
+                           value="<%=new SimpleDateFormat("yyyy-MM-dd").format(prefijo.getFechaValidoHasta())%>" 
+                           >
+                    <div id="fechaValido-retro"></div>
+                </div> 
+            </div>
+                          
+            <div class="row form-group">
+                <div class="col-3">
+                    <label for="inicio">Número de factura inicial:</label> 
+                </div>
+                <div class="col-6">
+                    <input form="editarPrefijo"
+                           name="inicio"
+                           id="inicio"
+                           class="form-control"
+                           type="number" 
+                           placeholder="Escriba el número de inicio"
+                           required 
+                           min="<%=prefijo.getFin()+1%>"
+                           value="<%=prefijo.getInicio()%>"
+                           onkeypress="return isNumberKey(event)"
+                           >
+                    <div id="inicio-retro"></div>
+                </div> 
+            </div>
+             
+            <div class="row form-group">
+                <div class="col-3">
+                    <label for="fin">Número de factura final:</label> 
+                </div>
+                <div class="col-6">
+                    <input form="editarPrefijo"
+                           name="fin"
+                           id="fin"
+                           class="form-control"
+                           type="number" 
+                           placeholder="Escriba el número final"
+                           required 
+                           min="<%=prefijo.getFin()+1%>"
+                           value="<%=prefijo.getFin()%>" 
+                           onkeypress="return isNumberKey(event)"
+                           >
+                    <div id="fin-retro"></div>
+                </div> 
+            </div>
+                   
+  
+            
+            <div class="row form-group">
+                <div class="col-5">
+                </div>
+                <div class="col-2">
+                    <input id="editar"
+                           type="button"
+                           value="Editar"
+                           <%if(editable){%>
+                                onclick="validarFormulario()"
+                           <%}%>
+                    >
+                </div>    
+            </div>
+            
         </div>
         <br>
         <script>
             function validarFormulario(){
-                var validoRol = validarRol();
-                var validoDescripcion = validarDescripcion();
+                var rucValido = validarRuc();
+                var timbradoValido = validarTimbrado();
+                var prefijoValido = validarPrefijo();
+                var fechaValido = validarFecha();
+                var inicioValido = validarInicio() ;
+                var finValido = validarFin();
                 
-                if(validoRol && validoDescripcion){
-                    
-                    validarRolNoDuplicado();
-                }   
+                if(rucValido && timbradoValido && prefijoValido && fechaValido && inicioValido && finValido){
+                    document.getElementById("editarPrefijo").submit();    
+                }
             }
             
-            function validarRol(){
-                var rolInput = document.getElementById("rol");
-                var retroRol = document.getElementById("rol-retro");
-                var strRol = rolInput.value.trim();
-                rolInput.value = strRol;
+            function validarInicio(){
+                var inicioInput = document.getElementById("inicio");
+                var retroInicio = document.getElementById("inicio-retro");
                 
-                if(strRol.length == 0){ 
-                    rolInput.setAttribute("class","form-control is-invalid");
-                    retroRol.setAttribute("class","invalid-feedback");
-                    retroRol.textContent = 'El campo esta vacío';
+                if(!inicioInput.validity.valid){
+                    inicioInput.setAttribute("class","form-control is-invalid");
+                    retroInicio.setAttribute("class","invalid-feedback");
+                    retroInicio.textContent = 'El número debe ser mayor que <%=prefijo.getFin()%>';
                     
                     return false;
+                    
                 }
                 
-                rolInput.setAttribute("class","form-control is-valid");
-                retroRol.setAttribute("class","valid-feedback");
-                retroRol.textContent = '';
-                    
+                inicioInput.setAttribute("class","form-control is-valid");
+                retroInicio.setAttribute("class","valid-feedback");
+                retroInicio.textContent = '';
+                
+                document.getElementById("fin").setAttribute("min",inicioInput.value);
+                
                 return true;
             }
             
-            function validarDescripcion(){
-                var descripcionInput = document.getElementById("descripcion");
-                var retroDescripcion = document.getElementById("descripcion-retro");
-                var strDescripcion = descripcionInput.value.trim();
+            function validarFin(){
+               
+                var finInput = document.getElementById("fin");
+                var retroFin = document.getElementById("fin-retro");
                 
-                descripcionInput.value = strDescripcion; 
-                
-                if(strDescripcion.length == 0){ 
-                    descripcionInput.setAttribute("class","form-control is-invalid");
-                    retroDescripcion.setAttribute("class","invalid-feedback");
-                    retroDescripcion.textContent = 'El campo esta vacío';
-                    
-                    return false;
-                }
-                
-                descripcionInput.setAttribute("class","form-control is-valid");
-                retroDescripcion.setAttribute("class","valid-feedback");
-                retroDescripcion.textContent = '';
-                    
-                return true;
-            }
-            
-            //Llamada al ajax para validar que nombre
-            //del rol no este duplicado
-            //Si esta duplicado informa al usuario
-            //Caso contrario, envia el formulario al servlet
-            function validarRolNoDuplicado(){
-                
-                var rolInput = document.getElementById("rol");
-                var retroRol = document.getElementById("rol-retro");
-                var strRol = rolInput.value.trim();
-                
-                var xmlHttp = new XMLHttpRequest();
-                xmlHttp.open("GET",
-                "<%=request.getContextPath()%>/RolServlet?existeRol="+strRol+"&idRol="+<%=idRol%>, 
-                true);
+                var inicioInput = document.getElementById("inicio");
 
-                xmlHttp.onreadystatechange=function(){
-                    
-                   if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
-                       
-                        clearTimeout(xmlHttpTimeout); 
-                        
-                        var objectoJSON = JSON.parse(this.responseText);
-                        var existeRol = objectoJSON.existeRol;
-                        
-                        if(existeRol == null){
-                            
-                            rolInput.setAttribute("class","form-control is-invalid");
-                            retroRol.setAttribute("class","invalid-feedback");
-                            retroRol.textContent = '¡Ocurrió un fallo! No se pudo comprobar la unicidad del rol';
-                            
-                            //se desbloquea boton editar
-                            document.getElementById("editar").removeAttribute("disabled");
-                            
-                        } else if(existeRol){
-                            
-                            rolInput.setAttribute("class","form-control is-invalid");
-                            retroRol.setAttribute("class","invalid-feedback");
-                            retroRol.textContent = 'Ya existe un rol con el mismo nombre';
-                            
-                            //se desbloquea boton editar
-                            document.getElementById("editar").removeAttribute("disabled");
-                            
-                        }else{
-                            //se envia formulario
-                            document.getElementById("editarRol").submit();
-                            
-                        }
-                       
-                    }
-                };
-                
-                //bloquear boton editar
-                document.getElementById("editar").setAttribute("disabled","");
-                xmlHttp.send();
-                
-                // Timeout para abortar despues 5 segundos
-                var xmlHttpTimeout=setTimeout(ajaxTimeout,5000);
-                function ajaxTimeout(){
-                    xmlHttp.abort();
-                 
-                    rolInput.setAttribute("class","form-control is-invalid");
-                    retroRol.setAttribute("class","invalid-feedback");
-                    retroRol.textContent = 'No se pudo validar que el rol no sea duplicado. \n Intente más tarde';
-                    
-                    // Se desbloque boton editar
-                    document.getElementById("editar").removeAttribute("disabled");
+                if(!finInput.validity.valid){
+                    finInput.setAttribute("class","form-control is-invalid");
+                    retroFin.setAttribute("class","invalid-feedback");
+                    retroFin.textContent = 'El número debe ser mayor o igual que el número inicial';
+
+                    return false;
                 }
                 
+                
+                finInput.setAttribute("class","form-control is-valid");
+                retroFin.setAttribute("class","valid-feedback");
+                retroFin.textContent = '';
+
+                return true;
+                
             }
-           
+            
+            function validarRuc(){
+                var rucInput = document.getElementById("ruc");
+                var retroRuc = document.getElementById("ruc-retro");
+                var strRuc = rucInput.value.trim();
+                
+                rucInput.value = strRuc;
+                
+                
+                if(strRuc.length == 0){
+                    rucInput.setAttribute("class","form-control is-invalid");
+                    retroRuc.setAttribute("class","invalid-feedback");
+                    retroRuc.textContent = 'El campo esta vacío';
+                    
+                    return false;
+                } 
+                
+                if(/\s/.test(strRuc)){
+
+                    rucInput.setAttribute("class","form-control is-invalid");
+                    retroRuc.setAttribute("class","invalid-feedback");
+                    retroRuc.textContent = 'No debe contener espacios';
+                    return false;
+                } 
+                
+                rucInput.setAttribute("class","form-control is-valid");
+                retroRuc.setAttribute("class","valid-feedback");
+                retroRuc.textContent = '';
+                    
+                return true;
+            }
+            
+            function isNumberKey(evt){
+                var charCode = (evt.which) ? evt.which : event.keyCode;
+                if (charCode > 31 && (charCode < 48 || charCode > 57))
+                    return false;
+                return true;
+            }
+            
+            function validarTimbrado(){
+                var timbradoInput = document.getElementById("timbrado");
+                var retroTimbrado = document.getElementById("timbrado-retro");
+                var strTimbrado = timbradoInput.value
+                
+                if(!timbradoInput.validity.valid){ 
+                    timbradoInput.setAttribute("class","form-control is-invalid");
+                    retroTimbrado.setAttribute("class","invalid-feedback");
+                    retroTimbrado.textContent = 'El campo esta vacío';
+                    
+                    return false;
+                }
+                
+                timbradoInput.setAttribute("class","form-control is-valid");
+                retroTimbrado.setAttribute("class","valid-feedback");
+                retroTimbrado.textContent = '';
+                    
+                return true;
+            }
+            
+            function validarPrefijo(){
+                var prefijoInput = document.getElementById("prefijo");
+                var retroPrefijo = document.getElementById("prefijo-retro");
+                var strPrefijo = prefijoInput.value.trim();
+                
+                prefijoInput.value = strPrefijo;
+                
+                if(strPrefijo.length == 0){ 
+                    prefijoInput.setAttribute("class","form-control is-invalid");
+                    retroPrefijo.setAttribute("class","invalid-feedback");
+                    retroPrefijo.textContent = 'El campo esta vacío';
+                    
+                    return false;
+                }
+                
+                prefijoInput.setAttribute("class","form-control is-valid");
+                retroPrefijo.setAttribute("class","valid-feedback");
+                retroPrefijo.textContent = '';
+                    
+                return true;
+            }
+            
+            function validarFecha(){
+                var fechaInput = document.getElementById("fechaValido");
+                var retroFecha = document.getElementById("fechaValido-retro");
+                var strFecha = fechaInput.value.trim(); 
+                
+                if(strFecha.length == 0){ 
+                    fechaInput.setAttribute("class","form-control is-invalid");
+                    retroFecha.setAttribute("class","invalid-feedback");
+                    retroFecha.textContent = 'El campo esta vacío';
+                    
+                    return false;
+                }
+                
+                if(!fechaInput.validity.valid){
+                    
+                    fechaInput.setAttribute("class","form-control is-invalid");
+                    retroFecha.setAttribute("class","invalid-feedback");
+                    
+                    retroFecha.textContent = 
+                        'La fecha debe estar entre <%=new SimpleDateFormat("dd/MM/yyyy").format(fechaMin)%> y <%=new SimpleDateFormat("dd/MM/yyyy").format(new Date())%>';
+                    
+                    return false;
+                    
+                }
+   
+                fechaInput.setAttribute("class","form-control is-valid");
+                retroFecha.setAttribute("class","valid-feedback");
+                retroFecha.textContent = '';
+                    
+                return true;
+                
+            }
         </script>
     </body>
 </html>

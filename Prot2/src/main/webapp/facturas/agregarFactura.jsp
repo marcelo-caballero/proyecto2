@@ -4,8 +4,7 @@
     Author     : User
 --%>
 
-<%@page import="modeloMng.FacturaCabeceraJpaController"%>
-<%@page import="modelo.FacturaCabecera"%>
+<%@page import="java.util.Calendar"%>
 <%@page import="java.text.SimpleDateFormat"%>
 <%@page import="java.util.Date"%>
 <%@page import="modeloMng.PrefijoJpaController"%>
@@ -17,32 +16,39 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Titular - Ta'angapp</title>
+        <title>Factura - Ta'angapp</title>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <%@include file="//WEB-INF/paginaCabecera.jsp" %>
     </head>
     <body>
         <% List<Prefijo> prefijo = new PrefijoJpaController().findPrefijoEntities();
-           Integer numeroFactura = prefijo.get(0).getId();
+           Integer numeroFactura = prefijo.get(0).getProximo();
            
            String numFactura = numeroFactura+"";
            while(numFactura.length()<6){
                numFactura = "0"+numFactura;
            }
            
-           Integer id = Integer.parseInt(request.getParameter("idFactura"));
-           FacturaCabecera factura = new FacturaCabeceraJpaController().findFacturaCabecera(id);
+           //Establecer la fecha minima
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(new Date());
+            cal.add(Calendar.YEAR, -1);
+            Date fechaMin = cal.getTime(); 
         %>
         <%@include file="//WEB-INF/menuCabecera.jsp" %>
         <br>
-         
+        
+        <div class="container">
+           <%@include file="//WEB-INF/menuFacturacion.jsp" %>     
+        </div>
+        
         <div class ="container form-control">
         
-            <h2 class="text-justify"> Ver Factura</h2>
+            <h2 class="text-justify"> Agregar Factura</h2>
             <br> 
         
             <form id="agregarFactura" 
-                  action="" 
+                  action="<%=request.getContextPath()%>/FacturaServlet?agregar=true" 
                   method="post" 
                   novalidate>
                 <input type="hidden" name="idCliente" id="idCliente">
@@ -59,9 +65,8 @@
                            class="form-control"
                            type="text" 
                            placeholder="Escriba el R.U.C. del titular y oprima Buscar"
-                           required
-                           value="<%=factura.getIdCliente().getRuc()%>"  
-                           >
+                           onchange="limpiarDatosCliente()"
+                           required>
                     <div id="ruc-retro"></div>
                 </div> 
                 <div class="col">
@@ -83,7 +88,7 @@
                            class="form-control"
                            type="text" 
                            readonly
-                           value="<%=factura.getIdCliente().getNombreCliente()%>"
+                           placeholder="Ingrese el R.U.C. del cliente para completar el campo"
                            required >
                     <div id="nombre-retro"></div>
                 </div> 
@@ -100,7 +105,7 @@
                            class="form-control"
                            type="text" 
                            readonly
-                           value="<%=factura.getIdCliente().getDireccion()%>"
+                           placeholder="Ingrese el R.U.C. del cliente para completar el campo"
                            required >
                     <div id="direccion-retro"></div>
                 </div> 
@@ -117,7 +122,7 @@
                            class="form-control"
                            type="text" 
                            readonly
-                           value="<%=factura.getIdCliente().getTelefono()%>"
+                           placeholder="Ingrese el R.U.C. del cliente para completar el campo"
                            required >
                     <div id="telefono-retro"></div>
                 </div> 
@@ -133,9 +138,10 @@
                            id="fecha"
                            class="form-control"
                            type="date"
-                           readonly
-                           value="<%=new SimpleDateFormat("yyyy-MM-dd").format(factura.getFecha())%>" 
-                           required>  
+                           min="<%=new SimpleDateFormat("yyyy-MM-dd").format(fechaMin)%>"   
+                           max="<%=new SimpleDateFormat("yyyy-MM-dd").format(new Date())%>"
+                           value="<%=new SimpleDateFormat("yyyy-MM-dd").format(new Date())%>"
+                           required> 
                     <div id="fecha-retro"></div>
                 </div>
             </div>
@@ -152,7 +158,7 @@
                            type="number" 
                            readonly
                            required 
-                           value="<%=factura.getNumeroFactura()%>"
+                           value="<%=numFactura%>"
                            onkeypress="return isNumberKey(event)">
                     <div id="ci-retro"></div>
                 </div> 
@@ -164,15 +170,18 @@
                     <label for="cond_venta">Condición de Venta:</label>
                 </div>  
                 <div class="col-6">
-                    <input form="agregarFactura" 
+                    <select form="agregarFactura" 
                             name="cond_venta" 
                             id="cond_venta" 
                             class="form-control"
-                            value="<%=factura.getCondicionVenta()%>"
                             >
-                            
-                    
-                    
+                            <option value="Contado">  
+                                Contado 
+                            </option>
+                            <%--<option value="Crédito">  
+                                Crédito 
+                            </option>--%>
+                    </select>
                    
                 </div>
             </div>
@@ -184,13 +193,19 @@
                     <label for="apellido">Forma de pago:</label> 
                 </div>
                 <div class="col-6">
-                    <input form="agregarFactura" 
+                    <select form="agregarFactura" 
                             name="forma_pago" 
                             id="forma_pago" 
                             class="form-control"
-                            value="<%=factura.getFormaPago()%>"
+                            onchange="habilitarNroTransaccion()"
                             >
-                            
+                            <option value="Cheque">  
+                                Cheque 
+                            </option>
+                            <option value="Transferencia">  
+                                Transferencia Bancaria 
+                            </option>
+                    </select>
                     <div id=""></div>
                 </div> 
             </div>
@@ -205,7 +220,7 @@
                            id="banco"
                            class="form-control"
                            type="text" 
-                           value="<%=factura.getBanco()%>"
+                           placeholder="Ingrese el nombre del Banco"
                            required >
                     <div id="banco-retro"></div>
                 </div> 
@@ -222,13 +237,32 @@
                            class="form-control"
                            type="number" 
                            min="0"
-                           value="<%=factura.getNumeroFormaPago()%>"
+                           placeholder="Escriba el número de cheque o cuenta bancaria"
                            onkeypress="return isNumberKey(event)"
                            required >
                     <div id="nroFormaPago-retro"></div>
                 </div> 
             </div>
             
+            <div class="row form-group">
+                <div class="col-3">
+                    <label for="numeroTransaccion">Número de transacción de la transferencia bancaria: </label> 
+                </div>
+                <div class="col-6">
+                    <input form="agregarFactura"
+                           name="numeroTransaccion"
+                           id="numeroTransaccion"
+                           class="form-control"
+                           type="number" 
+                           min="1"
+                           disabled
+                           placeholder="Ingrese el número de la transacción"
+                           onkeypress="return isNumberKey(event)"
+                           required >
+                    <div id="numeroTransaccion-retro"></div>
+                </div> 
+            </div>
+                    
             <div class="row form-group">
                 <div class="col-3">
                     <label for="descripcion">Descripción: </label> 
@@ -239,7 +273,7 @@
                            id="descripcion"
                            class="form-control"
                            type="text" 
-                           value=""
+                           placeholder="Ingrese la descripción del servicio"
                            required >
                     <div id="descripcion-retro"></div>
                 </div> 
@@ -247,7 +281,7 @@
                   
             <div class="row form-group" >
                 <div class="col-3">
-                    <label for="monto">Monto:</label> 
+                    <label for="monto">Monto en Gs.:</label> 
                 </div>
                 <div class="col-6">
                     <input form="agregarFactura"
@@ -256,10 +290,30 @@
                            class="form-control"
                            type="number" 
                            min="1"
+                           placeholder="Ingrese el monto"
                            onkeypress="return isNumberKey(event)"
                            onchange="calcularIva()"
                            required >
                     <div id="monto-retro"></div>
+                </div> 
+            </div>
+                    
+            <div class="row form-group" >
+                <div class="col-3">
+                    <label for="monto">Cantidad:</label> 
+                </div>
+                <div class="col-6">
+                    <input form="agregarFactura"
+                           name="cantidad"
+                           id="cantidad"
+                           class="form-control"
+                           type="number" 
+                           min="1"
+                           placeholder="Ingrese la cantidad"
+                           onkeypress="return isNumberKey(event)"
+                           onchange="calcularIva()"
+                           required >
+                    <div id="cantidad-retro"></div>
                 </div> 
             </div>
                    
@@ -274,41 +328,120 @@
                            class="form-control"
                            type="number" 
                            readonly
+                           placeholder="0"
                            required >
-                    <div id="apellido-retro"></div>
+                    <div id=""></div>
+                </div> 
+            </div>
+                    
+            <div class="row form-group" >
+                <div class="col-3">
+                    <label for="">Total</label> 
+                </div>
+                <div class="col-6">
+                    <input form="agregarFactura"
+                           name=""
+                           id="total"
+                           class="form-control"
+                           type="number" 
+                           min="1"
+                           placeholder="0"
+                           disabled>
+                    <div id=""></div>
                 </div> 
             </div>
                   
             <div class="row form-group">
-                <div class="col-4">
+                <div class="col-5">
                 </div>
-                <div class="col-2">
+                <%--<div class="col-2">
                     <input id="generarFact"
                            type="button"
                            value="Generar Factura"
                            onclick="generarFactura()">
-                </div> 
+                </div> --%>
                 <div class="col-2">
                     <input id="agregar"
                            type="button"
-                           value="Guardar"
-                           onclick="guardarFactura()">
+                           value="Facturar"
+                           onclick=" validarFormulario()">
                 </div> 
             </div>
        
         </div>
         <br>
         <script>
+            
+            function validarFecha(){
+                var fechaInput = document.getElementById("fecha");
+                var retroFecha = document.getElementById("fecha-retro");
+                var strFecha = fechaInput.value.trim(); 
+                
+                if(strFecha.length == 0){ 
+                    fechaInput.setAttribute("class","form-control is-invalid");
+                    retroFecha.setAttribute("class","invalid-feedback");
+                    retroFecha.textContent = 'El campo esta vacío';
+                    
+                    return false;
+                }
+                
+                if(!fechaInput.validity.valid){
+                    
+                    fechaInput.setAttribute("class","form-control is-invalid");
+                    retroFecha.setAttribute("class","invalid-feedback");
+                    
+                    retroFecha.textContent = 
+                        'La fecha debe estar entre <%=new SimpleDateFormat("dd/MM/yyyy").format(fechaMin)%> y <%=new SimpleDateFormat("dd/MM/yyyy").format(new Date())%>';
+                    
+                    return false;
+                    
+                }
+   
+                fechaInput.setAttribute("class","form-control is-valid");
+                retroFecha.setAttribute("class","valid-feedback");
+                retroFecha.textContent = '';
+                    
+                return true;
+                
+            }
+            
+            function limpiarDatosCliente(){
+                var nombreInput = document.getElementById("nombre");
+                var direccionInput = document.getElementById("direccion");
+                var telefonoInput = document.getElementById("telefono");
+                
+                nombreInput.value = "";
+                direccionInput.value = "";
+                telefonoInput.value = "";
+                
+            }
+            function habilitarNroTransaccion(){
+                var formaPagoSelect = document.getElementById("forma_pago");
+                var nroTransaccionInput = document.getElementById("numeroTransaccion");
+                
+                if(formaPagoSelect.value == "Transferencia"){
+                    
+                    nroTransaccionInput.disabled = false;
+                }else{
+                    
+                    nroTransaccionInput.disabled = true;
+                }
+                
+            }
             function calcularIva(){
                 var monto = document.getElementById("monto");
+                var cantidad = document.getElementById("cantidad");
+                var total = document.getElementById("total");
                 
-                if(monto != null){
-                    document.getElementById("iva").value = Math.round(monto.value/11);
+                if(monto != null && cantidad != null){
+                    document.getElementById("iva").value = Math.round(monto.value*cantidad.value/11);
+                    total.value = monto.value*cantidad.value;
                 }else{
                     document.getElementById("iva").value = 0;
+                    total.value=0;
                 }
             }
-            function generarFactura(){
+            <%--function generarFactura(){
                var formularioValido =  validarFormulario();
                
                if(formularioValido){
@@ -316,18 +449,11 @@
                    document.getElementById("agregarFactura").setAttribute("action","<%=request.getContextPath()%>/Factura.jsp");         
                    document.getElementById("agregarFactura").submit();
                }
-            }
-            
-            function guardarFactura(){
-               var formularioValido =  validarFormulario();
-               
-               if(formularioValido){
-                   document.getElementById("agregarFactura").setAttribute("action","<%=request.getContextPath()%>/FacturaServlet?agregar");    
-                   document.getElementById("agregarFactura").submit();
-               }
-            }
+            }--%>
             
             function validarFormulario(){
+                
+                
                 
                 var rucValido = validarRuc();
                 var nombreValido = validarNombre();
@@ -337,6 +463,9 @@
                 var montoValido = validarMonto();
                 var bancoValido = validarBanco();
                 var nroFormaPago = validarNroFormaPago();
+                var cantidadValido = validarCantidad();
+                var nroTransaccionValido = validarNroTransaccion();
+                var fechaValido = validarFecha();
                 
                 
                 if(rucValido && 
@@ -346,12 +475,15 @@
                         descripcionValido &&
                         montoValido &&
                         bancoValido &&
-                        nroFormaPago){
+                        nroFormaPago &&
+                        cantidadValido &&
+                        nroTransaccionValido &&
+                        fechaValido){
                    
-                   return true;
+                   document.getElementById("agregarFactura").submit();
                 }
                 
-                return false;
+                
             }
             
             //Llenar los campos del cliente
@@ -397,7 +529,6 @@
 
                             //se desbloquea boton agregar
                             document.getElementById("agregar").removeAttribute("disabled");
-                            document.getElementById("generarFact").removeAttribute("disabled");
                             document.getElementById("buscar").removeAttribute("disabled");
                             
                             nombreInput.value = "";
@@ -418,7 +549,6 @@
 
                             //se desbloquea boton agregar
                             document.getElementById("agregar").removeAttribute("disabled");
-                            document.getElementById("generarFact").removeAttribute("disabled");
                             document.getElementById("buscar").removeAttribute("disabled");
 
                         }
@@ -428,7 +558,6 @@
 
                 //bloquear boton agregar
                 document.getElementById("agregar").setAttribute("disabled","");
-                document.getElementById("generarFact").setAttribute("disabled","");
                 document.getElementById("buscar").setAttribute("disabled","");
                 xmlHttp.send();
 
@@ -447,7 +576,6 @@
                     
                     // Se desbloque boton agregar
                     document.getElementById("agregar").removeAttribute("disabled");
-                    document.getElementById("generarFact").removeAttribute("disabled");
                     document.getElementById("buscar").removeAttribute("disabled");
                 }
 
@@ -539,6 +667,52 @@
                 montoInput.setAttribute("class","form-control is-valid");
                 retroMonto.setAttribute("class","valid-feedback");
                 retroMonto.textContent = '';
+                    
+                return true;
+            }
+            
+            function validarNroTransaccion(){
+               
+               var nroTransaccionInput = document.getElementById("numeroTransaccion");
+               var retroNroTransaccion = document.getElementById("numeroTransaccion-retro")
+                
+                if(nroTransaccionInput.disabled == false){
+                    
+                    if(!nroTransaccionInput.validity.valid){ 
+                        nroTransaccionInput.setAttribute("class","form-control is-invalid");
+                        retroNroTransaccion.setAttribute("class","invalid-feedback");
+                        retroNroTransaccion.textContent = 'El campo esta vacío';
+
+                        return false;
+                    }
+                    
+                }
+                
+                nroTransaccionInput.setAttribute("class","form-control is-valid");
+                retroNroTransaccion.setAttribute("class","valid-feedback");
+                retroNroTransaccion.textContent = '';
+                    
+                return true;
+            }
+            
+            function validarCantidad(){
+                var cantidadInput = document.getElementById("cantidad");
+                var retroCantidad = document.getElementById("cantidad-retro");
+                //var strMonto = montoInput.value.trim();
+                
+                //direccionInput.value = strDireccion;
+                
+                if(!cantidadInput.validity.valid){ 
+                    cantidadInput.setAttribute("class","form-control is-invalid");
+                    retroCantidad.setAttribute("class","invalid-feedback");
+                    retroCantidad.textContent = 'El campo esta vacío';
+                    
+                    return false;
+                }
+                
+                cantidadInput.setAttribute("class","form-control is-valid");
+                retroCantidad.setAttribute("class","valid-feedback");
+                retroCantidad.textContent = '';
                     
                 return true;
             }

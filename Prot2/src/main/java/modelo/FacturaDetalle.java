@@ -18,6 +18,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -35,6 +36,11 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "FacturaDetalle.findByMonto", query = "SELECT f FROM FacturaDetalle f WHERE f.monto = :monto"),
     @NamedQuery(name = "FacturaDetalle.findByIva", query = "SELECT f FROM FacturaDetalle f WHERE f.iva = :iva")})
 public class FacturaDetalle implements Serializable {
+
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "cantidad")
+    private int cantidad;
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -145,5 +151,18 @@ public class FacturaDetalle implements Serializable {
     public String toString() {
         return "modelo.FacturaDetalle[ idFacturaDetalle=" + idFacturaDetalle + " ]";
     }
+
+    public int getCantidad() {
+        return cantidad;
+    }
+
+    public void setCantidad(int cantidad) {
+        this.cantidad = cantidad;
+    }
     
+    public BigInteger getTotal(){
+        String cant = String.valueOf(this.cantidad); 
+        return (new BigInteger(cant).multiply(monto)); 
+        
+    }
 }

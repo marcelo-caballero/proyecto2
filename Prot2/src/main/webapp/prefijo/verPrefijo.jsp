@@ -4,58 +4,96 @@
     Author     : Acer
 --%>
 
-<%@page import="modeloMng.RolJpaController"%>
+<%@page import="modeloMng.PrefijoJpaController"%>
 <%@page import="java.util.List"%>
-<%@page import="modelo.Rol"%> 
+<%@page import="modelo.Prefijo"%> 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%response.setHeader("Cache-Control", "no-cache");
 %>
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Rol - Ta'angapp</title>
+        <title>Factura- Ta'angapp</title>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <%@include file="//WEB-INF/paginaCabecera.jsp" %>
     </head>
     <body>
         <%
-            Integer idRol = Integer.parseInt(request.getParameter("idRol"));
-            Rol rol = new RolJpaController().findRol(idRol); 
+            Integer id = Integer.parseInt(request.getParameter("idPrefijo"));
+            Prefijo prefijo = new PrefijoJpaController().findPrefijo(id);  
             
         %>
         <%@include file="//WEB-INF/menuCabecera.jsp" %>
         <br>
-         
+        <div class="container">
+           <%@include file="//WEB-INF/menuFacturacion.jsp" %>     
+        </div>
         <div class ="container form-control">
         
-            <h2 class="text-justify"> Ver Rol</h2>
+            <h2 class="text-justify"> Datos de la Factura</h2>
             <br> 
        
             <div class="row form-group">
                 <div class="col-3">
-                    <label for="rol">Rol:</label> 
+                    <label for="rol">R.U.C.:</label> 
                 </div>
                 <div class="col-6 form-control">
-                    <%=rol.getRol()%> 
+                    <%=prefijo.getRuc()%> 
                 </div> 
             </div>
                   
             <div class="row form-group">
                 <div class="col-3">
-                    <label for="rol">Descripción:</label> 
+                    <label for="rol">Número de Timbrado:</label> 
                 </div>
                 <div class="col-6 form-control">
-                   <%=rol.getDescripcion()%>
+                   <%=prefijo.getTimbrado()%> 
+                </div>  
+            </div>
+                
+            <div class="row form-group">
+                <div class="col-3">
+                    <label for="rol">Prefijo:</label> 
+                </div>
+                <div class="col-6 form-control">
+                    <%=prefijo.getPrefijo()%>
                 </div>  
             </div>
   
             <div class="row form-group">
                 <div class="col-3">
-                    <label for="rol">Estado:</label> 
+                    <label for="rol">Válido hasta:</label> 
                 </div>
                 <div class="col-6 form-control">
-                    <%=rol.getEstado().substring(0,1)+rol.getEstado().substring(1).toLowerCase()%> 
-                </div> 
+                   <%=prefijo.getStringFecha()%> 
+                </div>  
+            </div>
+                
+            <div class="row form-group">
+                <div class="col-3">
+                    <label for="rol">Número de factura inicial:</label> 
+                </div>
+                <div class="col-6 form-control">
+                    <%=prefijo.getInicio()%>  
+                </div>  
+            </div>
+               
+            <div class="row form-group">
+                <div class="col-3">
+                    <label for="rol">Número de factura final:</label> 
+                </div>
+                <div class="col-6 form-control">
+                    <%=prefijo.getFin()%>    
+                </div>  
+            </div>
+                
+            <div class="row form-group">
+                <div class="col-3">
+                    <label for="rol">Próximo número a utilizar:</label> 
+                </div>
+                <div class="col-6 form-control">
+                    <%=prefijo.getProximo()%>  
+                </div>  
             </div>
                 
         </div>

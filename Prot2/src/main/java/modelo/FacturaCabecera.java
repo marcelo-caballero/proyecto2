@@ -25,6 +25,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
@@ -47,6 +48,10 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "FacturaCabecera.findByEstado", query = "SELECT f FROM FacturaCabecera f WHERE f.estado = :estado"),
     @NamedQuery(name = "FacturaCabecera.findByNumeroFactura", query = "SELECT f FROM FacturaCabecera f WHERE f.numeroFactura = :numeroFactura")})
 public class FacturaCabecera implements Serializable {
+
+  
+    @Column(name = "numero_transaccion_transferencia_bancaria")
+    private BigInteger numeroTransaccionTransferenciaBancaria;
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -222,5 +227,13 @@ public class FacturaCabecera implements Serializable {
     public String getNumeroFormaPago(){
         if(numeroCheque != null) return numeroCheque;
         return numeroCuenta;
+    }
+
+    public BigInteger getNumeroTransaccionTransferenciaBancaria() {
+        return numeroTransaccionTransferenciaBancaria;
+    }
+
+    public void setNumeroTransaccionTransferenciaBancaria(BigInteger numeroTransaccionTransferenciaBancaria) {
+        this.numeroTransaccionTransferenciaBancaria = numeroTransaccionTransferenciaBancaria;
     }
 }

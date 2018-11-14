@@ -454,7 +454,9 @@ public class ClienteJpaController implements Serializable {
        EntityManager em = getEntityManager();
        
         try {
-            String consulta =   "select e.idCliente.idCliente from Expediente e where e.idCliente.idCliente = :idCliente ";
+            String consulta =   "select e.idCliente.idCliente from Expediente e where e.idCliente.idCliente = :idCliente "+
+                                " union "+
+                                " select f.idCliente.idCliente from FacturaCabecera f where f.idCliente.idCliente = :idCliente and f.estado = 'Pagado'";
                               
                 
             Query q = em.createQuery(consulta);

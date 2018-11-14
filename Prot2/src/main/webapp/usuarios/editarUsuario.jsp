@@ -394,6 +394,14 @@
                 var retroContrasena = document.getElementById("contrasena-retro");
                 var strContrasena = contrasenaInput.value;
                 
+                if(strContrasena.length == 0){ 
+                    contrasenaInput.setAttribute("class","form-control is-valid");
+                    retroContrasena.setAttribute("class","valid-feedback");
+                    retroContrasena.textContent = '';
+                    
+                    return true;
+                }
+                
                 if(strContrasena.length < 8){ 
                     contrasenaInput.setAttribute("class","form-control is-invalid");
                     retroContrasena.setAttribute("class","invalid-feedback");
