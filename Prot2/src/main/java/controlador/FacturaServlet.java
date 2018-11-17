@@ -43,6 +43,9 @@ public class FacturaServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        
+        request.setCharacterEncoding("UTF-8");
+        
         FacturaCabeceraJpaController factCabControl = new FacturaCabeceraJpaController();
         ClienteJpaController clienteControl = new ClienteJpaController();
         FacturaDetalleJpaController facturaDetalleControl = new FacturaDetalleJpaController();

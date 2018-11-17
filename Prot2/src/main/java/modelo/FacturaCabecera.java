@@ -61,7 +61,7 @@ public class FacturaCabecera implements Serializable {
     private Integer idFactura;
     @Basic(optional = false)
     @Column(name = "fecha")
-    @Temporal(TemporalType.TIME)
+    @Temporal(TemporalType.TIMESTAMP)
     private Date fecha;
     @Basic(optional = false)
     @Column(name = "condicion_venta")

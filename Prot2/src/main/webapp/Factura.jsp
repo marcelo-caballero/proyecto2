@@ -1,5 +1,9 @@
 
 
+<%@page import="java.util.Locale"%>
+<%@page import="modelo.Cliente"%>
+<%@page import="modeloMng.FacturaCabeceraJpaController"%>
+<%@page import="modelo.FacturaCabecera"%>
 <%@page import="net.sf.jasperreports.engine.JasperRunManager"%>
 <%@page import="modeloMng.ClienteJpaController"%>
 <%@page import="java.sql.DriverManager"%>
@@ -26,7 +30,7 @@
                 Class.forName("org.postgresql.Driver");
                 Connection con = DriverManager.getConnection(url, user, pass); 
                 
-                String fecha = request.getParameter("fecha");
+                /*String fecha = request.getParameter("fecha");
                 String cond_venta = request.getParameter("cond_venta");
                 String ruc =  request.getParameter("ruc");
                 String descripcion =  request.getParameter("descripcion");
@@ -35,31 +39,39 @@
                 String direccion = request.getParameter("direccion");
                 String telefono = request.getParameter("telefono");
                 
-                String iva =  request.getParameter("iva");
-                String numFact =  request.getParameter("numFact");
+                String iva =  request.getParameter("iva");*/
+                Integer idFactura =  Integer.parseInt(request.getParameter("idFactura"));
+                FacturaCabecera fac = new FacturaCabeceraJpaController().findFacturaCabecera(idFactura);
                 
+                Cliente cliente = fac.getIdCliente();
                 
-                System.out.println("Numero factura "+numFact);
-                System.out.println("Fecha  "+fecha);
-                System.out.println("Nombre "+nombre);
-                System.out.println("Telefono "+telefono);
-                System.out.println("Direccion "+direccion);
-                System.out.println("iva "+iva);
-                System.out.println("ruc "+ruc);
-                System.out.println("monto "+precio);
-                ClienteJpaController cliente = new ClienteJpaController();
+                String numFactura = String.valueOf(fac.getNumeroFactura());
+                while(numFactura.length()<6){
+                    numFactura = "0"+numFactura;
+                }
+                System.out.println("ID factura "+idFactura);
+                //System.out.println("Fecha  "+fecha);
+                //System.out.println("Nombre "+nombre);
+                //System.out.println("Telefono "+telefono);
+                //System.out.println("Direccion "+direccion);
+                //System.out.println("iva "+iva);
+                //System.out.println("ruc "+ruc);
+                //System.out.println("monto "+precio);
+                //ClienteJpaController cliente = new ClienteJpaController();
        
                 
                 File reportfile = new File(application.getRealPath("/WEB-INF/reportes/Factura.jasper"));
                 Map<String, Object> parameter = new HashMap<>();
-                parameter.put("inicio", numFact);
-                parameter.put("ruc", ruc);
-                parameter.put("fecha", fecha);
-                parameter.put("nombre", nombre);
-                parameter.put("precio", precio);
-                parameter.put("direccion", direccion);
-                parameter.put("telefono", telefono);
-                parameter.put("iva10", iva); 
+                parameter.put("REPORT_LOCALE", new Locale("es", "ES"));
+                parameter.put("idFactura", idFactura);
+                parameter.put("inicio", numFactura);
+                parameter.put("fecha", fac.getFecha());
+                parameter.put("ruc", cliente.getRuc());
+                parameter.put("direccion", cliente.getDireccion());
+                parameter.put("telefono", cliente.getTelefono());
+                parameter.put("nombre", cliente.getNombreCliente());
+                parameter.put("cantidad", fac.getFacturaDetalleList().get(0).getCantidad());
+             
                 
                 
                 
