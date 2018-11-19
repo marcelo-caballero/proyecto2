@@ -34,6 +34,20 @@
             cal.setTime(new Date());
             cal.add(Calendar.YEAR, -1);
             Date fechaMin = cal.getTime(); 
+
+            SimpleDateFormat formatoFecha = new SimpleDateFormat("dd/MM/yyyy");
+
+            Date hoy = formatoFecha.parse(formatoFecha.format(new Date()));
+            Date valido = formatoFecha.parse(formatoFecha.format(prefijo.get(0).getFechaValidoHasta()));
+            
+            boolean agregar = true; 
+            if( prefijo.get(0).getProximo() > prefijo.get(0).getInicio()){
+                agregar = false;
+            }
+            if(hoy.compareTo(valido)>0){
+                agregar = false;
+            }
+            
         %>
         <%@include file="//WEB-INF/menuCabecera.jsp" %>
         <br>
@@ -46,7 +60,13 @@
         
             <h2 class="text-justify"> Agregar Factura</h2>
             <br> 
-        
+            <%if(!agregar){%> 
+                <div class="alert alert-info alert-dismissible">
+                    <button type="button" class="close" data-dismiss="alert">&times;</button>
+                    <strong>¡Información! </strong>No se puede guardar más facturas porque ya no hay disponibilidad de números o la factura expiró
+                </div>
+            <%}%>
+            <br>
             <form id="agregarFactura" 
                   action="<%=request.getContextPath()%>/FacturaServlet?agregar=true" 
                   method="post" 
@@ -364,7 +384,9 @@
                     <input id="agregar"
                            type="button"
                            value="Facturar"
-                           onclick=" validarFormulario()">
+                           <%if(agregar){%>
+                                onclick=" validarFormulario()">
+                           <%}%>
                 </div> 
             </div>
        

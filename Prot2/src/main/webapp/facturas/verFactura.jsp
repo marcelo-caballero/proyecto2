@@ -45,7 +45,7 @@
             <br> 
         
             <form id="verFactura" 
-                  action="<%=request.getContextPath()%>/Factura.jsp?idFactura=<%=idFactura%>" 
+                  action="<%=request.getContextPath()%>/GenerarFacturaServlet?idFactura=<%=idFactura%>" 
                   method="post" 
                   novalidate>
             </form>

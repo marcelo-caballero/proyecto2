@@ -24,10 +24,16 @@
     <body>
         <%
 
-                String url = "jdbc:postgresql://localhost:5432/taangapp";
-                String user ="postgres";
-                String pass = "admin";
-                Class.forName("org.postgresql.Driver");
+            
+                EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("com.mycompany_Prot2_war_1.0-SNAPSHOTPU");
+                Map<String, Object> propertiesMap = 
+                    propertiesMap = entityManagerFactory.getProperties();
+
+                
+                String url =  propertiesMap.get("javax.persistence.jdbc.url").toString();
+                String user = propertiesMap.get("javax.persistence.jdbc.user").toString();
+                String pass = propertiesMap.get("javax.persistence.jdbc.password").toString();
+                Class.forName(propertiesMap.get("javax.persistence.jdbc.driver").toString());
                 Connection con = DriverManager.getConnection(url, user, pass); 
                 
                 /*String fecha = request.getParameter("fecha");
