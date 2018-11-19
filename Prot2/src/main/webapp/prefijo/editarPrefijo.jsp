@@ -44,8 +44,11 @@
             }
             
             if(hoy.compareTo(valido)>0){ 
+                //System.out.println(hoy.compareTo(valido)>0);
                 editable = true; 
             }
+            
+            
             
             //Establecer la fecha minima
             Calendar cal = Calendar.getInstance();

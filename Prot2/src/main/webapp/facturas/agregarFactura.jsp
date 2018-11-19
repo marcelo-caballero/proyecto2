@@ -41,7 +41,7 @@
             Date valido = formatoFecha.parse(formatoFecha.format(prefijo.get(0).getFechaValidoHasta()));
             
             boolean agregar = true; 
-            if( prefijo.get(0).getProximo() > prefijo.get(0).getInicio()){
+            if( prefijo.get(0).getProximo() > prefijo.get(0).getFin()){
                 agregar = false;
             }
             if(hoy.compareTo(valido)>0){
@@ -329,6 +329,8 @@
                            class="form-control"
                            type="number" 
                            min="1"
+                           value="1"
+                           readonly
                            placeholder="Ingrese la cantidad"
                            onkeypress="return isNumberKey(event)"
                            onchange="calcularIva()"
@@ -428,6 +430,8 @@
             }
             
             function limpiarDatosCliente(){
+                //var rucInput = document.getElementById("ruc");
+                //var retroRuc = document.getElementById("ruc-retro");
                 var nombreInput = document.getElementById("nombre");
                 var direccionInput = document.getElementById("direccion");
                 var telefonoInput = document.getElementById("telefono");
@@ -435,6 +439,12 @@
                 nombreInput.value = "";
                 direccionInput.value = "";
                 telefonoInput.value = "";
+                
+                //rucInput.value="";
+                //rucInput.setAttribute("class","form-control");
+                //retroRuc.setAttribute("class","");
+                //retroRuc.textContent = '';
+                      
                 
             }
             function habilitarNroTransaccion(){

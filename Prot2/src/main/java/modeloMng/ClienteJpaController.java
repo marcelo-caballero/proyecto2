@@ -417,7 +417,7 @@ public class ClienteJpaController implements Serializable {
         
         try {
            
-            String consulta = "select c from Cliente c where c.idUsuario is null and c.estado like 'ACTIVO' order by c.nombre,c.razonSocial ";
+            String consulta = "select c from Cliente c where c.idUsuario is null and c.estado like 'ACTIVO' order by coalesce(c.nombre,c.razonSocial)";
             Query q = em.createQuery(consulta); 
             return q.getResultList();
             
@@ -435,7 +435,7 @@ public class ClienteJpaController implements Serializable {
         
         try {
            
-            String consulta = "select c from Cliente c where c.estado like 'ACTIVO' order by c.nombre,c.razonSocial ";
+            String consulta = "select c from Cliente c where c.estado like 'ACTIVO' order by coalesce(c.nombre,c.razonSocial) ";
             Query q = em.createQuery(consulta); 
             return q.getResultList();
             
@@ -485,11 +485,29 @@ public class ClienteJpaController implements Serializable {
         EntityManager em = getEntityManager();
         
         try {
-            String consulta = "select c from Cliente c where c.ruc = :ruc and c.estado = 'ACTIVO'";
+            String consulta = "select c from Cliente c where c.ruc = :ruc and c.estado = 'ACTIVO' order by coalesce(c.nombre,c.razonSocial)";
             Query q = em.createQuery(consulta); 
             q.setParameter("ruc", ruc);
             return q.getResultList();
          
+        }finally {
+            em.close();
+        }
+    }
+     
+     /**
+     * Retorna la lista de clientes ordenados por nombre y razon social
+     * @return List<Cliente> 
+     */
+    public List<Cliente> getListaClienteOrdenados() {
+        EntityManager em = getEntityManager();
+        
+        try {
+           
+            String consulta = "select c from Cliente c  order by coalesce(c.nombre,c.razonSocial) ";
+            Query q = em.createQuery(consulta); 
+            return q.getResultList();
+            
         }finally {
             em.close();
         }

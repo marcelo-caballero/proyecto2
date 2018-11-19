@@ -938,6 +938,21 @@
                     </div>
                 </div>
             </div>
+                    
+            <div class="row form-group">
+                <div class="col-3">
+                    <input form="editarPermiso"
+                               name="permiso"
+                               id="reportes"
+                               type="checkbox"
+                               value="78"
+                               <%if(permisoControl.permisoRolVentana(idRol,"reportes.jsp")){%> 
+                                  checked
+                               <%}%>
+                               
+                               >Reportes
+                </div>
+            </div>
                                
             <div class="row form-group">
                 <div class="col-5">

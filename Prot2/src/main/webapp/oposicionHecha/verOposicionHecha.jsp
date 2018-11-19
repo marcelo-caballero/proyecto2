@@ -40,6 +40,15 @@
             //Expediente exp = new ExpedienteJpaController().findExpediente(idExp);
            List<HistorialEstadoOposicionHecha> listaHistorial = new HistorialEstadoOposicionHechaJpaController().getHistorialEstadoOposicionPorIdOposicion(idOposicionHecha);
             
+
+           //Verificamos si la oposicion esta cerrada
+            boolean oposicionCerrada = false;
+            if(oposicion.getIdEstadoOposicion().getTipo() == null){
+                oposicionCerrada = false;
+            }else if(oposicion.getIdEstadoOposicion().getTipo().equals("F")){
+                oposicionCerrada = true; 
+            }
+            
         %>
 
         <%@include file="//WEB-INF/menuCabecera.jsp" %>
@@ -256,6 +265,8 @@
                                 <div class="col">
                                    <p class="font-weight-bold">Estado</p>
                                 </div>
+                                <div class="col-1"></div>
+                                <div class="col-1"></div>
                             </div>
                             <hr>
                            <%for(int i=0;i<listaHistorial.size();i++){%>
@@ -265,6 +276,15 @@
                                     </div>
                                     <div class="col">
                                         <p><%=listaHistorial.get(i).getIdEstadoOposicion().getDescripcion()%></p>
+                                    </div>
+                                     <div class="col-1">
+                                       <%if(i == (listaHistorial.size()-1) && i > 0 && !oposicionCerrada){%>  
+                                            <button type="button" class="close">
+                                                <a href="<%=request.getContextPath()%>/HistorialEstadoOposicionHechaServlet?eliminar=true&idHistorial=<%=listaHistorial.get(i).getIdHistorial()%>">&times;</a>  
+                                            </button>
+                                       <%}%> 
+                                    </div>
+                                    <div class="col-1">
                                     </div>
                                 </div>
                                 <hr>

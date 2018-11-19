@@ -149,6 +149,11 @@
                         <a class="nav-link" href="<%=request.getContextPath()%>/facturaciones.jsp">Facturaciones</a>
                     </li>
                 <%}%>
+                <%if(permisoControlAcceso.permisoRolVentana(rolUsuarioConectado,"reportes.jsp")){%>
+                    <li class="nav-item" id="pestanaItem">
+                        <a class="nav-link" href="<%=request.getContextPath()%>/reportes.jsp">Reportes</a>
+                    </li>
+                <%}%>
             </ul>
         </div>
     </div>

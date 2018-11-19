@@ -42,6 +42,7 @@
                         <th>Denominación</th>
                         <th>Clase</th>
                         <th>Titular</th>
+                        <th>Status</th>
                         <th>
                             <%if(permisoControlAcceso.permisoRolVentana(rolUsuarioConectado,"agregarOposicionHecha.jsp")){%> 
                                 <i class="fa fa-plus-circle" 
@@ -67,6 +68,8 @@
                         <td id=""><%=lista.get(i).getDenominacionOpositado()%></td> 
                         <td id=""><%=lista.get(i).getClaseOpositado()%></td>   
                         <td id=""><%=lista.get(i).getTitularOpositado()%></td> 
+                        <td id=""><%=lista.get(i).getIdEstadoOposicion().getDescripcion()%></td>  
+                        
 
                         <td>
                             <%if(permisoControlAcceso.permisoRolVentana(rolUsuarioConectado,"verOposicionHecha.jsp")){%>

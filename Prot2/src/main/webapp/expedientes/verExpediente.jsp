@@ -40,7 +40,16 @@
             Expediente expediente = expControl.findExpediente(idExp);
             
             List<HistorialEstadoMarca> listaEstadoMarca = new HistorialEstadoMarcaJpaController().getHistorialEstadoMarcaPorIdExpediente(idExp);        
-            %> 
+            
+            //Verificamos si el expediente tiene estado final
+            boolean expedienteCerrado = false;
+            if(expediente.getIdEstado().getTipo() == null){
+                expedienteCerrado = false;
+            }else if(expediente.getIdEstado().getTipo().equals("F")){
+                expedienteCerrado = true; 
+            }
+            
+        %> 
 
         <%@include file="//WEB-INF/menuCabecera.jsp" %>
         <br>
@@ -301,6 +310,8 @@
                                 <div class="col">
                                    <p class="font-weight-bold">Estado</p>
                                 </div>
+                                <div class="col-1"></div>
+                                <div class="col-1"></div>
                             </div>
                             <hr>
                            <%for(int i=0;i<listaEstadoMarca.size();i++){%> 
@@ -309,7 +320,17 @@
                                         <p><%=listaEstadoMarca.get(i).getStringFecha()%></p> 
                                     </div>
                                     <div class="col">
-                                        <p><%=listaEstadoMarca.get(i).getIdEstadoMarca().getDescripcion()%></p>   
+                                        <p><%=listaEstadoMarca.get(i).getIdEstadoMarca().getDescripcion()%></p>  
+                                        
+                                    </div>
+                                    <div class="col-1">
+                                       <%if(i == (listaEstadoMarca.size()-1) && i > 0 && !expedienteCerrado){%>
+                                            <button type="button" class="close">
+                                                <a href="<%=request.getContextPath()%>/HistorialEstadoMarcaServlet?eliminar=true&idHistorial=<%=listaEstadoMarca.get(i).getIdHistorial()%>">&times;</a> 
+                                            </button>
+                                       <%}%> 
+                                    </div>
+                                    <div class="col-1">
                                     </div>
                                 </div>
                                 <hr>
