@@ -45,6 +45,7 @@
             <br> 
         
             <form id="verFactura" 
+                  target="_blank"
                   action="<%=request.getContextPath()%>/GenerarFacturaServlet?idFactura=<%=idFactura%>" 
                   method="post" 
                   novalidate>

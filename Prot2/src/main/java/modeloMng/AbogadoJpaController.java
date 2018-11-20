@@ -461,4 +461,22 @@ public class AbogadoJpaController implements Serializable {
         }
     }
 
+     /**
+     * Retorna una lista de abogados ordenados por nombre
+     * ordenados por nombre
+     * @return :List<Abogado>
+     */
+    public List<Abogado> getListaTodosAbogadosOrdenadoPorNombre() {
+        EntityManager em = getEntityManager();
+        
+        try {
+           
+            String consulta = "select a from Abogado a order by a.nombre";
+            Query q = em.createQuery(consulta); 
+            return q.getResultList();
+            
+        }finally {
+            em.close();
+        }
+    }
 }

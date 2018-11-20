@@ -265,7 +265,7 @@ public class Cliente implements Serializable {
     
     public String getCiRUC() {
         if (this.tipoCliente.equals("F")) {
-            return Integer.toString(this.ci);
+            return String.valueOf(this.ci);
         } else {
             return this.ruc;
         }

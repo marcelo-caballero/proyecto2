@@ -27,7 +27,7 @@
         <br>
         <% List<Expediente> lista;
             ExpedienteJpaController expControl = new ExpedienteJpaController();
-            lista = expControl.findExpedienteEntities();;
+            lista = expControl.findExpedienteEntities();
             
             //Verificamos si se conecto un cliente o un abogado
             if(usuario.getAsociado() != null){ 

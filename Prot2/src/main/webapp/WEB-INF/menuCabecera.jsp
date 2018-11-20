@@ -94,7 +94,7 @@
     </div>
 
     <div class="row ">
-        <div class="col-2" id="linea1" ></div>
+        <div class="col-1" id="linea1" ></div>
         <div class="col" id="linea2">
             <ul class="nav nav-tabs" id="pestana">
                 <li class="nav-item" id="pestanaItem" >
