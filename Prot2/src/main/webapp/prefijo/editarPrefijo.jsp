@@ -39,7 +39,7 @@
                 editable = true; 
             }    
 
-            if(prefijo.getFin() == prefijo.getProximo()){
+            if(prefijo.getFin() < prefijo.getProximo()){
                 editable = true;
             }
             
@@ -55,6 +55,12 @@
             cal.setTime(new Date());
             cal.add(Calendar.YEAR, -1);
             Date fechaMin = cal.getTime(); 
+
+            //Establecer la fecha minima
+            Calendar cal2 = Calendar.getInstance();
+            cal2.setTime(new Date());
+            cal2.add(Calendar.YEAR, 1);
+            Date fechaMax = cal2.getTime(); 
 
            
         %>
@@ -152,7 +158,7 @@
                            placeholder="Escriba la fecha"
                            required 
                            min="<%=new SimpleDateFormat("yyyy-MM-dd").format(fechaMin)%>"
-                           max="<%=new SimpleDateFormat("yyyy-MM-dd").format(new Date())%>" 
+                           max="<%=new SimpleDateFormat("yyyy-MM-dd").format(fechaMax)%>" 
                            value="<%=new SimpleDateFormat("yyyy-MM-dd").format(prefijo.getFechaValidoHasta())%>" 
                            >
                     <div id="fechaValido-retro"></div>
@@ -376,7 +382,7 @@
                     retroFecha.setAttribute("class","invalid-feedback");
                     
                     retroFecha.textContent = 
-                        'La fecha debe estar entre <%=new SimpleDateFormat("dd/MM/yyyy").format(fechaMin)%> y <%=new SimpleDateFormat("dd/MM/yyyy").format(new Date())%>';
+                        'La fecha debe estar entre <%=new SimpleDateFormat("dd/MM/yyyy").format(fechaMin)%> y <%=new SimpleDateFormat("dd/MM/yyyy").format(fechaMax)%>';
                     
                     return false;
                     

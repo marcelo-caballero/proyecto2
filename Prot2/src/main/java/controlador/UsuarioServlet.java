@@ -87,22 +87,27 @@ public class UsuarioServlet extends HttpServlet {
             Integer idRol = usuario.getIdRol().getIdRol();
            
             try {
-                usuario.setEstado("INACTIVO");
-                usuarioControl.edit(usuario);
+                Usuario usuarioConectado = (Usuario)request.getSession().getAttribute("usuario");
                 
-                usuarioControl.destroy(idUsuario);
-                
-                //Solamente ocurre si el usuario se borra de la BD, 
-                //es decir si destroy no lanza excepcion.
-                //Cambia el estado del rol si corresponde
-                /**************************************************/
-                if(usuarioControl.cantidadUsuariosRol(idRol) == 0){
-                    Rol rol = rolControl.findRol(idRol);
-                    rol.setEstado("NO ASIGNADO");
-                    rolControl.edit(rol);
+                if(idUsuario != usuarioConectado.getIdUsuario()){
+                    usuario.setEstado("INACTIVO");
+                    usuarioControl.edit(usuario);
+
+                    usuarioControl.destroy(idUsuario);
+
+                    //Solamente ocurre si el usuario se borra de la BD, 
+                    //es decir si destroy no lanza excepcion.
+                    //Cambia el estado del rol si corresponde
+                    /**************************************************/
+                    if(usuarioControl.cantidadUsuariosRol(idRol) == 0){
+                        Rol rol = rolControl.findRol(idRol);
+                        rol.setEstado("NO ASIGNADO");
+                        rolControl.edit(rol);
+                    }
+                    /**************************************************/
+                }else{
+                    request.getSession().setAttribute("mensajeErrorABM", "Una cuenta de usuario no se puede eliminar a sí misma");
                 }
-                /**************************************************/
-                
             }catch(IllegalOrphanException ex){    
                 
                 request.getSession().setAttribute("mensajeErrorABM", "No se pudo eliminar el usuario, se cambió el estado del usuario a inactivo");
