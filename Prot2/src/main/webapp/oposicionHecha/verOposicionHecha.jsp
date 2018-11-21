@@ -19,6 +19,8 @@
         <%@include file="//WEB-INF/paginaCabecera.jsp" %>
     </head>
     <body >
+        <%@include file="//WEB-INF/menuCabecera.jsp" %>
+        <br>
         <%
             
             Integer idOposicionHecha = null;
@@ -49,10 +51,20 @@
                 oposicionCerrada = true; 
             }
             
+            //Si el abogado logueado no es dueño del expediente, éste se encuentra cerrado
+            //boolean cerrado = false;
+            if(usuario.getAsociado() != null){  
+                if(usuario.getAsociado().equals("ABOGADO")){ 
+                    
+                    if(oposicion.getIdAbogadoOpositante().getIdAbogado() != usuario.getAbogadoList().get(0).getIdAbogado()){ 
+                        oposicionCerrada = true; 
+                    }
+                }
+            }
+            
         %>
 
-        <%@include file="//WEB-INF/menuCabecera.jsp" %>
-        <br>
+        
         <div class="container">
            <%@include file="//WEB-INF/menuOposicionesHechas.jsp" %>     
         </div>

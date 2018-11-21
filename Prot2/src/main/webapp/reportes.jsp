@@ -530,7 +530,53 @@
                 var retroFechaDesde = document.getElementById(retroFechaDesde);
                 var retroFechaHasta = document.getElementById(retroFechaHasta);
                 
+                if(fechaDesdeInput.value.length == 0){
+                    fechaDesdeInput.setAttribute("class","form-control is-invalid");
+                    retroFechaDesde.setAttribute("class","invalid-feedback");
+                    retroFechaDesde.textContent = 'Escriba una fecha válida';
+                    
+                    fechaHastaInput.setAttribute("class","form-control is-valid");
+                    retroFechaHasta.setAttribute("class","valid-feedback");
+                    retroFechaHasta.textContent = '';
+                    
+                    return false;
+                }
+                
+                fechaDesdeInput.setAttribute("class","form-control is-valid");
+                retroFechaDesde.setAttribute("class","valid-feedback");
+                retroFechaDesde.textContent = '';
+                    
                 fechaHastaInput.setAttribute("min",fechaDesdeInput.value);
+                
+                if(fechaHastaInput.value.length == 0){
+                    fechaHastaInput.setAttribute("class","form-control is-invalid");
+                    retroFechaHasta.setAttribute("class","invalid-feedback");
+                    retroFechaHasta.textContent = 'Escriba una fecha válida';
+                    
+                    return false;
+                }
+                
+                if(!fechaHastaInput.validity.valid){
+                    var fechaLimite = fechaDesdeInput.value.substring(8,10);
+                    fechaLimite = fechaLimite+"/";
+                    fechaLimite = fechaLimite+fechaDesdeInput.value.substring(5,7);
+                    fechaLimite = fechaLimite+"/";
+                    fechaLimite = fechaLimite+fechaDesdeInput.value.substring(0,4);
+                    
+                    fechaHastaInput.setAttribute("class","form-control is-invalid");
+                    retroFechaHasta.setAttribute("class","invalid-feedback");
+                    retroFechaHasta.textContent = 'La fecha no debe ser anterior a '+fechaLimite;
+                    
+                    return false;
+                    
+                }
+                
+                fechaHastaInput.setAttribute("class","form-control is-valid");
+                retroFechaHasta.setAttribute("class","valid-feedback");
+                retroFechaHasta.textContent = '';
+                
+                return true;
+                /*fechaHastaInput.setAttribute("min",fechaDesdeInput.value);
                 
                 if(!fechaDesdeInput.value.length == 0 && fechaHastaInput.value.length == 0){
                     fechaHastaInput.setAttribute("class","form-control is-invalid");
@@ -580,7 +626,7 @@
                 retroFechaDesde.setAttribute("class","valid-feedback");
                 retroFechaDesde.textContent = '';
                 
-                return true;
+                return true;*/
                 
             }
     </script>

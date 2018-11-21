@@ -22,6 +22,8 @@
         <%@include file="//WEB-INF/paginaCabecera.jsp" %>
     </head>
     <body>
+        <%@include file="//WEB-INF/menuCabecera.jsp" %>
+        <br>
         <%
             Integer idExp = null;
             
@@ -49,10 +51,20 @@
                 expedienteCerrado = true; 
             }
             
+            //Si el abogado logueado no es dueño del expediente, éste se encuentra cerrado
+            //boolean cerrado = false;
+            if(usuario.getAsociado() != null){  
+                if(usuario.getAsociado().equals("ABOGADO")){ 
+                    
+                    if(expediente.getIdAbogado().getIdAbogado() != usuario.getAbogadoList().get(0).getIdAbogado()){ 
+                        expedienteCerrado = true; 
+                    }
+                }
+            }
+            
         %> 
 
-        <%@include file="//WEB-INF/menuCabecera.jsp" %>
-        <br>
+        
         
         <div class="container">
            <%@include file="//WEB-INF/menuExpediente.jsp" %>     

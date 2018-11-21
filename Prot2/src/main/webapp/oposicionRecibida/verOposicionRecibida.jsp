@@ -22,6 +22,8 @@
         <%@include file="//WEB-INF/paginaCabecera.jsp" %>
     </head>
     <body >
+        <%@include file="//WEB-INF/menuCabecera.jsp" %>
+        <br>
         <%
             Integer idExp = (Integer) (request.getSession().getAttribute("idExpediente"));
             Integer idOposicion = Integer.parseInt(request.getParameter("idOposicion"));
@@ -31,11 +33,12 @@
             EstadoOposicionJpaController estadoOposicionControl = new EstadoOposicionJpaController();
             OposicionRecibida oposicion = oposicionRecibidaControl.findOposicionRecibida(idOposicion);  
             
-            //Expediente exp = new ExpedienteJpaController().findExpediente(idExp);
+           Expediente exp = new ExpedienteJpaController().findExpediente(idExp);
            List<HistorialEstadoOposicionRecibida> listaHistorial = new HistorialEstadoOposicionRecibidaJpaController().getHistorialEstadoOposicionPorIdOposicion(idOposicion);
             
            //Lista de estados finales
-           List<EstadoOposicion> listaEstadoOposicionFinales = estadoOposicionControl.getEstadoOposicionFinales(); 
+           List<EstadoOposicion> listaEstadoOposicionFinales = estadoOposicionControl.getEstadoOposicionFinales();
+           
            Boolean editable = true;
             //Verificamos que la oposicion es editable
             for(int i=0;i<listaEstadoOposicionFinales.size();i++){
@@ -43,10 +46,20 @@
                     editable = false;
                 } 
             }
+            
+            //Si el abogado logueado no es dueño del expediente, éste se encuentra cerrado
+            boolean cerrado = false;
+            if(usuario.getAsociado() != null){  
+                if(usuario.getAsociado().equals("ABOGADO")){ 
+                    
+                    if(exp.getIdAbogado().getIdAbogado() != usuario.getAbogadoList().get(0).getIdAbogado()){ 
+                        cerrado = true;  
+                    }
+                }
+            }
         %>
 
-        <%@include file="//WEB-INF/menuCabecera.jsp" %>
-        <br>
+        
         <div class="container">
            <%@include file="//WEB-INF/menuExpediente.jsp" %>     
         </div>
@@ -183,7 +196,7 @@
                                         <p><%=listaHistorial.get(i).getIdEstadoOposicion().getDescripcion()%></p>
                                     </div>
                                     <div class="col-1">
-                                       <%if(i == (listaHistorial.size()-1) && i > 0 && editable){%>
+                                       <%if(i == (listaHistorial.size()-1) && i > 0 && editable && !cerrado){%> 
                                             <button type="button" class="close">
                                                 <a href="<%=request.getContextPath()%>/HistorialEstadoOposicionRecibidaServlet?eliminar=true&idHistorial=<%=listaHistorial.get(i).getIdHistorial()%>&idOposicion=<%=idOposicion%>">&times;</a> 
                                             </button>
