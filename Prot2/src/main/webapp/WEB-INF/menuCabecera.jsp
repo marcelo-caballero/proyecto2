@@ -155,7 +155,7 @@
                     </li>
                 <%}%>
                 <li class="nav-item" id="pestanaItem">
-                    <a class="nav-link" target="_blank" href="<%=request.getContextPath()%>/ayuda/ayuda.pdf"><i class="fa fa-question-circle"></i></a>
+                    <a class="nav-link" target="_blank" href="<%=request.getContextPath()%>/ayuda/Manual de Usuario del Sistema Taangapp.pdf"><i class="fa fa-question-circle"></i></a>
                 </li>
             </ul>
         </div>

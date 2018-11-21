@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="71adade5-a4d6-4077-b411-0a4de1d538c5">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="0"/>
+	<property name="ireport.y" value="173"/>
 	<parameter name="inicio" class="java.lang.String"/>
 	<parameter name="fecha" class="java.util.Date"/>
 	<parameter name="ruc" class="java.lang.String"/>
@@ -18,6 +18,7 @@
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
 	<parameter name="cantidad" class="java.lang.Integer"/>
+	<parameter name="enLetra" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[Select fc.fecha, 
 fd.descripcion, fd.monto as precio, fd.iva as iva10 
@@ -274,6 +275,10 @@ where fd.id_factura = $P{idFactura}]]>
 			<textField pattern="#,##0">
 				<reportElement x="433" y="25" width="73" height="20" uuid="d37425d3-3794-4307-995f-ada7eddf7d3c"/>
 				<textFieldExpression><![CDATA[$F{iva10}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="128" y="0" width="276" height="20" uuid="427ffad7-2614-43e9-a321-de7c53014653"/>
+				<textFieldExpression><![CDATA[$P{enLetra}]]></textFieldExpression>
 			</textField>
 		</band>
 	</columnFooter>
