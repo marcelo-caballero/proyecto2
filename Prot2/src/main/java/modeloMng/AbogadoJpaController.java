@@ -427,6 +427,26 @@ public class AbogadoJpaController implements Serializable {
     }
     
     /**
+     * Retorna una lista de abogados cuyo estado sean "ACTIVOS"
+     * y que tengan cuenta de usuario
+     * ordenados por nombre
+     * @return :List<Abogado>
+     */
+    public List<Abogado> getListaAbogadoActivoConCuentaUsuario() {
+        EntityManager em = getEntityManager();
+        
+        try {
+           
+            String consulta = "select a from Abogado a where a.estado like 'ACTIVO' and a.idUsuario is not null order by a.nombre";
+            Query q = em.createQuery(consulta); 
+            return q.getResultList();
+            
+        }finally {
+            em.close();
+        }
+    }
+    
+    /**
      * Retorna un true si el abogado es editable, falso caso contrario
      * @param idAbogado
      * @return Boolean

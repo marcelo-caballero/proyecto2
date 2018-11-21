@@ -435,4 +435,24 @@ public class OposicionHechaJpaController implements Serializable {
         }
     }
     
+    /**
+     * Retorna la lista de oposiciones hechas por Cliente
+     * @param idCliente
+     * @return 
+     */
+    public List<OposicionHecha> getListaOposicionHechaPorCliente(Integer idCliente) {
+        EntityManager em = getEntityManager();
+        
+        try {
+           
+            String consulta = "select o from OposicionHecha o where o.idExpedienteOpositante in (select e from Expediente e where e.idCliente.idCliente = :idCliente)";
+            Query q = em.createQuery(consulta); 
+            q.setParameter("idCliente", idCliente);
+            return q.getResultList();
+            
+        }finally {
+            em.close();
+        }
+    }
+    
 }

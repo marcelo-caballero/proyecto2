@@ -5,6 +5,8 @@
 --%>
 
 
+<%@page import="modeloMng.EstadoOposicionJpaController"%>
+<%@page import="modelo.EstadoOposicion"%>
 <%@page import="java.util.List"%>
 <%@page import="modeloMng.HistorialEstadoOposicionRecibidaJpaController"%>
 <%@page import="modelo.HistorialEstadoOposicionRecibida"%>
@@ -26,11 +28,21 @@
             
             
             OposicionRecibidaJpaController oposicionRecibidaControl = new OposicionRecibidaJpaController();
+            EstadoOposicionJpaController estadoOposicionControl = new EstadoOposicionJpaController();
             OposicionRecibida oposicion = oposicionRecibidaControl.findOposicionRecibida(idOposicion);  
             
             //Expediente exp = new ExpedienteJpaController().findExpediente(idExp);
            List<HistorialEstadoOposicionRecibida> listaHistorial = new HistorialEstadoOposicionRecibidaJpaController().getHistorialEstadoOposicionPorIdOposicion(idOposicion);
             
+           //Lista de estados finales
+           List<EstadoOposicion> listaEstadoOposicionFinales = estadoOposicionControl.getEstadoOposicionFinales(); 
+           Boolean editable = true;
+            //Verificamos que la oposicion es editable
+            for(int i=0;i<listaEstadoOposicionFinales.size();i++){
+                if(oposicion.getIdEstado().getIdEstado() == listaEstadoOposicionFinales.get(i).getIdEstado()){
+                    editable = false;
+                } 
+            }
         %>
 
         <%@include file="//WEB-INF/menuCabecera.jsp" %>
@@ -158,6 +170,8 @@
                                 <div class="col">
                                    <p class="font-weight-bold">Estado</p>
                                 </div>
+                                <div class="col-1"></div>
+                                <div class="col-1"></div>
                             </div>
                             <hr>
                            <%for(int i=0;i<listaHistorial.size();i++){%>
@@ -167,6 +181,15 @@
                                     </div>
                                     <div class="col">
                                         <p><%=listaHistorial.get(i).getIdEstadoOposicion().getDescripcion()%></p>
+                                    </div>
+                                    <div class="col-1">
+                                       <%if(i == (listaHistorial.size()-1) && i > 0 && editable){%>
+                                            <button type="button" class="close">
+                                                <a href="<%=request.getContextPath()%>/HistorialEstadoOposicionRecibidaServlet?eliminar=true&idHistorial=<%=listaHistorial.get(i).getIdHistorial()%>&idOposicion=<%=idOposicion%>">&times;</a> 
+                                            </button>
+                                       <%}%> 
+                                    </div>
+                                    <div class="col-1">
                                     </div>
                                 </div>
                                 <hr>

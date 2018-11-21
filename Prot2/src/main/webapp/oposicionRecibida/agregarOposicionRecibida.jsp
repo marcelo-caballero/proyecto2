@@ -28,7 +28,8 @@
             
             Expediente exp = new ExpedienteJpaController().findExpediente(idExp);
             
-            Date fechaMin = exp.getFechaSolicitud();
+            //La fecha minima, es la fecha en que la solicitud entra en asuntos litigiosos, es decir estado actual
+            Date fechaMin = exp.getFechaEstado();
             Date fechaMax = new Date();
             
         %>

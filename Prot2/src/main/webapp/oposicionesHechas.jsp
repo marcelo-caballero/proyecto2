@@ -20,14 +20,27 @@
 
     </head>
     <body>
-        
+        <%@include file="//WEB-INF/menuCabecera.jsp" %>
+        <br>
         <%  
         
             OposicionHechaJpaController opoHechaControl = new OposicionHechaJpaController();
             List<OposicionHecha> lista = opoHechaControl.findOposicionHechaEntities();
+            
+            boolean abogadoLogueado = false;  
+            Integer id_Abogado = null; 
+            //Verificamos si se conecto un cliente o un abogado
+            if(usuario.getAsociado() != null){ 
+                if(usuario.getAsociado().equals("CLIENTE")){
+                    lista = opoHechaControl.getListaOposicionHechaPorCliente(usuario.getClienteList().get(0).getIdCliente()); 
+                }else{
+                    //verificamos que el usuario sea abogado
+                    abogadoLogueado = true;
+                    id_Abogado = usuario.getAbogadoList().get(0).getIdAbogado();
+                }
+            }
         %>
-        <%@include file="//WEB-INF/menuCabecera.jsp" %>
-        <br>
+       
         
         <div class="container form-control">
             <%@include file="//WEB-INF/mensajeErrorABM.jsp" %>
@@ -38,10 +51,10 @@
                 <thead style="background-color:whitesmoke">
                     <tr>
 
-                        <th>Número de Expediente Opositado</th>
-                        <th>Denominación</th>
-                        <th>Clase</th>
-                        <th>Titular</th>
+                        <th>Nº Exp. Opositado</th>
+                        <%--<th>Marca Opositada</th>--%>
+                        <th>Titular Opositado</th>
+                        <th>Agente Opositor</th>
                         <th>Status</th>
                         <th>
                             <%if(permisoControlAcceso.permisoRolVentana(rolUsuarioConectado,"agregarOposicionHecha.jsp")){%> 
@@ -65,9 +78,9 @@
 
                         
                         <td id="nroExp-<%=i%>"><%=lista.get(i).getNroExpedienteOpositado()%></td>   
-                        <td id=""><%=lista.get(i).getDenominacionOpositado()%></td> 
-                        <td id=""><%=lista.get(i).getClaseOpositado()%></td>   
+                        <%--<td id=""><%=lista.get(i).getDenominacionOpositado()%></td> --%>
                         <td id=""><%=lista.get(i).getTitularOpositado()%></td> 
+                        <td id=""><%=lista.get(i).getIdAbogadoOpositante().getNombreApellido()%></td>  
                         <td id=""><%=lista.get(i).getIdEstadoOposicion().getDescripcion()%></td>  
                         
 
@@ -83,8 +96,11 @@
                                 <i class="fa fa-edit" 
                                    style="font-size:24px"  
                                    onmouseover="this.style.cursor = 'pointer'" 
-                                   onclick='window.location.href = "<%=request.getContextPath()%>/oposicionHecha/editarOposicionHecha.jsp?idOposicion=<%=lista.get(i).getIdOposicion()%>"'
-                                   
+                                   <%if(abogadoLogueado && lista.get(i).getIdAbogadoOpositante().getIdAbogado() != id_Abogado){%>    
+                                        onclick="mostrarMensajeSoloVer()"
+                                   <%}else{%>
+                                        onclick='window.location.href = "<%=request.getContextPath()%>/oposicionHecha/editarOposicionHecha.jsp?idOposicion=<%=lista.get(i).getIdOposicion()%>"'
+                                   <%}%>
                                 >
                                 </i>
                             <%}%>
@@ -92,8 +108,11 @@
                                 <i class="fa fa-remove" 
                                    style="font-size:24px"  
                                    onmouseover="this.style.cursor = 'pointer'" 
-                                   onclick="modalEliminar('<%=i%>')"
-                                    
+                                   <%if(abogadoLogueado && lista.get(i).getIdAbogadoOpositante().getIdAbogado() != id_Abogado){%>    
+                                        onclick="mostrarMensajeSoloVer()"
+                                   <%}else{%>
+                                        onclick="modalEliminar('<%=i%>')"
+                                   <%}%>
                                 >
                                 </i>
                             <%}%>
@@ -128,7 +147,7 @@
             </div>
         </div>
                             
-        <%-- Modal MensajeVer 
+        <%--Modal MensajeVer --%>
         <div class="modal fade" id="modal-mensaje" role="dialog">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -146,7 +165,7 @@
                     </div>
                 </div>
             </div>
-        </div>--%>
+        </div>
                             
         <br>
         <script>

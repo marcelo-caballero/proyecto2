@@ -29,10 +29,16 @@
             ExpedienteJpaController expControl = new ExpedienteJpaController();
             lista = expControl.findExpedienteEntities();
             
+            boolean abogadoLogueado = false;  
+            Integer id_Abogado = null; 
             //Verificamos si se conecto un cliente o un abogado
             if(usuario.getAsociado() != null){ 
                 if(usuario.getAsociado().equals("CLIENTE")){
                     lista = expControl.getListaExpedienteCliente(usuario.getClienteList().get(0).getIdCliente()); 
+                }else{
+                    //verificamos que el usuario sea abogado
+                    abogadoLogueado = true;
+                    id_Abogado = usuario.getAbogadoList().get(0).getIdAbogado();
                 }
             }
         %>
@@ -85,15 +91,24 @@
                                 <i class="fa fa-edit" 
                                    style="font-size:24px"  
                                    onmouseover="this.style.cursor = 'pointer'"
-                                   onclick='window.location.href = "<%=request.getContextPath()%>/expedientes/editarExpediente.jsp?idExpediente=<%=lista.get(i).getIdExpediente()%>"'
+                                   <%if(abogadoLogueado && lista.get(i).getIdAbogado().getIdAbogado() != id_Abogado){%>    
+                                        onclick="mostrarMensajeSoloVer()"
+                                    <%}else{%>
+                                        onclick='window.location.href = "<%=request.getContextPath()%>/expedientes/editarExpediente.jsp?idExpediente=<%=lista.get(i).getIdExpediente()%>"'
+                                   <%}%>
                                 > 
                                 </i>
                             <%}%>
                             <%if(permisoControlAcceso.permisoRolVentana(rolUsuarioConectado,"eliminarExpediente")){%>  
                                 <i class="fa fa-remove" 
                                    style="font-size:24px"  
-                                   onmouseover="this.style.cursor = 'pointer'" 
-                                   onclick="modalEliminar('<%=i%>')"> 
+                                   onmouseover="this.style.cursor = 'pointer'"
+                                    <%if(abogadoLogueado && lista.get(i).getIdAbogado().getIdAbogado() != id_Abogado){%>  
+                                        onclick="mostrarMensajeSoloVer()"
+                                    <%}else{%>
+                                        onclick="modalEliminar('<%=i%>')"
+                                    <%}%>
+                                > 
                                 </i>
                             <%}%>
                         </td>
@@ -137,7 +152,7 @@
 
                     </div>
                     <div class="modal-body">
-                        <p>Solamente se puede ver el Evento</p>
+                        <p>Solamente se puede ver el Expediente</p>
                     </div>
                     <div class="modal-footer">
                         <button  type="button" data-dismiss="modal"  class="btn btn-default" >Cerrar</button>

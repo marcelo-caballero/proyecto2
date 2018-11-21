@@ -4,6 +4,8 @@
     Author     : User
 --%>
 
+<%@page import="modeloMng.HistorialEstadoOposicionRecibidaJpaController"%>
+<%@page import="modelo.HistorialEstadoOposicionRecibida"%>
 <%@page import="modelo.OposicionRecibida"%>
 <%@page import="modeloMng.OposicionRecibidaJpaController"%>
 <%@page import="java.text.SimpleDateFormat"%>
@@ -33,7 +35,7 @@
             
             OposicionRecibida oposicion = oposicionControl.findOposicionRecibida(idOposicion);
             
-            Date fechaMin = oposicion.getIdExpediente().getFechaSolicitud();
+            Date fechaMin = oposicion.getIdExpediente().getFechaEstado();
             Date fechaMax = new Date();
             
             //Lista de estados finales
@@ -46,6 +48,9 @@
                     editable = false;
                 } 
             }
+            
+            //
+            List<HistorialEstadoOposicionRecibida> listaHistorial = new HistorialEstadoOposicionRecibidaJpaController().getHistorialEstadoOposicionPorIdOposicion(idOposicion);
         %>
 
         <%@include file="//WEB-INF/menuCabecera.jsp" %>
@@ -177,7 +182,7 @@
                            id="fecha"
                            class="form-control"
                            type="date"
-                           min="<%=new SimpleDateFormat("yyyy-MM-dd").format(fechaMin)%>"
+                           min=""
                            max="<%=new SimpleDateFormat("yyyy-MM-dd").format(fechaMax)%>"
                            value="<%=new SimpleDateFormat("yyyy-MM-dd").format(oposicion.getFechaEstado())%>"  
                            required> 
@@ -320,12 +325,26 @@
                 var retroFecha= document.getElementById("fecha-retro");
                 //var strFecha= fechaInput.value;
                
+                var idEstadoInput = document.getElementById("idEstado");
+                var fechaMinima = '';
+                if(idEstadoInput.value == <%=oposicion.getIdEstado().getIdEstado()%>){
+                    <%if(listaHistorial.size() == 1){%>
+                        fechaInput.setAttribute("min","<%=new SimpleDateFormat("yyyy-MM-dd").format(fechaMin)%>");
+                        fechaMinima = "<%=new SimpleDateFormat("dd/MM/yyyy").format(fechaMin)%>";
+                    <%}else{%> 
+                        fechaInput.setAttribute("min","<%=new SimpleDateFormat("yyyy-MM-dd").format(listaHistorial.get(listaHistorial.size()-2).getFecha())%>");
+                        fechaMinima = "<%=new SimpleDateFormat("dd/MM/yyyy").format(listaHistorial.get(listaHistorial.size()-2).getFecha())%>";
+                    <%}%>     
+                }else{
+                    fechaInput.setAttribute("min","<%=new SimpleDateFormat("yyyy-MM-dd").format(listaHistorial.get(listaHistorial.size()-1).getFecha())%>");
+                    fechaMinima = "<%=new SimpleDateFormat("dd/MM/yyyy").format(listaHistorial.get(listaHistorial.size()-1).getFecha())%>";
+                }
                 
                 if(!fechaInput.validity.valid){
 
                     fechaInput.setAttribute("class","form-control is-invalid");
                     retroFecha.setAttribute("class","invalid-feedback");
-                    retroFecha.textContent = 'Escriba una fecha válida entre <%=new SimpleDateFormat("dd/MM/yyyy").format(fechaMin)%> a <%=new SimpleDateFormat("dd/MM/yyyy").format(fechaMax)%>';
+                    retroFecha.textContent = 'La fecha del estado debe entre '+fechaMinima+' y <%=new SimpleDateFormat("dd/MM/yyyy").format(new Date())%>';
                     
                     return false;
                 }

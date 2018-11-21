@@ -174,12 +174,23 @@ public class OposicionRecibidaServlet extends HttpServlet {
                 //Creamos HistorialEstadoOposicionRecibida si así es requerida
                 if(registrarHistorial){
                     HistorialEstadoOposicionRecibida historialOposicion = new HistorialEstadoOposicionRecibida();
-                    historialOposicion.setFecha(oposicion.getFechaEstado());
-                    historialOposicion.setIdOposicionRecibida(oposicion);
-                    historialOposicion.setIdEstadoOposicion(oposicion.getIdEstado());
-                    historialOposicion.setFechaRegistro(new Date());
+                    List<HistorialEstadoOposicionRecibida> listaHistorial = historialOposicionControl.getHistorialEstadoOposicionPorIdOposicion(idOposicion);
                     
-                    historialOposicionControl.create(historialOposicion);
+                    //si no hay cambio de estado, se edita la fecha
+                    if(listaHistorial.get(listaHistorial.size()-1).getIdEstadoOposicion().getIdEstado() == oposicion.getIdEstado().getIdEstado()){
+                        historialOposicion = listaHistorial.get(listaHistorial.size()-1);
+                        historialOposicion.setFecha(oposicion.getFechaEstado());
+                        historialOposicion.setFechaRegistro(new Date());
+                        historialOposicionControl.edit(historialOposicion);
+                    }//Si hay cambio de estado, se crea otro historial
+                    else{
+                        historialOposicion.setFecha(oposicion.getFechaEstado());
+                        historialOposicion.setIdOposicionRecibida(oposicion);
+                        historialOposicion.setIdEstadoOposicion(oposicion.getIdEstado());
+                        historialOposicion.setFechaRegistro(new Date());
+
+                        historialOposicionControl.create(historialOposicion);
+                    }
                 }
                 //---------------------------------------------------------------------------------------------------
                 

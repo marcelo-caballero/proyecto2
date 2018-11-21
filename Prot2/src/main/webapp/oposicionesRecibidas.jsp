@@ -25,7 +25,8 @@
 
     </head>
     <body>
-        
+        <%@include file="//WEB-INF/menuCabecera.jsp" %>
+        <br>
         <%  Integer idExp = (Integer)(request.getSession().getAttribute("idExpediente"));
         
 
@@ -59,9 +60,18 @@
                 estaEstadoFinal = true; 
             }
             
+            //Si el abogado logueado no es dueño del expediente, éste se encuentra cerrado
+            boolean cerrado = false;
+            if(usuario.getAsociado() != null){  
+                if(usuario.getAsociado().equals("ABOGADO")){ 
+                    
+                    if(expediente.getIdAbogado().getIdAbogado() != usuario.getAbogadoList().get(0).getIdAbogado()){ 
+                        cerrado = true;
+                    }
+                }
+            }
         %>
-        <%@include file="//WEB-INF/menuCabecera.jsp" %>
-        <br>
+        
         
         <div class="container">
            <%@include file="//WEB-INF/menuExpediente.jsp" %>     
@@ -103,7 +113,7 @@
                                     <i class="fa fa-plus-circle" 
                                        style="font-size:24px"  
                                        onmouseover="this.style.cursor = 'pointer'"
-                                       <%if(!estaOposicion && registraOposicion){%>
+                                       <%if(!estaOposicion && registraOposicion || cerrado){%> 
                                             onclick="mostrarMensajeSoloVer()"
                                        <%}else{%>
                                             onclick='window.location.href = "<%=request.getContextPath()%>/oposicionRecibida/agregarOposicionRecibida.jsp"'
@@ -138,7 +148,7 @@
                                     <i class="fa fa-edit" 
                                        style="font-size:24px"  
                                        onmouseover="this.style.cursor = 'pointer'" 
-                                        <%if(!estaOposicion && registraOposicion){%>
+                                        <%if(!estaOposicion && registraOposicion || cerrado){%>
                                             onclick="mostrarMensajeSoloVer()"
                                         <%}else{%>
                                             onclick='window.location.href = "<%=request.getContextPath()%>/oposicionRecibida/editarOposicionRecibida.jsp?idOposicion=<%=lista.get(i).getIdOposicion()%>"'
@@ -150,7 +160,7 @@
                                     <i class="fa fa-remove" 
                                        style="font-size:24px"  
                                        onmouseover="this.style.cursor = 'pointer'" 
-                                        <%if(!estaOposicion && registraOposicion){%>
+                                        <%if(!estaOposicion && registraOposicion || cerrado){%>
                                             onclick="mostrarMensajeSoloVer()"
                                         <%}else{%>
                                             onclick="modalEliminar('<%=i%>')"

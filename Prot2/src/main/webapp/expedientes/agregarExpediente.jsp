@@ -5,6 +5,7 @@
 --%>
 
 
+<%@page import="java.util.ArrayList"%>
 <%@page import="java.util.Calendar"%>
 <%@page import="java.text.SimpleDateFormat"%>
 <%@page import="java.util.Date"%>
@@ -33,15 +34,26 @@
         <%@include file="//WEB-INF/paginaCabecera.jsp" %>
     </head>
     <body onload="cambiarDescripcionClase(),habilitarNroCertificado()">
+        <%@include file="//WEB-INF/menuCabecera.jsp" %>
+        <br>
+        
         <%
-            
+            //Si un abogado se conecta, El abogado es asignado a ese expediente
+            List<Abogado> listaAbogado;
+            AbogadoJpaController abogadoControl = new AbogadoJpaController();
+            if(usuario.getAsociado() != null && usuario.getAsociado().equals("ABOGADO")){
+                    listaAbogado = usuario.getAbogadoList();
+                
+            }else{
+                
+                listaAbogado= abogadoControl.getListaAbogadoActivoConCuentaUsuario(); 
+            }
+            //------------------------------------------------------------------------------------------------------
             List<Cliente> listaCliente;
             ClienteJpaController clienteControl = new ClienteJpaController();
             listaCliente = clienteControl.getListaClienteActivo();
             
-            List<Abogado> listaAbogado;
-            AbogadoJpaController abogadoControl = new AbogadoJpaController();
-            listaAbogado= abogadoControl.getListaAbogadoActivo(); 
+            
 
             List<EstadoMarca> listaEstadoMarca;
             EstadoMarcaJpaController estadoMarcaControl = new EstadoMarcaJpaController();
@@ -79,8 +91,7 @@
         <%}%>
         <%--><--%>
         
-        <%@include file="//WEB-INF/menuCabecera.jsp" %>
-        <br>
+        
         
         <div class ="container form-control">
             <h2 class="text-justify">Agregar Expediente</h2> 

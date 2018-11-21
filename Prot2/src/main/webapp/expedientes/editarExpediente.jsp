@@ -4,7 +4,8 @@
     Author     : Acer
 --%>
 
-
+<%@page import="modeloMng.HistorialEstadoMarcaJpaController"%>
+<%@page import="modelo.HistorialEstadoMarca"%>
 <%@page import="java.util.Calendar"%>
 <%@page import="java.text.SimpleDateFormat"%>
 <%@page import="java.util.Date"%>
@@ -35,18 +36,31 @@
         <%@include file="//WEB-INF/paginaCabecera.jsp" %>
     </head>
     <body onload="cambiarDescripcionClase()">
-        <%
+        <%@include file="//WEB-INF/menuCabecera.jsp" %>
+        <br>
+        <%  
+            
+            
             Integer idExp = Integer.parseInt(request.getParameter("idExpediente"));
             
             ExpedienteJpaController expControl = new ExpedienteJpaController();
             Expediente  expediente = expControl.findExpediente(idExp);
             
+            
+            //Si un abogado se conecta, El abogado es asignado a ese expediente-------------------------
+            List<Abogado> listaAbogado;
+            AbogadoJpaController abogadoControl = new AbogadoJpaController();
+            if(usuario.getAsociado() != null && usuario.getAsociado().equals("ABOGADO")){
+                    listaAbogado = usuario.getAbogadoList();
+                
+            }else{
+                
+                listaAbogado= abogadoControl.getListaAbogadoActivoConCuentaUsuario(); 
+            }
+            //------------------------------------------------------------------------------------------------------
             List<Cliente> listaCliente;
             listaCliente = new ClienteJpaController().getListaClienteActivo(); 
             
-            List<Abogado> listaAbogado;
-            listaAbogado= new AbogadoJpaController().getListaAbogadoActivo();  
-
             List<EstadoMarca> listaEstadoMarca;
             listaEstadoMarca = new EstadoMarcaJpaController().findEstadoMarcaEntities(); 
 
@@ -85,6 +99,9 @@
             
             //Verificamos que el expediente este asociado a una oposicion hecha por el estudio juridico
             Boolean expConOposicion = expControl.expedienteConOposicionesHechas(idExp);
+            
+             //Lista del Historial de Estados del Expediente
+            List<HistorialEstadoMarca> listaHistorialEstado = new HistorialEstadoMarcaJpaController().getHistorialEstadoMarcaPorIdExpediente(idExp);  
         %>
         
         <%--> Input tipo hidden para cambiar el contenido producto 
@@ -95,9 +112,6 @@
                    value="<%=listaClase.get(j).getDescripcion()%>">                          
         <%}%>
         <%--><--%>
-        
-        <%@include file="//WEB-INF/menuCabecera.jsp" %>
-        <br>
         
         <div class ="container form-control">
             <h2 class="text-justify">Editar Expediente</h2> 
@@ -227,6 +241,9 @@
                            min="<%=fechaHaceDiezAños%>"
                            max="<%=hoy%>"
                            <%if(!expedienteVacio){%> 
+                                readonly
+                           <%}%>
+                           <%if(listaHistorialEstado.size()>1){%> 
                                 readonly
                            <%}%>
                            required>
@@ -764,7 +781,28 @@
                     return false;
                 }
                 
-                fechaEstadoInput.setAttribute("min",document.getElementById("fechaSolicitud").value);
+                //Ver la elección de estado, si no cambia toma como minimo la fecha de estado anterior
+                //o si cambia, la fecha del estado actual
+                var idEstadoMarcaInput = document.getElementById("idEstadoMarca");
+                var fechaMinima = '';
+                if(idEstadoMarcaInput.value == <%=expediente.getIdEstado().getIdEstado()%>){
+                    <%if(listaHistorialEstado.size() == 1){%>
+                        fechaEstadoInput.setAttribute("min",document.getElementById("fechaSolicitud").value);
+                        fechaMinima = document.getElementById("fechaSolicitud").value.substring(8,10);
+                        fechaMinima = fechaMinima+"/";
+                        fechaMinima = fechaMinima + document.getElementById("fechaSolicitud").value.substring(5,7);
+                        fechaMinima = fechaMinima+"/";
+                        fechaMinima = fechaMinima+document.getElementById("fechaSolicitud").value.substring(0,4);
+                        
+                    <%}else{%>
+                        fechaEstadoInput.setAttribute("min","<%=new SimpleDateFormat("yyyy-MM-dd").format(listaHistorialEstado.get(listaHistorialEstado.size()-2).getFecha())%>");
+                        fechaMinima = "<%=new SimpleDateFormat("dd/MM/yyyy").format(listaHistorialEstado.get(listaHistorialEstado.size()-2).getFecha())%>";
+                    <%}%>
+                }else{
+                    fechaEstadoInput.setAttribute("min","<%=new SimpleDateFormat("yyyy-MM-dd").format(listaHistorialEstado.get(listaHistorialEstado.size()-1).getFecha())%>");
+                    fechaMinima = "<%=new SimpleDateFormat("dd/MM/yyyy").format(listaHistorialEstado.get(listaHistorialEstado.size()-1).getFecha())%>";
+                
+                }
 
 
                 if(strFechaEstado.length == 0){ 
@@ -775,18 +813,10 @@
                     return false;
                 }
                 
-                if(fechaEstadoInput.validity.rangeUnderflow){
+                if(!fechaEstadoInput.validity.valid){
                     fechaEstadoInput.setAttribute("class","form-control is-invalid");
                     retroFechaEstado.setAttribute("class","invalid-feedback");
-                    retroFechaEstado.textContent = 'La fecha del estado no debe ser anterior a la fecha de solicitud';
-
-                    return false;
-                }
-                
-                if(fechaEstadoInput.validity.rangeOverflow){
-                    fechaEstadoInput.setAttribute("class","form-control is-invalid");
-                    retroFechaEstado.setAttribute("class","invalid-feedback");
-                    retroFechaEstado.textContent = 'La fecha del estado no debe ser posterior a la fecha de hoy';
+                    retroFechaEstado.textContent = 'La fecha del estado debe entre '+fechaMinima+' y <%=new SimpleDateFormat("dd/MM/yyyy").format(new Date())%>';
 
                     return false;
                 }

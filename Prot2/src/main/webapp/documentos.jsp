@@ -21,6 +21,8 @@
         <script type="text/javascript" charset="utf-8" src="//cdn.datatables.net/1.10.16/js/jquery.dataTables.js"></script>
     </head>
     <body>
+        <%@include file="//WEB-INF/menuCabecera.jsp" %>
+        <br>
         <%
             Integer idExp = (Integer)(request.getSession().getAttribute("idExpediente"));
             
@@ -35,11 +37,21 @@
             }else if(expediente.getIdEstado().getTipo().equals("F")){
                 estaEstadoFinal = true; 
             }
+            
+            //Si el abogado logueado no es dueño del expediente, éste se encuentra cerrado
+            boolean cerrado = false;
+            if(usuario.getAsociado() != null){  
+                if(usuario.getAsociado().equals("ABOGADO")){ 
+                    
+                    if(expediente.getIdAbogado().getIdAbogado() != usuario.getAbogadoList().get(0).getIdAbogado()){ 
+                        cerrado = true;
+                    }
+                }
+            }
 
         %> 
 
-        <%@include file="//WEB-INF/menuCabecera.jsp" %>
-        <br>
+        
         
         <div class="container">
            <%@include file="//WEB-INF/menuExpediente.jsp" %>     
@@ -68,7 +80,7 @@
                                 <i class="fa fa-plus-circle" 
                                     style="font-size:24px"  
                                     onmouseover="this.style.cursor = 'pointer'"
-                                    <%if(estaEstadoFinal){%> 
+                                    <%if(estaEstadoFinal || cerrado){%>  
                                         onclick="mostrarMensajeSoloVer()"
                                     <%}else{%>
                                         onclick='window.location.href = "<%=request.getContextPath()%>/documentos/agregarDocumento.jsp"'
@@ -101,7 +113,7 @@
                                 <i class="fa fa-edit" 
                                    style="font-size:24px"  
                                    onmouseover="this.style.cursor = 'pointer'" 
-                                    <%if(estaEstadoFinal){%> 
+                                    <%if(estaEstadoFinal || cerrado){%>  
                                         onclick="mostrarMensajeSoloVer()"
                                     <%}else{%>
                                         onclick='window.location.href = "<%=request.getContextPath()%>/documentos/editarDocumento.jsp?idDocumento=<%=listaDocumentos.get(i).getIdDocumento()%>"'
@@ -114,7 +126,7 @@
                                 <i class="fa fa-remove" 
                                    style="font-size:24px"  
                                    onmouseover="this.style.cursor = 'pointer'" 
-                                    <%if(estaEstadoFinal){%> 
+                                    <%if(estaEstadoFinal || cerrado){%>  
                                         onclick="mostrarMensajeSoloVer()"
                                     <%}else{%>
                                         onclick="modalEliminar('<%=i%>')"

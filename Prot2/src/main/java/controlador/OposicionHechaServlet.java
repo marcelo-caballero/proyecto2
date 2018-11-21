@@ -124,14 +124,24 @@ public class OposicionHechaServlet extends HttpServlet {
                 Integer idAbogadoOpositor = Integer.parseInt(request.getParameter("agenteOpositor"));
                 String comentario = request.getParameter("comentario");
                 
+                boolean registrarHistorial = false;
                 
                 Expediente expedienteOpositor = expControl.findExpediente(idExpOpositor);
 
                 EstadoOposicion estado = estadoOposicionControl.findEstadoOposicion(idEstado);
+                
 
                 Abogado abogadoOpositor = abogadoControl.findAbogado(idAbogadoOpositor);
                 OposicionHecha oposicion = oposicionHechaControl.findOposicionHecha(idOposicion);
 
+                //Verificamos si hay cambios en la fecha y estado de oposicion
+                if(!oposicion.getFecha().equals(fecha)){
+                    registrarHistorial = true;
+                }
+                if(!oposicion.getIdEstadoOposicion().equals(estado)){
+                    registrarHistorial = true;
+                }
+                
                 oposicion.setNroExpedienteOpositado(nroExpOpositado);
                 oposicion.setDenominacionOpositado(denominacionOpositada);
                 oposicion.setClaseOpositado(claseOpositada);
@@ -147,16 +157,29 @@ public class OposicionHechaServlet extends HttpServlet {
                 
                 oposicionHechaControl.edit(oposicion);
                 
-               
-                //Procedimiento para guardar el historial de oposicion
-                HistorialEstadoOposicionHecha historialOposicion = new HistorialEstadoOposicionHecha();
-                historialOposicion.setFecha(oposicion.getFecha());
-                historialOposicion.setIdOposicionHecha(oposicion);
-                historialOposicion.setIdEstadoOposicion(oposicion.getIdEstadoOposicion());
-                historialOposicion.setFechaRegistro(new Date());
+               //Creamos HistorialEstadoOposicionRecibida si así es requerida
+                if(registrarHistorial){
+                   HistorialEstadoOposicionHecha historialOposicion = new HistorialEstadoOposicionHecha();
+                    List<HistorialEstadoOposicionHecha> listaHistorial = historialOposicionControl.getHistorialEstadoOposicionPorIdOposicion(idOposicion);
+                    
+                    //si no hay cambio de estado, se edita la fecha
+                    if(listaHistorial.get(listaHistorial.size()-1).getIdEstadoOposicion().getIdEstado() == oposicion.getIdEstadoOposicion().getIdEstado()){
+                        historialOposicion = listaHistorial.get(listaHistorial.size()-1);
+                        historialOposicion.setFecha(oposicion.getFecha());
+                        historialOposicion.setFechaRegistro(new Date());
+                        historialOposicionControl.edit(historialOposicion);
+                    }//Si hay cambio de estado, se crea otro historial
+                    else{
+                        historialOposicion.setFecha(oposicion.getFecha());
+                        historialOposicion.setIdOposicionHecha(oposicion);
+                        historialOposicion.setIdEstadoOposicion(oposicion.getIdEstadoOposicion());
+                        historialOposicion.setFechaRegistro(new Date());
+
+                        historialOposicionControl.create(historialOposicion);
+                    }
+                }
+                //---------------------------------------------------------------------------------------------------
                 
-                historialOposicionControl.create(historialOposicion);
-                //-----------------------------------------------------------------------------------------------
                 
             }catch(Exception e){
                 System.out.println(e);

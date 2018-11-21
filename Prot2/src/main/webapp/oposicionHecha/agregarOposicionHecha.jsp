@@ -23,6 +23,9 @@
         <%@include file="//WEB-INF/paginaCabecera.jsp" %>
     </head>
     <body>
+        <%@include file="//WEB-INF/menuCabecera.jsp" %>
+        <br>
+        
         <%
             
 
@@ -31,7 +34,18 @@
             
             List<Expediente> listaExpediente = new ExpedienteJpaController().findExpedienteEntities();
             
-            List<Abogado> listaAbogado = new AbogadoJpaController().getListaAbogadoActivo();
+             //Si un abogado se conecta, El abogado es asignado a esta oposicion-------------------------
+            List<Abogado> listaAbogado;
+            AbogadoJpaController abogadoControl = new AbogadoJpaController();
+            if(usuario.getAsociado() != null && usuario.getAsociado().equals("ABOGADO")){
+                    listaAbogado = usuario.getAbogadoList();
+                
+            }else{
+                
+                listaAbogado= abogadoControl.getListaAbogadoActivoConCuentaUsuario(); 
+            }
+            //------------------------------------------------------------------------------------------------------
+            
             
             //Limites de fecha de estado
             
@@ -55,8 +69,6 @@
                    value="<%=listaExpediente.get(j).getIdCliente().getNombreCliente()%>">
         <%}%>
         <%--><--%>
-        <%@include file="//WEB-INF/menuCabecera.jsp" %>
-        <br>
         
         <div class="container form-control">
             <h2 class="text-justify">Agregar Oposición</h2> 

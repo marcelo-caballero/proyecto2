@@ -319,11 +319,22 @@ public class ExpedienteServlet extends HttpServlet {
                //Creamos HistorialEstadoMarca si así es requerida
                 if(registrarHistorial){
                     HistorialEstadoMarca historial = new HistorialEstadoMarca();
-                    historial.setIdExpediente(exp);
-                    historial.setIdEstadoMarca(exp.getIdEstado());
-                    historial.setFecha(exp.getFechaEstado());
-                    historial.setFechaRegistro(new Date());
-                    historialEstadoMarca.create(historial); 
+                    
+                    //si no hay cambio de estado, se edita la fecha
+                    List<HistorialEstadoMarca> listaHistorial = historialEstadoMarca.getHistorialEstadoMarcaPorIdExpediente(idExpediente);
+                    if(listaHistorial.get(listaHistorial.size()-1).getIdEstadoMarca().getIdEstado() == exp.getIdEstado().getIdEstado()){
+                        historial = listaHistorial.get(listaHistorial.size()-1);
+                        historial.setFecha(exp.getFechaEstado());
+                        historial.setFechaRegistro(new Date());
+                        historialEstadoMarca.edit(historial);
+                    }//Si hay cambio de estado, se crea otro historial
+                    else{
+                        historial.setIdExpediente(exp);
+                        historial.setIdEstadoMarca(exp.getIdEstado());
+                        historial.setFecha(exp.getFechaEstado());
+                        historial.setFechaRegistro(new Date());
+                        historialEstadoMarca.create(historial);
+                    }
                 }
                 //---------------------------------------------------------------------------------------------------
                
