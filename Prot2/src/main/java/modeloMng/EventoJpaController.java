@@ -8,6 +8,7 @@ package modeloMng;
 import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -223,6 +224,54 @@ public class EventoJpaController implements Serializable {
                 q.setParameter("idAbogado", idAbogado);
             }
             return q.getResultList();
+        }finally {
+            em.close();
+        }
+    }
+    
+    public List<Evento> getListaEventosNotificacion(){
+        EntityManager em = getEntityManager();
+        try {
+            SimpleDateFormat formatoFecha = new SimpleDateFormat("yyyy-MM-ddHHmm");
+            
+            Date hoy = formatoFecha.parse(formatoFecha.format(new Date()));
+            
+            Calendar calendarMañana = Calendar.getInstance();
+            calendarMañana.setTime(new Date());
+            calendarMañana.add(Calendar.DATE, 1);
+            Date mañana = formatoFecha.parse(formatoFecha.format(calendarMañana.getTime()));
+            
+            Calendar calendarPasadoMañana = Calendar.getInstance();
+            calendarPasadoMañana.setTime(new Date());
+            calendarPasadoMañana.add(Calendar.DATE, 2);
+            Date pasadoMañana = formatoFecha.parse(formatoFecha.format(calendarPasadoMañana.getTime()));
+            
+            Calendar calendarTrasPasadoMañana = Calendar.getInstance();
+            calendarTrasPasadoMañana.setTime(new Date());
+            calendarTrasPasadoMañana.add(Calendar.DATE, 3);
+            Date trasPasadoMañana = formatoFecha.parse(formatoFecha.format(calendarTrasPasadoMañana.getTime()));
+            
+            
+            String consulta =  "select e from Evento e where (e.fecha = :hoy or e.fecha = :manana) and e.prioridad = 'BAJA' "+
+                               "union "+
+                               "select e from Evento e where (e.fecha = :hoy or e.fecha = :manana or e.fecha = :pasadoManana) and e.prioridad = 'MEDIA' "+
+                               "union "+
+                               "select e from Evento e where (e.fecha = :hoy or e.fecha = :manana or e.fecha = :pasadoManana or e.fecha = :trasPasadoManana) and e.prioridad = 'ALTA' ";
+                               
+            
+            
+            Query q = em.createQuery(consulta); 
+            q.setParameter("hoy", hoy);
+            q.setParameter("manana", mañana);
+            q.setParameter("pasadoManana", pasadoMañana);
+            q.setParameter("trasPasadoManana", trasPasadoMañana);
+            
+           
+            return q.getResultList();
+        }catch(ParseException e) {
+            System.out.println(e);
+            return new ArrayList<Evento>();
+            
         }finally {
             em.close();
         }
