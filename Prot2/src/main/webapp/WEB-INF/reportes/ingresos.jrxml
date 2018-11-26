@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="842" whenNoDataType="NoDataSection" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="a7d33b72-3770-4206-bda7-87d196e3dc57">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="59"/>
+	<parameter name="fechaDesde" class="java.util.Date">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="fechaHasta" class="java.util.Date">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="cliente" class="java.lang.String"/>
+	<parameter name="idCliente" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select fc.numero_factura, fc.fecha, fd.descripcion, fd.monto,
+coalesce(cliente.razon_social, cliente.nombre) as nombre from factura_cabecera fc
+inner join factura_detalle fd
+on fc.id_factura = fd.id_factura
+inner join cliente cliente
+on cliente.id_cliente = fc.id_cliente
+where fc.id_cliente = $P{idCliente}
+and fc.fecha between $P{fechaDesde} and $P{fechaHasta}
+and fc.estado like 'Pagado'
+union all
+select fc.numero_factura, fc.fecha, fd.descripcion, fd.monto,
+coalesce(cliente.razon_social, cliente.nombre)as nombre from factura_cabecera fc
+inner join factura_detalle fd
+on fc.id_factura = fd.id_factura
+inner join cliente cliente
+on cliente.id_cliente = fc.id_cliente
+where  $P{cliente} = 'TODOS'
+and fc.fecha between $P{fechaDesde} and $P{fechaHasta}
+and fc.estado like 'Pagado']]>
+	</queryString>
+	<field name="numero_factura" class="java.math.BigDecimal"/>
+	<field name="fecha" class="java.sql.Timestamp"/>
+	<field name="descripcion" class="java.lang.String"/>
+	<field name="monto" class="java.math.BigDecimal"/>
+	<field name="nombre" class="java.lang.String"/>
+	<sortField name="nombre"/>
+	<sortField name="fecha"/>
+	<variable name="monto_1" class="java.math.BigDecimal" resetType="Page" calculation="Sum">
+		<variableExpression><![CDATA[$F{monto}]]></variableExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<pageHeader>
+		<band height="42" splitType="Stretch">
+			<staticText>
+				<reportElement x="324" y="10" width="20" height="20" uuid="cf0e64c7-568d-428c-a6d2-5d09c2176264"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[AL]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="72" y="10" width="150" height="20" uuid="7f592404-182f-4291-937b-3231efab521a"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[INGRESOS DEL PERIODO]]></text>
+			</staticText>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement x="233" y="10" width="100" height="20" uuid="2d256ae7-15a6-4fe1-85eb-66b3c7a1e64b"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{fechaDesde}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement x="375" y="10" width="100" height="20" uuid="225387a9-0eb1-4052-abb3-e5d8ef98917d"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{fechaHasta}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="71" splitType="Stretch">
+			<staticText>
+				<reportElement x="43" y="18" width="48" height="20" uuid="4a268748-03d2-4867-b0a1-43c2719f50ab"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Cliente:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="91" y="18" width="242" height="20" uuid="7aa5fae6-9bc0-4e3b-9137-e83afaf6f129"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{cliente}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="14" y="51" width="100" height="20" uuid="766909ac-a0f5-4ad5-b5c2-d9a486e9459d"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Nro. Factura]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="133" y="51" width="100" height="20" uuid="21ba7a31-feb2-42c1-b58c-eed9e09f7b24"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Fecha]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="363" y="51" width="42" height="20" uuid="9163a41f-9b7b-4f21-8981-7ef91c224fea"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Monto]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="244" y="51" width="100" height="20" uuid="d6b98dba-3a9b-45be-80e9-7bc68255fa81"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Cliente]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="24" splitType="Stretch">
+			<textField>
+				<reportElement x="43" y="0" width="29" height="20" uuid="1ab76005-5558-46ec-ae30-05e76ac1543f"/>
+				<textFieldExpression><![CDATA[$F{numero_factura}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement x="133" y="0" width="100" height="20" uuid="732e8cbd-df5d-42d5-b5f5-9d893a4df48c"/>
+				<textFieldExpression><![CDATA[$F{fecha}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0">
+				<reportElement x="363" y="0" width="100" height="20" uuid="01c037eb-2ab8-41fa-a37a-ced557097c03"/>
+				<textFieldExpression><![CDATA[$F{monto}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="244" y="0" width="100" height="20" uuid="4ca5edb5-85be-4df8-97d6-08ac3d537b53"/>
+				<textFieldExpression><![CDATA[$F{nombre}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<summary>
+		<band height="50">
+			<textField pattern="#,##0">
+				<reportElement x="415" y="30" width="100" height="20" uuid="408a5adc-899e-4d81-8562-c717b98fae5d"/>
+				<textFieldExpression><![CDATA[$V{monto_1}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="375" y="30" width="39" height="20" uuid="f5b07f76-5f2b-4c02-840f-a97ed8291e92"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[TOTAL:]]></text>
+			</staticText>
+		</band>
+	</summary>
+	<noData>
+		<band height="177">
+			<staticText>
+				<reportElement x="57" y="0" width="440" height="40" uuid="19544888-dae8-435b-be8c-a4a8f0c7efdf"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="24" isBold="true"/>
+				</textElement>
+				<text><![CDATA[El reporte no arrojó ningún resultado]]></text>
+			</staticText>
+			<image>
+				<reportElement x="174" y="40" width="189" height="118" uuid="c2a3a7dd-8731-428a-b487-33d61c8b2c4c"/>
+				<imageExpression><![CDATA["C:\\Users\\Pathy\\Pictures\\warning.png"]]></imageExpression>
+			</image>
+		</band>
+	</noData>
+</jasperReport>

@@ -164,6 +164,7 @@
                             </div>
                         </div>
                     </div>
+                    <%--
                     <div class = "row form-group">
                         <div class="col-3">
                             <label for="">Titular:</label>
@@ -217,7 +218,7 @@
                                 <%}%>
                             </select> 
                         </div>    
-                    </div>
+                    </div> --%>
                     <div class = "row form-group">
                         <div class="col-3">
                             <label for="">Oposiciones:</label>
@@ -230,12 +231,12 @@
                                    type="text"
                             >
                                 <option value="0">Ganadas/Perdidas</option>
-                                <option value="1">Ganadas</option>
-                                <option value="-1">Perdidas</option>
+                                <%--<option value="1">Ganadas</option>
+                                <option value="-1">Perdidas</option>--%>
                                 
                             </select> 
                         </div>    
-                    </div>
+                    </div> 
                     <div class="row form-group">
                         <div class="col-5">
                         </div>
@@ -288,6 +289,7 @@
                             </div>
                         </div>
                     </div>
+                        <%--
                     <div class = "row form-group">
                         <div class="col-3">
                             <label for="">Titular:</label>
@@ -341,7 +343,7 @@
                                 <%}%>
                             </select> 
                         </div>    
-                    </div>
+                    </div>--%>
                     <div class = "row form-group">
                         <div class="col-3">
                             <label for="">Oposiciones:</label>
@@ -354,8 +356,8 @@
                                    type="text"
                             >
                                 <option value="0">Ganadas/Perdidas</option>
-                                <option value="1">Ganadas</option>
-                                <option value="-1">Perdidas</option>
+                               <%-- <option value="1">Ganadas</option>
+                                <option value="-1">Perdidas</option> --%>
                                 
                             </select> 
                         </div>    

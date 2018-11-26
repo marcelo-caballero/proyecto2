@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="842" whenNoDataType="NoDataSection" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isSummaryWithPageHeaderAndFooter="true" uuid="98f463ea-331d-4ef6-90cd-bf2b58d5ebec">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="21"/>
+	<parameter name="fechaDesde" class="java.util.Date"/>
+	<parameter name="fechaHasta" class="java.util.Date"/>
+	<parameter name="idCliente" class="java.lang.Integer"/>
+	<parameter name="idAbogado" class="java.lang.Integer"/>
+	<parameter name="idEstado" class="java.lang.Integer"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["C:\\Users\\Pathy\\Documents\\Proyecto 2\\taangapp\\proyecto2\\Prot2\\src\\main\\webapp\\WEB-INF\\reportes\\"]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT coalesce(c.nombre||' '||c.apellido::character varying, c.razon_social) as nombreCliente, ab.nombre||' '||ab.apellido as nombreAbogado, em.descripcion, coalesce(c.nombre||' '||c.apellido::character varying, c.razon_social) as cliente
+FROM expediente e
+inner join cliente c 
+on c.id_cliente = e.id_cliente
+inner join estado_marca em
+on e.id_estado = em.id_estado
+inner join abogado ab
+on e.id_abogado = ab.id_abogado
+where e.id_cliente = $P{idCliente} and e.id_abogado = $P{idAbogado}
+and e.id_estado = $P{idEstado}  and e.fecha_solicitud between $P{fechaDesde} and
+$P{fechaHasta}
+union all
+SELECT 'Todos', ab.nombre||' '||ab.apellido as nombreAbogado, em.descripcion, coalesce(c.nombre||' '||c.apellido::character varying, c.razon_social) as nombreCliente
+FROM expediente e
+inner join cliente c 
+on c.id_cliente = e.id_cliente
+inner join estado_marca em
+on e.id_estado = em.id_estado
+inner join abogado ab
+on e.id_abogado = ab.id_abogado
+where $P{idCliente} = -1 and e.id_abogado = $P{idAbogado}
+and e.id_estado = $P{idEstado}  and e.fecha_solicitud between $P{fechaDesde} and
+$P{fechaHasta}
+union all 
+SELECT 'Todos', 'Todos', em.descripcion, coalesce(c.nombre||' '||c.apellido::character varying, c.razon_social) as nombreCliente
+FROM expediente e
+inner join cliente c 
+on c.id_cliente = e.id_cliente
+inner join estado_marca em
+on e.id_estado = em.id_estado
+inner join abogado ab
+on e.id_abogado = ab.id_abogado
+where $P{idCliente} = -1 and $P{idAbogado} = -1
+and e.id_estado = $P{idEstado}  and e.fecha_solicitud between $P{fechaDesde} and
+$P{fechaHasta}
+union all 
+SELECT 'Todos', 'Todos', 'Todos', coalesce(c.nombre||' '||c.apellido::character varying, c.razon_social) as nombreCliente
+FROM expediente e
+inner join cliente c 
+on c.id_cliente = e.id_cliente
+inner join estado_marca em
+on e.id_estado = em.id_estado
+inner join abogado ab
+on e.id_abogado = ab.id_abogado
+where $P{idCliente}= -1 and $P{idAbogado} = -1
+and $P{idEstado} = -1  and e.fecha_solicitud between $P{fechaDesde} and
+$P{fechaHasta}
+union all 
+SELECT 'Todos', ab.nombre||' '||ab.apellido as nombreAbogado, 'Todos',
+coalesce(c.nombre||' '||c.apellido::character varying, c.razon_social) as nombreCliente
+FROM expediente e
+inner join cliente c 
+on c.id_cliente = e.id_cliente
+inner join estado_marca em
+on e.id_estado = em.id_estado
+inner join abogado ab
+on e.id_abogado = ab.id_abogado
+where $P{idCliente} = -1 and e.id_abogado = $P{idAbogado}
+and $P{idEstado} = -1  and e.fecha_solicitud between $P{fechaDesde} and
+$P{fechaHasta}
+union all
+SELECT coalesce(c.nombre||' '||c.apellido::character varying, c.razon_social) as nombreCliente, 'Todos', em.descripcion, 
+coalesce(c.nombre||' '||c.apellido::character varying, c.razon_social) as nombreCliente
+FROM expediente e
+inner join cliente c 
+on c.id_cliente = e.id_cliente
+inner join estado_marca em
+on e.id_estado = em.id_estado
+inner join abogado ab
+on e.id_abogado = ab.id_abogado
+where e.id_cliente = $P{idCliente} and $P{idAbogado} = -1
+and e.id_estado = $P{idEstado}  and e.fecha_solicitud between $P{fechaDesde} and
+$P{fechaHasta}
+union 
+SELECT coalesce(c.nombre||' '||c.apellido::character varying, c.razon_social) as nombreCliente, 'Todos', 'Todos', coalesce(c.nombre||' '||c.apellido::character varying, c.razon_social) as nombreCliente
+FROM expediente e
+inner join cliente c 
+on c.id_cliente = e.id_cliente
+inner join estado_marca em
+on e.id_estado = em.id_estado
+inner join abogado ab
+on e.id_abogado = ab.id_abogado
+where e.id_cliente = $P{idCliente} and $P{idAbogado} = -1
+and $P{idEstado} = -1  and e.fecha_solicitud between $P{fechaDesde} and
+$P{fechaHasta}
+union
+SELECT coalesce(c.nombre||' '||c.apellido::character varying, c.razon_social) as nombreCliente, ab.nombre||' '||ab.apellido as nombreAbogado, 'Todos',
+coalesce(c.nombre||' '||c.apellido::character varying, c.razon_social) as nombreCliente
+FROM expediente e
+inner join cliente c 
+on c.id_cliente = e.id_cliente
+inner join estado_marca em
+on e.id_estado = em.id_estado
+inner join abogado ab
+on e.id_abogado = ab.id_abogado
+where e.id_cliente = $P{idCliente} and ab.id_abogado = $P{idAbogado}
+and $P{idEstado} = -1 and e.fecha_solicitud between $P{fechaDesde} and
+$P{fechaHasta}]]>
+	</queryString>
+	<field name="nombrecliente" class="java.lang.String"/>
+	<field name="nombreabogado" class="java.lang.String"/>
+	<field name="descripcion" class="java.lang.String"/>
+	<field name="cliente" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="48" splitType="Stretch">
+			<staticText>
+				<reportElement x="39" y="20" width="281" height="20" uuid="8a59d4b9-8696-41d3-8fd4-d0aad0d997ef"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ESTADOS DE LOS EXPEDIENTES DEL PERIODO ]]></text>
+			</staticText>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement x="323" y="20" width="68" height="20" uuid="105405fb-746b-4aba-9fe7-0e098f23fac1"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{fechaDesde}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="391" y="20" width="55" height="20" uuid="7f23e3b6-107b-43e0-90a2-2befcc203696"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[AL]]></text>
+			</staticText>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement x="416" y="20" width="100" height="20" uuid="332c1ed6-2683-482a-9380-5fa922f99dba"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{fechaHasta}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="199">
+			<line>
+				<reportElement x="0" y="18" width="555" height="1" uuid="eb2214b8-1fb4-446b-b0e1-441a95b9174d"/>
+			</line>
+			<staticText>
+				<reportElement x="14" y="37" width="55" height="20" uuid="87b36bf3-037f-4a05-b289-0fb43d631074"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Abogado:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="14" y="57" width="43" height="20" uuid="33c64c0c-9f45-4a96-94db-b445e6b15d7e"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Cliente:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="14" y="77" width="43" height="20" uuid="3b5917c5-4792-480d-b074-0ab3338efc8d"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Estado:]]></text>
+			</staticText>
+			<line>
+				<reportElement x="0" y="113" width="555" height="1" uuid="1bf32cff-d5ed-4d64-b725-00576740954c"/>
+			</line>
+			<textField>
+				<reportElement x="81" y="37" width="100" height="20" uuid="7ad216db-aadb-4ce3-b30e-29992b25f3a2"/>
+				<textFieldExpression><![CDATA[$F{nombreabogado}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="81" y="57" width="100" height="20" uuid="b5e4ad6b-1dbf-4aa3-874a-d83567bfbe39"/>
+				<textFieldExpression><![CDATA[$F{nombrecliente}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="81" y="77" width="100" height="20" uuid="074bb4f6-5cd2-4fa4-ad8e-362c9483f2d4"/>
+				<textFieldExpression><![CDATA[$F{descripcion}]]></textFieldExpression>
+			</textField>
+			<subreport>
+				<reportElement x="14" y="114" width="528" height="70" uuid="23d1e9ec-4f5c-419a-8af6-413167f4fd43"/>
+				<subreportParameter name="idCliente">
+					<subreportParameterExpression><![CDATA[$P{idCliente}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="idAbogado">
+					<subreportParameterExpression><![CDATA[$P{idAbogado}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="idEstado">
+					<subreportParameterExpression><![CDATA[$P{idEstado}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "EstadosExpedientes_subreport1.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</pageHeader>
+	<summary>
+		<band height="45" splitType="Stretch">
+			<textField pattern="dd/MM/yyyy">
+				<reportElement x="39" y="13" width="100" height="20" uuid="43b8f964-6a96-4a0d-9a0e-3feba5ea99ae"/>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="380" y="13" width="80" height="20" uuid="63762204-b472-4996-a21e-b20e4e4dc514"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA["Página "+$V{PAGE_NUMBER}+" de"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement x="463" y="13" width="40" height="20" uuid="568aa29d-730c-468e-b343-19344e05ef6e"/>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
+	</summary>
+	<noData>
+		<band height="181" splitType="Immediate">
+			<staticText>
+				<reportElement x="69" y="17" width="440" height="40" uuid="d6553a60-f6e1-4459-9ac6-cc359a9dab92"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="24" isBold="true"/>
+				</textElement>
+				<text><![CDATA[El reporte no arrojó ningún resultado]]></text>
+			</staticText>
+			<image>
+				<reportElement x="181" y="57" width="189" height="118" uuid="16f88300-c05a-482a-bbae-01050bcd56ec"/>
+				<imageExpression><![CDATA["C:\\Users\\Pathy\\Pictures\\warning.png"]]></imageExpression>
+			</image>
+		</band>
+	</noData>
+</jasperReport>

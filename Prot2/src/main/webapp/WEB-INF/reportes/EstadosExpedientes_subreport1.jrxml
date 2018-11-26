@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="EstadosExpedientes_subreport1" pageWidth="600" pageHeight="802" columnWidth="600" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="b0f242ca-8881-49c7-9481-054b9a35d186">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="idCliente" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="idAbogado" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="idEstado" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT e.nro_expediente, e.nro_clase, e.fecha_solicitud,
+em.descripcion, coalesce(c.nombre ||' '|| c.apellido, c.razon_social)
+FROM expediente e
+inner join cliente c 
+on c.id_cliente = e.id_cliente
+inner join estado_marca em
+on e.id_estado = em.id_estado
+inner join abogado ab
+on e.id_abogado = ab.id_abogado
+where e.id_cliente = $P{idCliente} and e.id_abogado = $P{idAbogado}
+and e.id_estado = $P{idEstado}
+union
+SELECT e.nro_expediente, e.nro_clase, e.fecha_solicitud,
+em.descripcion, coalesce(c.nombre ||' '|| c.apellido, c.razon_social)
+FROM expediente e
+inner join cliente c 
+on c.id_cliente = e.id_cliente
+inner join estado_marca em
+on e.id_estado = em.id_estado
+inner join abogado ab
+on e.id_abogado = ab.id_abogado
+where $P{idCliente} = -1 and e.id_abogado = $P{idAbogado}
+and e.id_estado = $P{idEstado}
+union
+SELECT e.nro_expediente, e.nro_clase, e.fecha_solicitud,
+em.descripcion, coalesce(c.nombre ||' '|| c.apellido, c.razon_social)
+FROM expediente e
+inner join cliente c 
+on c.id_cliente = e.id_cliente
+inner join estado_marca em
+on e.id_estado = em.id_estado
+inner join abogado ab
+on e.id_abogado = ab.id_abogado
+where $P{idCliente} = -1 and $P{idAbogado} = -1
+and e.id_estado = $P{idEstado}
+union
+SELECT e.nro_expediente, e.nro_clase, e.fecha_solicitud,
+em.descripcion, coalesce(c.nombre ||' '|| c.apellido, c.razon_social)
+FROM expediente e
+inner join cliente c 
+on c.id_cliente = e.id_cliente
+inner join estado_marca em
+on e.id_estado = em.id_estado
+inner join abogado ab
+on e.id_abogado = ab.id_abogado
+where $P{idCliente}= -1 and $P{idAbogado} = -1
+and $P{idEstado} = -1
+union 
+SELECT e.nro_expediente, e.nro_clase, e.fecha_solicitud,
+em.descripcion, coalesce(c.nombre ||' '|| c.apellido, c.razon_social)
+FROM expediente e
+inner join cliente c 
+on c.id_cliente = e.id_cliente
+inner join estado_marca em
+on e.id_estado = em.id_estado
+inner join abogado ab
+on e.id_abogado = ab.id_abogado
+where $P{idCliente} = -1 and e.id_abogado = $P{idAbogado}
+and $P{idEstado} = -1
+union 
+SELECT e.nro_expediente, e.nro_clase, e.fecha_solicitud,
+em.descripcion, coalesce(c.nombre ||' '|| c.apellido, c.razon_social)
+FROM expediente e
+inner join cliente c 
+on c.id_cliente = e.id_cliente
+inner join estado_marca em
+on e.id_estado = em.id_estado
+inner join abogado ab
+on e.id_abogado = ab.id_abogado
+where e.id_cliente = $P{idCliente} and $P{idAbogado} = -1
+and e.id_estado = $P{idEstado}
+union 
+SELECT e.nro_expediente, e.nro_clase, e.fecha_solicitud,
+em.descripcion, coalesce(c.nombre ||' '|| c.apellido, c.razon_social)
+FROM expediente e
+inner join cliente c 
+on c.id_cliente = e.id_cliente
+inner join estado_marca em
+on e.id_estado = em.id_estado
+inner join abogado ab
+on e.id_abogado = ab.id_abogado
+where e.id_cliente = $P{idCliente} and $P{idAbogado} = -1
+and $P{idEstado} = -1 
+union
+SELECT e.nro_expediente, e.nro_clase, e.fecha_solicitud,
+em.descripcion, coalesce(c.nombre ||' '|| c.apellido, c.razon_social)
+FROM expediente e
+inner join cliente c 
+on c.id_cliente = e.id_cliente
+inner join estado_marca em
+on e.id_estado = em.id_estado
+inner join abogado ab
+on e.id_abogado = ab.id_abogado
+where e.id_cliente = $P{idCliente} and ab.id_abogado = $P{idAbogado}
+and $P{idEstado} = -1]]>
+	</queryString>
+	<field name="nro_expediente" class="java.math.BigDecimal"/>
+	<field name="nro_clase" class="java.lang.Integer"/>
+	<field name="fecha_solicitud" class="java.sql.Timestamp"/>
+	<field name="descripcion" class="java.lang.String"/>
+	<field name="coalesce" class="java.lang.String"/>
+	<sortField name="coalesce"/>
+	<sortField name="nro_expediente"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<columnHeader>
+		<band height="37" splitType="Stretch">
+			<staticText>
+				<reportElement x="13" y="12" width="100" height="20" uuid="e7f99a88-2f2b-4b36-a506-bca3e66f041f"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Nro. Expediente]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="295" y="12" width="100" height="20" uuid="6fb4d471-e8f6-4db1-95d5-40c175de762a"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Fecha Solicitud]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="395" y="12" width="100" height="20" uuid="eb34e238-bf5a-4264-b4fc-4514f1139ff2"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Estado]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="113" y="12" width="100" height="20" uuid="c81c0652-b140-428b-bd45-2e81c0026f9f"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Clase]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="195" y="12" width="50" height="20" uuid="2978101a-3153-48c3-a8bc-54cefa153676"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Cliente]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="42" splitType="Stretch">
+			<textField>
+				<reportElement x="41" y="14" width="38" height="20" uuid="97d807b9-66d6-4992-a217-87d00dac5769"/>
+				<textFieldExpression><![CDATA[$F{nro_expediente}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="113" y="14" width="46" height="20" uuid="c9fcd5af-0f5f-4b96-a5af-84fe59623868"/>
+				<textFieldExpression><![CDATA[$F{nro_clase}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="395" y="14" width="142" height="20" uuid="3629ae54-a7fb-4164-be08-139b2dffe6b5"/>
+				<textFieldExpression><![CDATA[$F{descripcion}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="181" y="14" width="114" height="20" uuid="75805cb8-c07c-4edf-b050-9e2a4a64bccb"/>
+				<textFieldExpression><![CDATA[$F{coalesce}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy" isBlankWhenNull="false">
+				<reportElement x="298" y="14" width="100" height="20" uuid="b7b6af04-1be4-4331-a9b7-319c233853af"/>
+				<textFieldExpression><![CDATA[$F{fecha_solicitud}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

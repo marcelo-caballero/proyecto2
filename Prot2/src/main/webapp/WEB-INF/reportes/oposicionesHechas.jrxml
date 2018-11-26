@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="10912fd3-af3f-4160-8e2f-f2480e0b6fe9">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="fechaDesde" class="java.util.Date"/>
+	<parameter name="fechaHasta" class="java.util.Date">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select nro_expediente_opositado, agente_opositado as agenteOpositor,
+fecha, denominacion_opositado, e.descripcion as estado from oposicion_hecha
+inner join estado_oposicion e 
+on e.id_estado = oposicion_hecha.id_estado_oposicion
+where
+fecha between $P{fechaDesde} and $P{fechaHasta}
+and e.descripcion like '%Caso cerrado Perdido%' or e.descripcion like '%Caso cerrado Ganado%']]>
+	</queryString>
+	<field name="nro_expediente_opositado" class="java.lang.Integer"/>
+	<field name="agenteopositor" class="java.lang.String"/>
+	<field name="fecha" class="java.sql.Timestamp"/>
+	<field name="denominacion_opositado" class="java.lang.String"/>
+	<field name="estado" class="java.lang.String"/>
+	<sortField name="estado"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<pageHeader>
+		<band height="45" splitType="Stretch">
+			<staticText>
+				<reportElement x="56" y="12" width="169" height="20" uuid="ef68e06a-1a44-442d-9f7a-fa6d0eed66d5"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Oposiciones hechas del ]]></text>
+			</staticText>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement x="225" y="12" width="100" height="20" uuid="e8549b26-67b0-4e1f-b876-853bf962a0bc"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{fechaDesde}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="325" y="12" width="21" height="20" uuid="e32e158f-0079-4581-ba13-9d15998887ce"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[AL]]></text>
+			</staticText>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement x="346" y="12" width="100" height="20" uuid="1824651d-be60-4c2d-9694-3d15d3b791bf"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{fechaHasta}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="66" splitType="Stretch">
+			<staticText>
+				<reportElement x="35" y="21" width="100" height="20" uuid="9e628b67-2157-4a97-a76f-da011c184f73"/>
+				<text><![CDATA[Nro. Expediente]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="135" y="21" width="100" height="20" uuid="4e57e96a-6057-488a-9030-68d570413a21"/>
+				<text><![CDATA[Agente]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="235" y="21" width="100" height="20" uuid="021a9182-f360-400f-8938-c598e698a6a8"/>
+				<text><![CDATA[Denominacion]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="335" y="21" width="100" height="20" uuid="15e88404-e176-44eb-8d22-284e6531547d"/>
+				<text><![CDATA[Fecha]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="435" y="21" width="100" height="20" uuid="bff0bfd3-5e86-4b15-98c6-7b4985391521"/>
+				<text><![CDATA[Estado]]></text>
+			</staticText>
+			<line>
+				<reportElement x="0" y="10" width="555" height="1" uuid="ca0aaa49-176b-4ba0-aab4-9261e8b17e79"/>
+			</line>
+			<line>
+				<reportElement x="0" y="53" width="555" height="1" uuid="4da83696-efde-4806-9772-93a5f9290e38"/>
+			</line>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="30" splitType="Stretch">
+			<textField>
+				<reportElement x="56" y="0" width="40" height="20" uuid="8ffea5f3-1491-447f-af56-421ac342b151"/>
+				<textFieldExpression><![CDATA[$F{nro_expediente_opositado}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="135" y="0" width="100" height="20" uuid="79fa792a-81df-4e43-8ed3-fe41f704163c"/>
+				<textFieldExpression><![CDATA[$F{agenteopositor}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="235" y="0" width="100" height="20" uuid="ef0ba611-ae97-4ca0-8da2-ad172b8045ec"/>
+				<textFieldExpression><![CDATA[$F{denominacion_opositado}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement x="335" y="0" width="100" height="20" uuid="dad2d0bd-6e2a-49d7-a104-9eb1b6aa69eb"/>
+				<textFieldExpression><![CDATA[$F{fecha}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="435" y="0" width="100" height="20" uuid="3e93ddfe-d82a-4d4a-8657-6a87db05d5c6"/>
+				<textFieldExpression><![CDATA[$F{estado}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<summary>
+		<band height="42" splitType="Stretch">
+			<textField pattern="dd/MM/yyyy">
+				<reportElement x="35" y="15" width="100" height="20" uuid="bca34388-4c71-4091-9d9e-21ef24e4bd79"/>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="397" y="15" width="80" height="20" uuid="a8810557-c7a1-4712-8b1e-82e15a7560fa"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA["Pág. "+$V{PAGE_NUMBER}+" de"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement x="477" y="15" width="40" height="20" uuid="1c0e2f40-7281-49e0-a5d3-77cabdc2c535"/>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
+	</summary>
+	<noData>
+		<band height="186">
+			<staticText>
+				<reportElement x="75" y="11" width="440" height="40" uuid="d327c8e3-1de8-4f90-8be0-c0375efe0fc6"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="24" isBold="true"/>
+				</textElement>
+				<text><![CDATA[El reporte no arrojó ningún resultado]]></text>
+			</staticText>
+			<image>
+				<reportElement x="189" y="51" width="189" height="118" uuid="be0fb096-9b9e-41f2-8251-228fdf022e00"/>
+				<imageExpression><![CDATA["C:\\Users\\Pathy\\Pictures\\warning.png"]]></imageExpression>
+			</image>
+		</band>
+	</noData>
+</jasperReport>
